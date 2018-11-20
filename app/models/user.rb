@@ -22,8 +22,4 @@ class User < ApplicationRecord
     1
   end
 
-  # def is_protected?
-  #   streak % 4 == 3 && items.available_protectors.any?
-  # end
-
 end
