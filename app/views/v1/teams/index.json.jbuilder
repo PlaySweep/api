@@ -1,0 +1,1 @@
+json.teams @teams, partial: 'v1/teams/team', as: :team

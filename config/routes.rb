@@ -5,5 +5,7 @@ Rails.application.routes.draw do
       resources :picks, only: [:show, :create]
       resources :slates, only: [:index, :show]
     end
+    resources :leagues, only: [:index]
+    resources :teams, only: [:index]
   end
 end

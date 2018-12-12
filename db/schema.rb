@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_19_165251) do
+ActiveRecord::Schema.define(version: 2018_12_12_163421) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "admins", force: :cascade do |t|
+    t.string "username"
+    t.string "password_digest"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["username"], name: "index_admins_on_username", unique: true
+  end
 
   create_table "cards", force: :cascade do |t|
     t.bigint "user_id"
@@ -33,6 +41,12 @@ ActiveRecord::Schema.define(version: 2018_11_19_165251) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["slate_id"], name: "index_events_on_slate_id"
+  end
+
+  create_table "leagues", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "picks", force: :cascade do |t|
@@ -60,8 +74,10 @@ ActiveRecord::Schema.define(version: 2018_11_19_165251) do
     t.datetime "start_time"
     t.string "type"
     t.integer "status", default: 0
+    t.bigint "team_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_slates_on_team_id"
   end
 
   create_table "sweeps", force: :cascade do |t|
@@ -71,6 +87,15 @@ ActiveRecord::Schema.define(version: 2018_11_19_165251) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_sweeps_on_user_id"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "name"
+    t.bigint "league_id"
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["league_id"], name: "index_teams_on_league_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -96,5 +121,7 @@ ActiveRecord::Schema.define(version: 2018_11_19_165251) do
   add_foreign_key "picks", "selections"
   add_foreign_key "picks", "users"
   add_foreign_key "selections", "events"
+  add_foreign_key "slates", "teams"
   add_foreign_key "sweeps", "users"
+  add_foreign_key "teams", "leagues"
 end

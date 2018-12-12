@@ -3,6 +3,8 @@ class Slate < ApplicationRecord
 
   after_update_commit :update_associations
 
+  belongs_to :team
+
   has_many :events
   has_many :users, through: :events
   has_many :cards
