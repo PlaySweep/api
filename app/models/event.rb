@@ -6,6 +6,8 @@ class Event < ApplicationRecord
   has_many :picks, dependent: :destroy
   has_many :users, through: :picks
 
+  accepts_nested_attributes_for :selections
+
   jsonb_accessor :data,
     winner_ids: [:integer, array: true, default: []]
 
