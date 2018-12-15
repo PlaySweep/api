@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_163421) do
     t.integer "status", default: 0
     t.jsonb "data", default: {}
     t.bigint "slate_id"
+    t.integer "order"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["slate_id"], name: "index_events_on_slate_id"
@@ -63,6 +64,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_163421) do
   create_table "selections", force: :cascade do |t|
     t.string "description"
     t.bigint "event_id"
+    t.integer "order"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["event_id"], name: "index_selections_on_event_id"

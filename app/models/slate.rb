@@ -5,7 +5,7 @@ class Slate < ApplicationRecord
 
   belongs_to :team
 
-  has_many :events
+  has_many :events, dependent: :destroy
   has_many :users, through: :events
   has_many :cards
 

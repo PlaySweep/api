@@ -18,6 +18,12 @@ class Admin::SlatesController < ApplicationController
     respond_with @slate
   end
 
+  def destroy
+    @slate = Slate.find(params[:id])
+    @slate.destroy
+    respond_with @slate
+  end
+
   private
 
   def slate_params

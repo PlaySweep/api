@@ -9,8 +9,8 @@ Rails.application.routes.draw do
   end
   namespace :admin, defaults: { format: :json } do
     resources :teams, only: [:index, :show] do
-      resources :slates, only: [:index, :show, :create] do
-        resources :events, only: [:create]
+      resources :slates, only: [:index, :show, :create, :destroy] do
+        resources :events, only: [:create, :show, :update]
       end
     end
   end

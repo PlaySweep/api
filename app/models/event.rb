@@ -14,6 +14,7 @@ class Event < ApplicationRecord
   enum status: [ :incomplete, :complete ]
 
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) }
+  scope :ordered, -> { order(order: :asc) }
 
   def loser_ids
     selections.map(&:id) - winner_ids
