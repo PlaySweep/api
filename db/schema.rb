@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_163421) do
     t.bigint "user_id"
     t.bigint "selection_id"
     t.bigint "event_id"
+    t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["event_id"], name: "index_picks_on_event_id"

@@ -1,4 +1,4 @@
-class Admin::TeamsController < ApplicationController
+class Admin::TeamsController < AdminController
   respond_to :json
 
   def index

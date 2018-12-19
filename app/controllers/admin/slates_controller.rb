@@ -1,4 +1,4 @@
-class Admin::SlatesController < ApplicationController
+class Admin::SlatesController < AdminController
   respond_to :json
 
   def index
@@ -18,6 +18,12 @@ class Admin::SlatesController < ApplicationController
     respond_with @slate
   end
 
+  def update
+    @slate = Slate.find(params[:id])
+    @slate.update_attributes(slate_params)
+    respond_with @slate
+  end
+
   def destroy
     @slate = Slate.find(params[:id])
     @slate.destroy
@@ -27,6 +33,6 @@ class Admin::SlatesController < ApplicationController
   private
 
   def slate_params
-    params.require(:slate).permit(:name, :description, :start_time, :type, :team_id)
+    params.require(:slate).permit(:name, :description, :start_time, :type, :team_id, :status)
   end
 end

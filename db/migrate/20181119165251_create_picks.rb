@@ -4,6 +4,7 @@ class CreatePicks < ActiveRecord::Migration[5.2]
       t.references :user, foreign_key: true, index: true
       t.references :selection, foreign_key: true, index: true
       t.references :event, foreign_key: true, index: true
+      t.integer :status, default: 0
       t.timestamps
     end
   end

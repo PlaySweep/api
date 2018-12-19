@@ -1,15 +1,16 @@
 class Slate < ApplicationRecord
-  INACTIVE, PENDING, COMPLETE = 0, 1, 2
-
-  after_update_commit :update_associations
+  INACTIVE, PENDING, STARTED, COMPLETE = 0, 1, 2, 3
 
   belongs_to :team
 
   has_many :events, dependent: :destroy
   has_many :users, through: :events
+  has_many :picks, through: :users
   has_many :cards
 
-  enum status: [ :inactive, :pending, :complete ]
+  enum status: [ :inactive, :pending, :started, :complete ]
+
+  after_update :result_slate
 
   def progress current_user_id
     if users.find_by(id: current_user_id).nil?
@@ -21,17 +22,26 @@ class Slate < ApplicationRecord
     end
   end
 
-  private
-
-  def update_associations
-    update_picks if saved_change_to_status?(to: 'complete')
+  def events_are_completed?
+    events.size == events.where(status: 1).size
   end
 
-  def update_picks
-    events.each do |event|
-      Pick.where(selection_id: event.winner_ids).map(&:win!)
-      Pick.where(selection_id: event.loser_ids).map(&:loss!)
-    end
+  def winner_ids
+    events.map(&:winners).map(&:id)
+  end
+
+  private
+
+  def result_slate
+    send_winning_message and send_losing_message if saved_change_to_status?(to: 'complete') and events_are_completed?
+  end
+
+  def send_winning_message
+    cards.win.each { |card| SendWinningSlateResultMessageJob.perform(card.user_id)}
+  end
+
+  def send_losing_message
+    cards.loss.each { |card| SendLosingSlateResultMessageJob.perform(card.user_id)}
   end
 
 end

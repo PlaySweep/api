@@ -1,4 +1,4 @@
-class Admin::EventsController < ApplicationController
+class Admin::EventsController < AdminController
   respond_to :json
 
   def show
@@ -27,7 +27,12 @@ class Admin::EventsController < ApplicationController
 
   private
 
+  def data_params
+    return params[:event][:data] if params[:event][:data].nil?
+    JSON.parse(params[:event][:data].to_json)
+  end
+
   def event_params
-    params.require(:event).permit(:description, :slate_id, :winner_ids, :order, selections_attributes: [:id, :description, :event_id, :order])
+    params.require(:event).permit(:description, :slate_id, :status, :order, selections_attributes: [:id, :description, :event_id, :order]).merge(data: data_params)
   end
 end
