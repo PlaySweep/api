@@ -14,11 +14,11 @@ class Slate < ApplicationRecord
 
   def progress current_user_id
     if users.find_by(id: current_user_id).nil?
-      :unstarted
+      :new
     elsif users.find_by(id: current_user_id).present? && cards.find_by(user_id: current_user_id).nil?
-      :started
+      :unfinished
     elsif users.find_by(id: current_user_id).present? && cards.find_by(user_id: current_user_id).present?
-      :finished
+      :pending
     end
   end
 
