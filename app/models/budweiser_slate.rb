@@ -1,0 +1,3 @@
+class BudweiserSlate < Slate
+
+end

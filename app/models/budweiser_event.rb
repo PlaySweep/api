@@ -1,0 +1,3 @@
+class BudweiserEvent < Event
+  
+end

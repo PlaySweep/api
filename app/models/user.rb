@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :events, through: :picks
   has_many :cards
   has_many :slates, through: :cards
+  has_many :entries
 
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }

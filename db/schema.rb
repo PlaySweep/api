@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_12_163421) do
+ActiveRecord::Schema.define(version: 2018_12_27_195614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.string "name"
+    t.string "type", default: "Account"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "admins", force: :cascade do |t|
     t.string "username"
@@ -33,21 +40,24 @@ ActiveRecord::Schema.define(version: 2018_12_12_163421) do
     t.index ["user_id"], name: "index_cards_on_user_id"
   end
 
+  create_table "entries", force: :cascade do |t|
+    t.integer "user_id"
+    t.boolean "used", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_entries_on_user_id"
+  end
+
   create_table "events", force: :cascade do |t|
     t.string "description"
     t.integer "status", default: 0
     t.jsonb "data", default: {}
     t.bigint "slate_id"
+    t.string "type", default: "Event"
     t.integer "order"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["slate_id"], name: "index_events_on_slate_id"
-  end
-
-  create_table "leagues", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "picks", force: :cascade do |t|
@@ -75,7 +85,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_163421) do
     t.string "name"
     t.string "description"
     t.datetime "start_time"
-    t.string "type"
+    t.string "type", default: "Slate"
     t.integer "status", default: 0
     t.bigint "team_id"
     t.datetime "created_at", null: false
@@ -94,11 +104,11 @@ ActiveRecord::Schema.define(version: 2018_12_12_163421) do
 
   create_table "teams", force: :cascade do |t|
     t.string "name"
-    t.bigint "league_id"
+    t.bigint "account_id"
     t.string "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["league_id"], name: "index_teams_on_league_id"
+    t.index ["account_id"], name: "index_teams_on_account_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -126,5 +136,5 @@ ActiveRecord::Schema.define(version: 2018_12_12_163421) do
   add_foreign_key "selections", "events"
   add_foreign_key "slates", "teams"
   add_foreign_key "sweeps", "users"
-  add_foreign_key "teams", "leagues"
+  add_foreign_key "teams", "accounts"
 end

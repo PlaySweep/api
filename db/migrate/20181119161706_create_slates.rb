@@ -7,6 +7,7 @@ class CreateSlates < ActiveRecord::Migration[5.2]
       t.string :type
       t.integer :status, default: 0
       t.references :team, foreign_key: true, index: true
+      t.string :type, default: "Slate"
       t.timestamps
     end
   end

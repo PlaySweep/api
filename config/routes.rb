@@ -4,13 +4,15 @@ Rails.application.routes.draw do
       resources :picks, only: [:show, :create]
       resources :slates, only: [:index, :show]
     end
-    resources :leagues, only: [:index]
-    resources :teams, only: [:index, :show]
   end
-  namespace :admin, defaults: { format: :json } do
-    resources :teams, only: [:index, :show] do
-      resources :slates, only: [:index, :show, :create, :update, :destroy] do
-        resources :events, only: [:create, :show, :update]
+  
+  scope module: :admin do
+    namespace :admin, defaults: { format: :json }do
+      resources :leagues, only: [:index]
+      resources :teams, only: [:index, :show] do
+        resources :slates, only: [:index, :show, :create, :update, :destroy] do
+          resources :events, only: [:create, :show, :update]
+        end
       end
     end
   end
