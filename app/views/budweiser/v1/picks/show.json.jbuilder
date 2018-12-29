@@ -1,0 +1,1 @@
+json.pick @pick, partial: 'budweiser/v1/picks/pick_for_member', as: :pick

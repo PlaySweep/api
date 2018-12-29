@@ -1,0 +1,1 @@
+json.user @user, partial: 'budweiser/v1/users/user_for_member', as: :user

@@ -1,7 +1,7 @@
 class Slate < ApplicationRecord
   INACTIVE, PENDING, STARTED, COMPLETE = 0, 1, 2, 3
 
-  belongs_to :team
+  belongs_to :owner
 
   has_many :events, dependent: :destroy
   has_many :users, through: :events

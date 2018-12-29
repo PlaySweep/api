@@ -1,5 +1,3 @@
-class Team < ApplicationRecord
+class Team < Owner
   belongs_to :league, foreign_key: :account_id
-  
-  has_many :slates
 end

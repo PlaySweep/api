@@ -60,6 +60,16 @@ ActiveRecord::Schema.define(version: 2018_12_27_195614) do
     t.index ["slate_id"], name: "index_events_on_slate_id"
   end
 
+  create_table "owners", force: :cascade do |t|
+    t.string "name"
+    t.bigint "account_id"
+    t.string "image"
+    t.string "type", default: "Owner"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_owners_on_account_id"
+  end
+
   create_table "picks", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "selection_id"
@@ -87,10 +97,10 @@ ActiveRecord::Schema.define(version: 2018_12_27_195614) do
     t.datetime "start_time"
     t.string "type", default: "Slate"
     t.integer "status", default: 0
-    t.bigint "team_id"
+    t.bigint "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["team_id"], name: "index_slates_on_team_id"
+    t.index ["owner_id"], name: "index_slates_on_owner_id"
   end
 
   create_table "sweeps", force: :cascade do |t|
@@ -100,15 +110,6 @@ ActiveRecord::Schema.define(version: 2018_12_27_195614) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_sweeps_on_user_id"
-  end
-
-  create_table "teams", force: :cascade do |t|
-    t.string "name"
-    t.bigint "account_id"
-    t.string "image"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_teams_on_account_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -130,11 +131,11 @@ ActiveRecord::Schema.define(version: 2018_12_27_195614) do
   add_foreign_key "cards", "slates"
   add_foreign_key "cards", "users"
   add_foreign_key "events", "slates"
+  add_foreign_key "owners", "accounts"
   add_foreign_key "picks", "events"
   add_foreign_key "picks", "selections"
   add_foreign_key "picks", "users"
   add_foreign_key "selections", "events"
-  add_foreign_key "slates", "teams"
+  add_foreign_key "slates", "owners"
   add_foreign_key "sweeps", "users"
-  add_foreign_key "teams", "accounts"
 end
