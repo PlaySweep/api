@@ -1,5 +1,6 @@
 class User < ApplicationRecord
 
+  has_one :preference
   has_many :sweeps
   has_many :picks
   has_many :events, through: :picks

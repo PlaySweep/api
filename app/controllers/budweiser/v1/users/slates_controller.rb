@@ -1,13 +1,13 @@
-class Budweiser::V1::SlatesController < ApplicationController
+class Budweiser::V1::Users::SlatesController < ApplicationController
   respond_to :json
 
   def index
-    @slates = BudweiserSlate.for_owner(current_user.preference.owner_id).pending
+    @slates = current_user.slates.pending
     respond_with @slates
   end
 
   def show
-    @slate = Slate.find_by(id: params[:id])
+    @slate = current_user.slates.find_by(id: params[:id])
     if @slate
       respond_with @slate
     else

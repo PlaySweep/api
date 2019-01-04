@@ -8,12 +8,11 @@ class Budweiser::V1::UsersController < ApplicationController
 
   def show
     @user = User.find_by(facebook_uuid: params[:facebook_uuid])
-    session[:facebook_uuid] = params[:facebook_uuid] and respond_with @user
+    respond_with @user
   end
 
   def create
     @user = User.create(user_params)
-    session[:facebook_uuid] = @user.facebook_uuid
     respond_with @user
   end
 
