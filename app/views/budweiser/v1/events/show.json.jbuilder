@@ -1,1 +1,0 @@
-json.event @event, partial: 'budweiser/v1/events/event', as: :event

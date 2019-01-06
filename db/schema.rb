@@ -130,6 +130,7 @@ ActiveRecord::Schema.define(version: 2019_01_04_160318) do
     t.string "avatar"
     t.string "gender"
     t.integer "timezone"
+    t.string "type", default: "User"
     t.jsonb "data", default: {}
     t.boolean "active", default: true
     t.datetime "created_at", null: false

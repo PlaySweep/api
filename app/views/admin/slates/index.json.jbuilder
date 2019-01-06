@@ -1,0 +1,1 @@
+json.slates @slates, partial: 'v1/budweiser/slates/slate_for_admin', as: :slate

@@ -1,13 +1,14 @@
 Rails.application.routes.draw do
-  scope module: :budweiser do
     namespace :v1, defaults: { format: :json } do
-      scope module: :users do
-        resources :users, only: [:index, :show, :create], param: :facebook_uuid do
-          resources :picks, only: [:show, :create]
-          resources :slates, only: [:index, :show]
+      namespace :budweiser do
+        scope module: :users do
+          resources :users, only: [:index, :show, :create], param: :facebook_uuid do
+            resources :picks, only: [:show, :create]
+            resources :slates, only: [:index, :show]
+          end
         end
+        resources :slates, only: [:index, :show]
       end
-      resources :slates, only: [:index, :show]
     end
     
     namespace :admin, defaults: { format: :json } do
@@ -18,5 +19,4 @@ Rails.application.routes.draw do
         end
       end
     end
-  end
 end

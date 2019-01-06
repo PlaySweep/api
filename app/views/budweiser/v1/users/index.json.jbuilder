@@ -1,1 +1,0 @@
-json.users @users, partial: 'budweiser/v1/users/user_for_collection', as: :user

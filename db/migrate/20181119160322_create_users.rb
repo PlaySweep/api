@@ -10,6 +10,7 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.string :avatar
       t.string :gender
       t.integer :timezone
+      t.string :type, default: "User"
       t.jsonb :data, default: {}
       t.boolean :active, default: true
       t.timestamps
