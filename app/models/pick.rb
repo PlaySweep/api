@@ -7,7 +7,7 @@ class Pick < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
-  after_create :is_slate_ready?
+  # after_create :is_slate_ready?
 
   def current_slate
     event.slate
@@ -15,9 +15,9 @@ class Pick < ApplicationRecord
 
   private
 
-  def is_slate_ready?
-    if current_slate.pending?
-      user.cards.create(slate_id: current_slate.id) if current_slate.events.incomplete.size == user.events.incomplete.for_slate(current_slate.id).size
-    end
-  end
+  # def is_slate_ready?
+  #   if current_slate.pending?
+  #     user.cards.create(slate_id: current_slate.id) if current_slate.events.incomplete.size == user.events.incomplete.for_slate(current_slate.id).size
+  #   end
+  # end
 end

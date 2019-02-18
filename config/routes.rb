@@ -8,6 +8,8 @@ Rails.application.routes.draw do
           end
         end
         resources :slates, only: [:index, :show]
+        resources :cards, only: [:create]
+        get 'fetch_card_for_slate', to: 'cards#fetch_card_for_slate'
       end
     end
     

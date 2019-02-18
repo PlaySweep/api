@@ -1,4 +1,4 @@
-class Budweiser::Admin::TeamsController < AdminController
+class Admin::TeamsController < AdminController
   respond_to :json
 
   def index

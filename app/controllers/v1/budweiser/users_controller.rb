@@ -27,7 +27,6 @@ class V1::Budweiser::UsersController < ApplicationController
 
   def set_preference
     user = BudweiserUser.find_by(facebook_uuid: params[:facebook_uuid])
-    # BudweiserPreference.create(user_id: user.id, owner_id: params[:owner_id])
-    BudweiserPreference.find_or_create(user_id: user.id, owner_id: 1)
+    BudweiserPreference.create(user_id: user.id, owner_id: params[:owner_id])
   end
 end

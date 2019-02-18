@@ -5,4 +5,6 @@ class Card < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
+  scope :for_slate, ->(slate_id) { where(slate_id: slate_id) } 
+
 end

@@ -1,4 +1,4 @@
-class Budweiser::Admin::EventsController < AdminController
+class Admin::EventsController < AdminController
   respond_to :json
 
   def show
