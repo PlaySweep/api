@@ -9,6 +9,8 @@ class Pick < ApplicationRecord
 
   # after_create :is_slate_ready?
 
+  scope :for_slate, ->(slate_id) { joins(:event).where('events.slate_id = ?', slate_id) }
+
   def current_slate
     event.slate
   end

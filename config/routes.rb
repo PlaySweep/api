@@ -3,7 +3,7 @@ Rails.application.routes.draw do
       namespace :budweiser do
         scope module: :users do
           resources :users, only: [:index, :show, :create], param: :facebook_uuid do
-            resources :picks, only: [:show, :create]
+            resources :picks, only: [:index, :show, :create, :update]
             resources :slates, only: [:index, :show]
           end
         end
