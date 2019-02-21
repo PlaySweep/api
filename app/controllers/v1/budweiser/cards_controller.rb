@@ -2,7 +2,7 @@ class V1::Budweiser::CardsController < ApplicationController
   respond_to :json
 
   def fetch_card_for_slate
-    @card = Card.for_slate(params[:slate_id])
+    @card = current_user.cards.for_slate(params[:slate_id])
     respond_with @card
   end
 
