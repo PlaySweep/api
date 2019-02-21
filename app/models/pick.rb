@@ -7,19 +7,10 @@ class Pick < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
-  # after_create :is_slate_ready?
 
   scope :for_slate, ->(slate_id) { joins(:event).where('events.slate_id = ?', slate_id) }
 
   def current_slate
     event.slate
   end
-
-  private
-
-  # def is_slate_ready?
-  #   if current_slate.pending?
-  #     user.cards.create(slate_id: current_slate.id) if current_slate.events.incomplete.size == user.events.incomplete.for_slate(current_slate.id).size
-  #   end
-  # end
 end

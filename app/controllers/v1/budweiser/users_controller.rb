@@ -20,7 +20,12 @@ class V1::Budweiser::UsersController < ApplicationController
   end
 
   def update
-    @user = current_user.update_attributes(user_params)
+    @user = BudweiserUser.find_by(facebook_uuid: params[:facebook_uuid])
+    @user.update_attributes(user_params)
+    message = 
+    FacebookMessaging::Standard.deliver(@user, "Thanks! You’ll never have to do that again, #{@user.first_name}!", "SILENT_PUSH")
+    FacebookMessaging::Standard.deliver(@user, "So here's how it works: \n1. I’ll send you 3 questions every day the Mets are on the field 🙌\n2. Guess the outcome of all 3 questions right and earn a 'Sweep' 💥\n3. A Sweep enters you into a raffle every single day to win prizes 🎟\n4. Get notified when you win 🎉", "SILENT_PUSH")
+    FacebookMessaging::TextButton.deliver(@user, "Play Now ⚾️", "Tap below to get started 👇", "SILENT_PUSH")
     respond_with @user
   end
 

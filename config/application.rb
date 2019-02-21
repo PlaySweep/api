@@ -10,6 +10,7 @@ require "action_controller/railtie"
 require "action_mailer/railtie"
 require "action_view/railtie"
 require "action_cable/engine"
+require 'facebook/messenger'
 # require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
@@ -31,6 +32,12 @@ module SweepApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.time_zone = 'Eastern Time (US & Canada)'
+    config.active_job.queue_adapter = :resque
+    config.autoload_paths << Rails.root.join('jobs')
+    config.autoload_paths << Rails.root.join('lib')
+    config.autoload_paths << Rails.root.join('lib/analytics')
+
     config.middleware.use ::Rack::MethodOverride
     config.middleware.insert_before 0, Rack::Cors, debug: true, logger: (-> { Rails.logger }) do
       allow do
