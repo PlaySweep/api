@@ -19,10 +19,15 @@ class V1::Budweiser::UsersController < ApplicationController
     respond_with @user
   end
 
+  def update
+    @user = current_user.update_attributes(user_params)
+    respond_with @user
+  end
+
   private
 
   def user_params
-    params.require(:user).permit(:facebook_uuid, :first_name, :last_name)
+    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :confirmed)
   end
 
   def set_preference
