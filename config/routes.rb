@@ -5,6 +5,7 @@ Rails.application.routes.draw do
           resources :users, only: [:index, :show, :create, :update], param: :facebook_uuid do
             resources :picks, only: [:index, :show, :create, :update]
             resources :slates, only: [:index, :show]
+            get 'send_slate_confirmation', to: 'users#send_slate_confirmation'
           end
         end
         resources :slates, only: [:index, :show]

@@ -29,6 +29,13 @@ class V1::Budweiser::UsersController < ApplicationController
     respond_with @user
   end
 
+  def send_slate_confirmation
+    @user = BudweiserUser.find_by(facebook_uuid: params[:user_facebook_uuid])
+    FacebookMessaging::Standard.deliver(@user, "Your picks are in #{@user.first_name}! We’ll let you know how you did as soon as the morning after the game rolls around 🌤", "SILENT_PUSH") if @user
+    @user.preference.update_attributes(slate_messaging: false) unless @user.slates.size > 1
+    respond_with @user
+  end
+
   private
 
   def user_params
