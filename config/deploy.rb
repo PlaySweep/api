@@ -8,6 +8,8 @@ set :port, '22'
 set :migration_role, :app
 set :assets_roles, [:web, :app]
 
+set :stages, %w{beta production}
+
 set :rvm_ruby_version, 'ruby-2.4.1@default'      # Defaults to: 'default'
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads', 'node_modules'

@@ -78,8 +78,15 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
+beta:
+  <<: *default
+  database: sweep_api_beta
+  username: sweep_api
+  password: <%= ENV['SWEEP_API_DATABASE_PASSWORD'] %>
+
 production:
   <<: *default
   database: sweep_api_production
   username: sweep_api
   password: <%= ENV['SWEEP_API_DATABASE_PASSWORD'] %>
+
