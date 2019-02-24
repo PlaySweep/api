@@ -2,7 +2,6 @@ class V1::Budweiser::UsersController < ApplicationController
   respond_to :json
 
   skip_before_action :authenticate!, only: :create
-  after_action :set_preference, only: :create, if: -> { params[:owner_id] }
 
   def index
     @users = BudweiserUser.all
@@ -16,6 +15,9 @@ class V1::Budweiser::UsersController < ApplicationController
 
   def create
     @user = BudweiserUser.create(user_params)
+    if @user
+      BudweiserPreference.create(user_id: @user.id, owner_id: 1)
+    end
     respond_with @user
   end
 
@@ -34,7 +36,7 @@ class V1::Budweiser::UsersController < ApplicationController
     FacebookMessaging::Standard.deliver(@user, "Congratulations on completing your first Budweiser Sweep Card #{@user.first_name}! We’ll keep you updated on your status as the morning after the game rolls around 🌤", "SILENT_PUSH") if @user
     FacebookMessaging::Standard.deliver(@user, "Also, from now on, you can simply ask me to do things and I'll respond accordingly - for example: \n\n- I'd like to invite some friends  (but remember they need to be 21+ 😉)\n- What's my status?\n- Any more games available?", "SILENT_PUSH") if @user
     FacebookMessaging::Standard.deliver(@user, "You can even ask me for a list of my commands if you ever feel the need. You'll see that I'm pretty smart 😎", "SILENT_PUSH") if @user
-    @user.preference.update_attributes(slate_messaging: false) unless @user.slates.size > 1
+    @user.preference.update_attributes(slate_messaging: false)
     respond_with @user
   end
 
@@ -42,10 +44,5 @@ class V1::Budweiser::UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :confirmed)
-  end
-
-  def set_preference
-    user = BudweiserUser.find_by(facebook_uuid: params[:facebook_uuid])
-    BudweiserPreference.create(user_id: user.id, owner_id: params[:owner_id])
   end
 end

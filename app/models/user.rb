@@ -1,12 +1,12 @@
 class User < ApplicationRecord
 
-  has_one :preference
-  has_many :sweeps
-  has_many :picks
+  has_one :preference, dependent: :destroy
+  has_many :sweeps, dependent: :destroy
+  has_many :picks, dependent: :destroy
   has_many :events, through: :picks
-  has_many :cards
+  has_many :cards, dependent: :destroy
   has_many :slates, through: :cards
-  has_many :entries
+  has_many :entries, dependent: :destroy
 
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
