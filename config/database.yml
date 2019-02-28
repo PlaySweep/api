@@ -81,8 +81,6 @@ test:
 beta:
   <<: *default
   database: sweep_api_beta
-  username: sweep_api
-  password: <%= ENV['SWEEP_API_DATABASE_PASSWORD'] %>
 
 production:
   <<: *default

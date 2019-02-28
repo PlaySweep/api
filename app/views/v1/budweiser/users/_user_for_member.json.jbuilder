@@ -4,6 +4,9 @@ json.first_name user.first_name
 json.last_name user.last_name
 json.full_name user.full_name
 json.handle user.handle
+json.email user.email
+json.dob user.dob
+json.zipcode user.zipcode
 json.playing_streak user.playing_streak
 json.confirmed user.confirmed
 json.preference do
