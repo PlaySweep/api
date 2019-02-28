@@ -10,6 +10,7 @@ json.zipcode user.zipcode
 json.playing_streak user.playing_streak
 json.confirmed user.confirmed
 json.preference do
-  json.owner_id user.preference.owner_id
+  json.id user.preference.id
+  json.owner_id user.preference.try(:owner_id)
   json.slate_messaging user.preference.slate_messaging
 end

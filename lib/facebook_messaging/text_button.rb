@@ -28,7 +28,7 @@ module FacebookMessaging
               }
             }
           },
-          message_type: "NON_PROMOTIONAL_SUBSCRIPTION",
+          message_type: "UPDATE",
           notification_type: notification_type
         }, access_token: ENV['ACCESS_TOKEN'])
       rescue Facebook::Messenger::FacebookError => e

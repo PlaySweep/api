@@ -1,17 +1,18 @@
 require 'facebook/messenger'
 
 module FacebookMessaging
-  class Standard
+  class QuickReply
     include Facebook::Messenger
 
-    def self.deliver user, message, notification_type="REGULAR"
+    def self.deliver user, message, quick_replies, notification_type="REGULAR"
       begin
         Bot.deliver({
           recipient: {
             id: user.facebook_uuid
           },
           message: {
-            text: message
+            text: message,
+            quick_replies: quick_replies
           },
           message_type: "UPDATE",
           notification_type: notification_type

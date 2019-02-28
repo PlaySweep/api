@@ -16,18 +16,20 @@ class V1::Budweiser::UsersController < ApplicationController
   def create
     @user = BudweiserUser.create(user_params)
     if @user
-      BudweiserPreference.create(user_id: @user.id, owner_id: 1)
+      BudweiserPreference.create(user_id: @user.id)
     end
     respond_with @user
   end
 
   def update
+    #TODO refactor actual teams and ids properly for production
     @user = BudweiserUser.find_by(facebook_uuid: params[:facebook_uuid])
     @user.update_attributes(user_params)
-    # message = 
-    # FacebookMessaging::Standard.deliver(@user, "Thanks! You’ll never have to do that again, #{@user.first_name}!", "SILENT_PUSH")
-    # FacebookMessaging::Standard.deliver(@user, "So here's how it works: \n1. I’ll send you 3 questions for every time the Cardinals are on the field 🙌\n2. Answer 3 questions right and earn a 'Sweep' 💥\n3. A Sweep enters you into a drawing every single day to win prizes 🎟\n4. Get notified when you win and when it's time to answer more questions 🎉", "SILENT_PUSH")
-    # FacebookMessaging::TextButton.deliver(@user, "Play Now ⚾️", "Tap below to get started 👇", "SILENT_PUSH")
+    if @user.preference.owner_id
+      ConfirmAccountNotificationJob.perform_later(@user.id)
+    else
+      PromptTeamSelectionJob.perform_later(@user.id)
+    end
     respond_with @user
   end
 

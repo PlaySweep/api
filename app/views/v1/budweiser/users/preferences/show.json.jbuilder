@@ -1,0 +1,1 @@
+json.preference @preference, partial: 'v1/budweiser/users/preferences/preference', as: :preference
