@@ -11,6 +11,12 @@ class V1::Budweiser::PreferencesController < ApplicationController
     respond_with @preference
   end
 
+  def set_owner
+    team = Team.find_by(name: params[:team])
+    @preference = current_user.preference.update_attributes(owner_id: team.id)
+    respond_with @preference
+  end
+
   private
 
   def preference_params

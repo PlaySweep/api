@@ -11,6 +11,11 @@ Rails.application.routes.draw do
         end
         resources :slates, only: [:index, :show]
         resources :cards, only: [:create]
+        resources :preferences, only: [:index, :show] do
+          member do
+            get 'set_owner', to: 'preferences#set_owner'
+          end
+        end
         get 'fetch_card_for_slate', to: 'cards#fetch_card_for_slate'
       end
     end
