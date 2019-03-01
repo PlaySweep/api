@@ -1,8 +1,8 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.11.0"
 
-set :application, "sweep_api_v2"
-set :repo_url, "git@github.com:ryanwaits/#{fetch :application}.git"
+set :application, "sweep_api"
+set :repo_url, "git@github.com:ryanwaits/#{fetch :application}_v2.git"
 set :forward_agent, true
 set :port, '22'  
 set :migration_role, :app
