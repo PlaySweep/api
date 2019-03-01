@@ -41,8 +41,14 @@ class Event < ApplicationRecord
   end
 
   def result_card
-    if saved_change_to_status?(to: 'complete') and slate.completed?
-     cards.each { |card| card.user.won_slate?(slate.id) ? card.win! : card.loss! }
+    if saved_change_to_status?(to: 'complete') && slate.events.ordered.last.id == id
+     cards.each do |card|
+      if card.user.won_slate?(slate.id)
+        card.win!
+      else
+        card.loss!
+      end
+     end
     end
   end
 

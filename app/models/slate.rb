@@ -37,11 +37,11 @@ class Slate < ApplicationRecord
   end
 
   def send_winning_message
-    cards.win.each { |card| SendWinningSlateResultMessageJob.perform(card.user_id)}
+    cards.win.each { |card| SendWinningSlateMessageJob.perform_later(card.user_id)}
   end
 
   def send_losing_message
-    cards.loss.each { |card| SendLosingSlateResultMessageJob.perform(card.user_id)}
+    cards.loss.each { |card| SendLosingSlateMessageJob.perform_later(card.user_id)}
   end
 
 end
