@@ -33,6 +33,6 @@ class Admin::SlatesController < AdminController
   private
 
   def slate_params
-    params.require(:slate).permit(:name, :description, :start_time, :type, :owner_id, :status)
+    params.require(:slate).permit(:name, :description, :start_time, :type, :owner_id, :status, :local, :opponent_id, :field, :pitcher, :opponent_pitcher, :era, :opponent_era)
   end
 end

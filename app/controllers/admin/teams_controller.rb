@@ -2,7 +2,7 @@ class Admin::TeamsController < AdminController
   respond_to :json
 
   def index
-    @teams = Team.all
+    @teams = Team.all.ordered
     respond_with @teams
   end
 

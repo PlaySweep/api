@@ -30,6 +30,11 @@ class Slate < ApplicationRecord
     events.map(&:winners).map(&:id)
   end
 
+  def opponent
+    return nil unless opponent_id
+    Team.find_by(id: opponent_id)
+  end
+
   private
 
   def result_slate
