@@ -8,7 +8,7 @@ set :tmp_dir, '/home/deploy/tmp'
 set :branch, 'master'
 set :rails_env, 'production'
 
-set :linked_files, %w{config/database.yml}
+set :linked_files, %w{config/database.yml config/master.key}
 
 role :resque_worker, "sweep"
 role :resque_scheduler, "sweep"
