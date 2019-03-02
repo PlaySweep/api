@@ -1,4 +1,4 @@
-class V1::Budweiser::CardsController < ApplicationController
+class V1::Budweiser::CardsController < BudweiserController
   respond_to :json
 
   def fetch_card_for_slate

@@ -1,4 +1,4 @@
-class V1::Budweiser::UsersController < ApplicationController
+class V1::Budweiser::UsersController < BudweiserController
   respond_to :json
 
   skip_before_action :authenticate!, only: :create

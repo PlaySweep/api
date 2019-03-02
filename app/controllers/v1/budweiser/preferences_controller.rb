@@ -1,4 +1,4 @@
-class V1::Budweiser::PreferencesController < ApplicationController
+class V1::Budweiser::PreferencesController < BudweiserController
   respond_to :json
 
   def show

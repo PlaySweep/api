@@ -1,4 +1,4 @@
-class V1::Budweiser::PicksController < ApplicationController
+class V1::Budweiser::PicksController < BudweiserController
   respond_to :json
 
   def index

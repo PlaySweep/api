@@ -1,4 +1,4 @@
-class V1::Budweiser::SlatesController < ApplicationController
+class V1::Budweiser::SlatesController < BudweiserController
   respond_to :json
 
   def index
