@@ -1,13 +1,12 @@
 Rails.application.routes.draw do
     namespace :v1, defaults: { format: :json } do
       namespace :budweiser do
-        scope module: :users do
           resources :users, only: [:index, :show, :create, :update], param: :facebook_uuid do
-            resources :picks, only: [:index, :show, :create, :update]
-            resources :slates, only: [:index, :show]
-            get 'send_slate_confirmation', to: 'users#send_slate_confirmation'
-            resources :preferences, only: [:show, :update]
-          end
+            scope module: :users do
+              resources :picks, only: [:index, :show, :create, :update]
+              resources :slates, only: [:index, :show]
+              resources :preferences, only: [:show, :update]
+            end
         end
         resources :slates, only: [:index, :show]
         resources :cards, only: [:create]
