@@ -2,7 +2,7 @@
 
 server 'sweep', user: 'ubuntu', roles: %w{app db web resque_worker resque_scheduler }
 set :deploy_to, "/var/www/sweep_api"
-after "deploy:restart", "resque:restart"
+after "deploy:restart", "resque:restart", "resque:scheduler:start", "resque:work"
 set :tmp_dir, '/home/deploy/tmp'
 
 set :branch, 'master'
