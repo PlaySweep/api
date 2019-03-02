@@ -2,8 +2,11 @@ class PromptTeamSelectionJob < ApplicationJob
   @queue = :prompt_team_selection_job
 
   def perform user_id
+    puts "ID found: #{user_id}"
     user = BudweiserUser.find(user_id)
+    puts "User found: #{user.inspect}"
     available_teams = Team.all
+    puts "Available teams: #{available_teams.inspect}"
     quick_replies = available_teams.map do |team, i|
       {
         "content_type": "text",

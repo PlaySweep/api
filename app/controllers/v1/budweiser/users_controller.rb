@@ -22,7 +22,7 @@ class V1::Budweiser::UsersController < BudweiserController
   end
 
   def update
-    #TODO refactor actual teams and ids properly for production
+    #TODO refactor this method so it doesnt run every time the user gets updated
     @user = BudweiserUser.find_by(facebook_uuid: params[:facebook_uuid])
     @user.update_attributes(user_params)
     if @user.preference.owner_id
