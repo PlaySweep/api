@@ -43,7 +43,10 @@ class Slate < ApplicationRecord
 
   def send_winning_message
     #TODO create a sweep record
-    cards.win.each { |card| SendWinningSlateMessageJob.perform_later(card.user_id)}
+    cards.win.each do |card|
+      SendWinningSlateMessageJob.perform_later(card.user_id)
+      card.user.sweeps.create(pick_ids: card.user.picks.for_slate(id).map(&:id))
+    end
   end
 
   def send_losing_message

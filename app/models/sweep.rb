@@ -7,4 +7,8 @@ class Sweep < ApplicationRecord
   def picks
     Pick.where(id: pick_ids)
   end
+
+  def selections
+    picks.map(&:selection)
+  end
 end

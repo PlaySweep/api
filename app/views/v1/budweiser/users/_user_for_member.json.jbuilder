@@ -13,5 +13,6 @@ json.preference do
   json.id user.preference.id
   json.owner_id user.preference.try(:owner_id)
   json.team_name user.preference.try(:team).try(:name)
+  json.team_entry_image user.preference.try(:team).try(:entry_image)
   json.slate_messaging user.preference.slate_messaging
 end
