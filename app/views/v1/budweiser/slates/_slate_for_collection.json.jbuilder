@@ -13,6 +13,6 @@ json.team do
   json.field slate.field
 end
 json.opponent do
-  json.id slate.opponent.id
-  json.image slate.opponent.image
+  json.id slate.try(:opponent).try(:id)
+  json.image slate.try(:opponent).try(:image)
 end if slate.opponent

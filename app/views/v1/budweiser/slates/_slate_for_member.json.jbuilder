@@ -15,8 +15,8 @@ json.team do
   json.era slate.era
 end
 json.opponent do
-  json.id slate.opponent.id
-  json.image slate.opponent.image
-  json.pitcher slate.opponent_pitcher
-  json.era slate.opponent_era
-end
+  json.id slate.try(:opponent).try(:id)
+  json.image slate.try(:opponent).try(:image)
+  json.pitcher slate.try(:opponent_pitcher)
+  json.era slate.try(:opponent_era)
+end if slate.opponent
