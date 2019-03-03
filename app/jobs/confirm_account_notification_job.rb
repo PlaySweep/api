@@ -1,4 +1,4 @@
-class ConfirmAccountNotificationJob < ApplicationJob
+class ConfirmAccountNotificationJob < BudweiserJob
   @queue = :confirm_account_notification_job
 
   def perform user_id

@@ -1,4 +1,4 @@
-class PromptTeamSelectionJob < ApplicationJob
+class PromptTeamSelectionJob < BudweiserJob
   @queue = :prompt_team_selection_job
 
   def perform user_id
