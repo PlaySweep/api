@@ -43,6 +43,7 @@ gem 'facebook-messenger'
 gem 'migration_data'
 
 gem 'apartment'
+gem 'apartment-activejob'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -64,6 +65,7 @@ group :development do
   gem 'capistrano-nc', '~> 0.2'
   gem 'capistrano-rails-console', require: false
   gem "capistrano-resque", "~> 0.2.2", require: false
+  gem 'capistrano-rake', require: false
 end
 
 
