@@ -9,6 +9,7 @@ json.local slate.local
 json.team do
   json.id slate.team.id
   json.image slate.team.image
+  json.local_image slate.team.local_image
   json.field slate.field
 end
 json.opponent do
