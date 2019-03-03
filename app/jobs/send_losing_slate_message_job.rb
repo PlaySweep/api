@@ -1,4 +1,4 @@
-class Budweiser::SendLosingSlateMessageJob < BudweiserJob
+class SendLosingSlateMessageJob < BudweiserJob
   @queue = :send_losing_slate_message_job
 
   def perform user_id

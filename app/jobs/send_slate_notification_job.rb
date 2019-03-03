@@ -1,4 +1,4 @@
-class Budweiser::SendSlateNotificationJob < BudweiserJob
+class SendSlateNotificationJob < BudweiserJob
   @queue = :send_slate_notification_job
 
   def perform user_id, first_time_user
