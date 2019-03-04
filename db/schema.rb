@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_03_211930) do
+ActiveRecord::Schema.define(version: 2019_03_04_045245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -144,6 +144,7 @@ ActiveRecord::Schema.define(version: 2019_03_03_211930) do
     t.string "profile_pic"
     t.string "zipcode"
     t.date "dob"
+    t.boolean "locked", default: false
   end
 
   add_foreign_key "cards", "slates"

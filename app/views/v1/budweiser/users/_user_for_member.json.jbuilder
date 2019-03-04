@@ -9,6 +9,7 @@ json.dob user.dob
 json.zipcode user.zipcode
 json.playing_streak user.playing_streak
 json.confirmed user.confirmed
+json.locked user.locked
 json.preference do
   json.id user.preference.id
   json.owner_id user.preference.try(:owner_id)
