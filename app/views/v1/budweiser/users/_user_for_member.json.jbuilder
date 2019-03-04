@@ -7,7 +7,7 @@ json.handle user.handle
 json.email user.email
 json.dob user.dob
 json.zipcode user.zipcode
-json.playing_streak user.playing_streak
+# json.playing_streak user.playing_streak
 json.confirmed user.confirmed
 json.locked user.locked
 json.preference do

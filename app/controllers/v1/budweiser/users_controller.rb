@@ -25,10 +25,12 @@ class V1::Budweiser::UsersController < BudweiserController
     #TODO refactor this method so it doesnt run every time the user gets updated
     @user = BudweiserUser.find_by(facebook_uuid: params[:facebook_uuid])
     @user.update_attributes(user_params)
-    if @user.preference.owner_id
-      ConfirmAccountNotificationJob.perform_later(@user.id)
-    else
-      PromptTeamSelectionJob.perform_later(@user.id)
+    unless @user.locked
+      if @user.preference.owner_id
+        ConfirmAccountNotificationJob.perform_later(@user.id)
+      else
+        PromptTeamSelectionJob.perform_later(@user.id)
+      end
     end
     respond_with @user
   end
