@@ -6,6 +6,7 @@ json.event_size slate.events.size
 json.status slate.status
 json.start_time slate.start_time
 json.local slate.local
+json.prizing_category slate.prizing_category
 json.team do
   json.id slate.team.id
   json.image slate.team.image
