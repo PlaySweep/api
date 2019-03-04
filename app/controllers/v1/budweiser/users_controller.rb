@@ -36,6 +36,6 @@ class V1::Budweiser::UsersController < BudweiserController
   private
 
   def user_params
-    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed)
+    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed, :locked)
   end
 end
