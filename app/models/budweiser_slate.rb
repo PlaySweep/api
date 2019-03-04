@@ -10,6 +10,7 @@ class BudweiserSlate < Slate
       opponent_pitcher: [:string, default: nil],
       pitcher: [:string, default: nil],
       era: [:string, default: nil],
-      opponent_era: [:string, default: nil]
+      opponent_era: [:string, default: nil],
+      prizing_category: [:string, default: nil]
 
 end

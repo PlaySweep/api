@@ -32,7 +32,12 @@ class Admin::SlatesController < AdminController
 
   private
 
+  def data_params
+    return params[:slate][:data] if params[:slate][:data].nil?
+    JSON.parse(params[:slate][:data].to_json)
+  end
+
   def slate_params
-    params.require(:slate).permit(:name, :description, :start_time, :type, :owner_id, :status, :local, :opponent_id, :field, :pitcher, :opponent_pitcher, :era, :opponent_era)
+    params.require(:slate).permit(:name, :description, :start_time, :type, :owner_id, :status).merge(data: data_params)
   end
 end
