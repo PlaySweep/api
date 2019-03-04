@@ -2,8 +2,8 @@ class Admin::TeamsController < AdminController
   respond_to :json
 
   def index
-    @teams = Team.ordered.sponsored if params[:sponsored]
     @teams = Team.ordered
+    @teams = @teams.sponsored if params[:sponsored]
     respond_with @teams
   end
 
