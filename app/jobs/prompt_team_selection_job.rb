@@ -5,7 +5,7 @@ class PromptTeamSelectionJob < BudweiserJob
     puts "ID found: #{user_id}"
     user = BudweiserUser.find(user_id)
     puts "User found: #{user.inspect}"
-    available_teams = Team.all
+    available_teams = Team.ordered.sponsored
     puts "Available teams: #{available_teams.inspect}"
     quick_replies = available_teams.map do |team, i|
       {
