@@ -19,9 +19,9 @@ class Pick < ApplicationRecord
   def send_slate_notification
     if event.slate.progress(user_id) == :complete
       if user.cards.size > 1
-        SendSlateNotificationJob.perform_later(user_id, false)
+        SendSlateNotificationJob.perform_later(user_id)
       else
-        SendSlateNotificationJob.perform_later(user_id, true)
+        SendFirstSlateNotificationJob.perform_later(user_id)
       end
     end
   end
