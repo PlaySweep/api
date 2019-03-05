@@ -10,8 +10,6 @@ class Slate < ApplicationRecord
 
   enum status: [ :inactive, :pending, :started, :complete ]
 
-  after_update :result_slate
-
   def progress current_user_id
     if users.find_by(id: current_user_id).present? && cards.find_by(user_id: current_user_id).user.picks.where(event_id: [events.map(&:id)]).size == events.size
       :complete
@@ -33,24 +31,6 @@ class Slate < ApplicationRecord
   def opponent
     return nil unless opponent_id
     Team.find_by(id: opponent_id)
-  end
-
-  private
-
-  def result_slate
-    send_winning_message and send_losing_message if saved_change_to_status?(to: 'complete') and events_are_completed?
-  end
-
-  def send_winning_message
-    #TODO create a sweep record
-    cards.win.each do |card|
-      SendWinningSlateMessageJob.perform_later(card.user_id)
-      card.user.sweeps.create(date: DateTime.current, pick_ids: card.user.picks.for_slate(id).map(&:id))
-    end
-  end
-
-  def send_losing_message
-    cards.loss.each { |card| SendLosingSlateMessageJob.perform_later(card.user_id)}
   end
 
 end
