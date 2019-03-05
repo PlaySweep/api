@@ -11,7 +11,9 @@ class Slate < ApplicationRecord
   enum status: [ :inactive, :pending, :started, :complete ]
 
   def progress current_user_id
-    if users.find_by(id: current_user_id).present? && cards.find_by(user_id: current_user_id).user.picks.where(event_id: [events.map(&:id)]).size == events.size
+    if started?
+      :started
+    elsif users.find_by(id: current_user_id).present? && cards.find_by(user_id: current_user_id).user.picks.where(event_id: [events.map(&:id)]).size == events.size
       :complete
     elsif users.find_by(id: current_user_id).present? && cards.find_by(user_id: current_user_id).user.picks.where(event_id: [events.map(&:id)]).size != events.size
       :unfinished
