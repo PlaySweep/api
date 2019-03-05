@@ -16,26 +16,4 @@ class BudweiserSlate < Slate
       opponent_era: [:string, default: nil],
       prizing_category: [:string, default: nil]
 
-  private
-
-  def result_slate
-    send_winning_message and send_losing_message if saved_change_to_status?(to: 'complete') and events_are_completed?
-  end
-
-  def change_status
-    StartSlateJob.set(wait_until: start_time).perform_later(id) if saved_change_to_status?(to: 'pending')
-  end
-
-  def send_winning_message
-    #TODO create a sweep record
-    cards.win.each do |card|
-      SendWinningSlateMessageJob.perform_later(card.user_id)
-      card.user.sweeps.create(date: DateTime.current, pick_ids: card.user.picks.for_slate(id).map(&:id))
-    end
-  end
-
-  def send_losing_message
-    cards.loss.each { |card| SendLosingSlateMessageJob.perform_later(card.user_id)}
-  end
-
 end
