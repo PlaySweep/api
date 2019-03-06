@@ -17,7 +17,7 @@ class V1::Budweiser::UsersController < BudweiserController
     @user = BudweiserUser.create(user_params)
     if @user
       BudweiserPreference.create(user_id: @user.id)
-      Analytics::Budweiser::User.new(@user).new_user
+      TrackNewUserJob.perform_later(@user.id)
     end
     respond_with @user
   end
@@ -32,7 +32,7 @@ class V1::Budweiser::UsersController < BudweiserController
       else
         PromptTeamSelectionJob.perform_later(@user.id)
       end
-      Analytics::Budweiser::User.new(@user).account_confirmed
+      TrackAccountConfirmedJob.perform_later(@user.id)
     end
     respond_with @user
   end
