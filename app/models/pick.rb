@@ -19,6 +19,7 @@ class Pick < ApplicationRecord
   def send_slate_notification
     if event.slate.progress(user_id) == :complete
       SendSlateNotificationJob.perform_later(user_id)
+      CardAnalytics.new(@card).card_completed
     end
   end
 
