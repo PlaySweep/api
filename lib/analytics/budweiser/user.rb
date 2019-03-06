@@ -17,4 +17,12 @@ class Analytics::Budweiser::User
     $tracker.track(@user.id, 'Account Confirmed', { account: @user.preference.team.account.name, team: @user.preference.team.name })
   end
 
+  def card_started prizing_category
+    $tracker.track(@user.id, 'Card Started', { account: @user.preference.team.account.name, team: @user.preference.team.name, prize: prizing_category })
+  end
+
+  def card_completed prizing_category
+    $tracker.track(@user.id, 'Card Completed', { account: @user.preference.team.account.name, team: @user.preference.team.name, prize: prizing_category })
+  end
+
 end

@@ -19,7 +19,7 @@ class Pick < ApplicationRecord
   def send_slate_notification
     if event.slate.progress(user_id) == :complete
       SendSlateNotificationJob.perform_later(user_id)
-      Analytics::Budweiser::Card.new(@card).card_completed
+      Analytics::Budweiser::User.new(user, current_slate.try(:prizing_category)).card_completed
     end
   end
 
