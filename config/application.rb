@@ -34,9 +34,11 @@ module SweepApi
     config.api_only = true
     config.time_zone = 'Eastern Time (US & Canada)'
     config.active_job.queue_adapter = :resque
+    config.enable_dependency_loading = true
     config.autoload_paths << Rails.root.join('jobs')
     config.autoload_paths << Rails.root.join('lib')
-    config.autoload_paths << Rails.root.join('lib/analytics')
+    config.eager_load_paths << Rails.root.join('lib')
+    config.autoload_paths << Rails.root.join('lib/analytics/budweiser/*.rb')
 
     config.middleware.use ::Rack::MethodOverride
     config.middleware.insert_before 0, Rack::Cors, debug: true, logger: (-> { Rails.logger }) do

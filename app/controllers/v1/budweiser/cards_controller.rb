@@ -9,7 +9,7 @@ class V1::Budweiser::CardsController < BudweiserController
   def create
     @card = current_user.cards.create(card_params)
     if @card.save
-      CardAnalytics.new(@card).card_started
+      Analytics::Budweiser::Card.new(@card).card_started
       respond_with @card
     else
       render json: { errors: @card.errors.full_messages }, status: :unprocessable_entity
