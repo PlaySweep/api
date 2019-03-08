@@ -1,0 +1,1 @@
+json.event @event, partial: 'admin/events/event_for_admin', as: :event
