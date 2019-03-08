@@ -8,25 +8,22 @@ class Slate < ApplicationRecord
   has_many :picks, through: :users
   has_many :cards, dependent: :destroy
 
-  before_destroy :destroy_associated_events
-
   enum status: [ :inactive, :pending, :started, :complete ]
 
   scope :available, -> { where(status: [1, 2]) }
 
   def progress current_user_id
-    current_picks = cards.find_by(user_id: current_user_id).try(:user).try(:picks)
     if started?
       :started
     elsif users.find_by(id: current_user_id).present?
-      if current_picks
-        if current_picks.where(event_id: [events.map(&:id)]).size == events.size
+      if cards.find_by(user_id: current_user_id).try(:user).try(:picks)
+        if cards.find_by(user_id: current_user_id).try(:user).try(:picks).where(event_id: [events.map(&:id)]).size == events.size
           :complete
         end
       end
     elsif users.find_by(id: current_user_id).present?
-      if current_picks
-        if current_picks.where(event_id: [events.map(&:id)]).size != events.size
+      if cards.find_by(user_id: current_user_id).try(:user).try(:picks)
+        if cards.find_by(user_id: current_user_id).try(:user).try(:picks).where(event_id: [events.map(&:id)]).size != events.size
           :unfinished
         end
       end
@@ -68,10 +65,6 @@ class Slate < ApplicationRecord
 
   def send_losing_message
     cards.loss.each { |card| SendLosingSlateMessageJob.perform_later(card.user_id)}
-  end
-
-  def destroy_associated_events
-    Event.where(slate_id: id).destroy_all
   end
 
 end
