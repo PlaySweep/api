@@ -3,6 +3,7 @@ class Team < Owner
 
   scope :ordered, -> { order(name: :asc) }
   scope :sponsored, -> { data_where(sponsored: true) }
+  scope :active, -> { where(active: true) }
 
   jsonb_accessor :data,
     entry_image: [:string, default: nil],
