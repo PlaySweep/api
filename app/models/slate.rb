@@ -8,6 +8,8 @@ class Slate < ApplicationRecord
   has_many :picks, through: :users
   has_many :cards, dependent: :destroy
 
+  before_destroy :destroy_associated_events
+
   enum status: [ :inactive, :pending, :started, :complete ]
 
   scope :available, -> { where(status: [1, 2]) }
@@ -66,6 +68,10 @@ class Slate < ApplicationRecord
 
   def send_losing_message
     cards.loss.each { |card| SendLosingSlateMessageJob.perform_later(card.user_id)}
+  end
+
+  def destroy_associated_events
+    Event.where(slate_id: id).destroy_all
   end
 
 end
