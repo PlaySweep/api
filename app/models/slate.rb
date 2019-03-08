@@ -13,12 +13,21 @@ class Slate < ApplicationRecord
   scope :available, -> { where(status: [1, 2]) }
 
   def progress current_user_id
+    current_picks = cards.find_by(user_id: current_user_id).try(:user).try(:picks)
     if started?
       :started
-    elsif users.find_by(id: current_user_id).present? && cards.find_by(user_id: current_user_id).user.picks.where(event_id: [events.map(&:id)]).size == events.size
-      :complete
-    elsif users.find_by(id: current_user_id).present? && cards.find_by(user_id: current_user_id).user.picks.where(event_id: [events.map(&:id)]).size != events.size
-      :unfinished
+    elsif users.find_by(id: current_user_id).present?
+      if current_picks
+        if current_picks.where(event_id: [events.map(&:id)]).size == events.size
+          :complete
+        end
+      end
+    elsif users.find_by(id: current_user_id).present?
+      if current_picks
+        if current_picks.where(event_id: [events.map(&:id)]).size != events.size
+          :unfinished
+        end
+      end
     elsif users.find_by(id: current_user_id).nil?
       :new
     end
