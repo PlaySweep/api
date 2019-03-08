@@ -6,3 +6,4 @@ json.status slate.status
 json.events slate.events.ordered, partial: 'admin/events/event_for_admin', as: :event
 json.local slate.local
 json.data slate.data
+json.start_time slate.start_time
