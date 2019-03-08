@@ -25,6 +25,12 @@ class Admin::EventsController < AdminController
     respond_with @event
   end
 
+  def destroy
+    @event = Event.find(params[:id])
+    @event.destroy
+    respond_with @event
+  end
+
   private
 
   def data_params

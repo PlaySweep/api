@@ -24,7 +24,7 @@ Rails.application.routes.draw do
     resources :leagues, only: [:index]
     resources :teams, only: [:index, :show] do
       resources :slates, only: [:index, :show, :create, :update, :destroy] do
-        resources :events, only: [:create, :show, :update]
+        resources :events, only: [:create, :show, :update, :destroy]
       end
     end
   end
