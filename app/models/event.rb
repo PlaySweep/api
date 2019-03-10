@@ -9,31 +9,32 @@ class Event < ApplicationRecord
 
   accepts_nested_attributes_for :selections
 
-  jsonb_accessor :data,
-    winner_ids: [:integer, array: true, default: []]
-
   enum status: [ :incomplete, :complete ]
 
-  after_update :result_event, :result_card
+  after_update :update_picks, :result_card
 
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) }
   scope :ordered, -> { order(order: :asc) }
 
+  def winner_ids
+    selections.winners.map(&:id)
+  end
+
   def loser_ids
-    selections.map(&:id) - winner_ids
+    selections.losers.map(&:id)
   end
 
   def winners
-    selections.find_by(id: winner_ids)
+    selections.winners
   end
 
   def losers
-    selections.find_by(id: loser_ids) if winner_ids
+    selections.losers
   end
 
   private
 
-  def result_event
+  def update_picks
     if saved_change_to_status?(to: 'complete') and winner_ids.any?
       picks.where(selection_id: winner_ids).map(&:win!)
       picks.where(selection_id: loser_ids).map(&:loss!)
@@ -43,13 +44,7 @@ class Event < ApplicationRecord
   def result_card
     #TODO refactor events.ordered method logic (may not be last event that is completed last)
     if saved_change_to_status?(to: 'complete') && slate.events.ordered.last.id == id
-     cards.each do |card|
-      if card.user.won_slate?(slate.id)
-        card.win!
-      else
-        card.loss!
-      end
-     end
+     cards.each { |card| card.user.won_slate?(slate_id) ? card.win! : card.loss! }
     end
   end
 

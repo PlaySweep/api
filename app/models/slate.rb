@@ -36,8 +36,8 @@ class Slate < ApplicationRecord
     events.size == events.where(status: 1).size
   end
 
-  def winner_ids
-    events.map(&:winners).map(&:id)
+  def winners
+    events.map(&:selections).map(&:winners).flatten
   end
 
   def opponent
@@ -58,7 +58,10 @@ class Slate < ApplicationRecord
   def send_winning_message
     cards.win.each do |card|
       SendWinningSlateMessageJob.perform_later(card.user_id)
-      card.user.sweeps.create(date: DateTime.current, pick_ids: card.user.picks.for_slate(id).map(&:id))
+      #TODO once we set up friend referral for entries...
+      # will need to query for the users unused entries and apply the slate_id 
+      # to those records in addition to creating a new entry (the multiplier)
+      card.user.entries.create(slate_id: id) and card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
     end
   end
 

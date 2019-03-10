@@ -38,7 +38,7 @@ class User < ApplicationRecord
     slate = slates.find_by(id: slate_id)
     event_ids = events.where(slate_id: slate_id).map(&:id)
     picks_for_slate = picks.where(event_id: event_ids).map(&:selection_id)
-    if picks_for_slate == slate.winner_ids
+    if picks_for_slate == slate.winners.map(&:id)
       return true
     else
       return false

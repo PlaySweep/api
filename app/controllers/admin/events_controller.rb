@@ -39,6 +39,6 @@ class Admin::EventsController < AdminController
   end
 
   def event_params
-    params.require(:event).permit(:description, :slate_id, :status, :order, :type, selections_attributes: [:id, :description, :event_id, :order]).merge(data: data_params)
+    params.require(:event).permit(:description, :slate_id, :status, :order, :type, selections_attributes: [:id, :description, :event_id, :order, :status]).merge(data: data_params)
   end
 end
