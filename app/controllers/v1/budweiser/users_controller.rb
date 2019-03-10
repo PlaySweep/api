@@ -17,6 +17,7 @@ class V1::Budweiser::UsersController < BudweiserController
     @user = BudweiserUser.create(user_params)
     if @user
       BudweiserPreference.create(user_id: @user.id)
+      increment_entries_for_referrer if params[:referrer_uuid] 
     end
     respond_with @user
   end
@@ -37,7 +38,11 @@ class V1::Budweiser::UsersController < BudweiserController
 
   private
 
+  def increment_entries_for_referrer
+    BudweiserUser.find_by(facebook_uuid: params[:referrer_uuid]).entries.create!
+  end
+
   def user_params
-    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed, :locked)
+    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed, :locked, :gender, :referral)
   end
 end

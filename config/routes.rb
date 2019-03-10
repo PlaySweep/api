@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       end
       resources :slates, only: [:index, :show]
       resources :cards, only: [:create]
+      resources :entries, only: [:create]
       resources :preferences, only: [:index, :show] do
         member do
           get 'set_owner', to: 'preferences#set_owner'
