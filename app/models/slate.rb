@@ -15,6 +15,10 @@ class Slate < ApplicationRecord
   scope :descending, -> { order(start_time: :desc) }
   scope :for_the_month, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day + 7) }
 
+  after_update :result_slate
+  after_update :change_status
+  after_update :winner_selected?
+
   jsonb_accessor :data,
       winner_id: [:integer, default: nil]
 
@@ -61,13 +65,18 @@ class Slate < ApplicationRecord
     StartSlateJob.set(wait_until: start_time).perform_later(id) if saved_change_to_status?(to: 'pending')
   end
 
+  def winner_selected?
+    entries.each { |entry| entry.update_attributes(used: true) } if saved_change_to_winner_id?
+  end
+
+  def create_and_assign_entries
+    card.user.entries.create(slate_id: id) and card.user.entries.unused.each { |entry| entry.update_attributes(slate_id: id) }
+  end
+
   def send_winning_message
     cards.win.each do |card|
       SendWinningSlateMessageJob.perform_later(card.user_id)
-      #TODO once we set up friend referral for entries...
-      # will need to query for the users unused entries and apply the slate_id 
-      # to those records in addition to creating a new entry (the multiplier)
-      card.user.entries.create(slate_id: id) and card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
+      create_and_assign_entries and card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
     end
   end
 

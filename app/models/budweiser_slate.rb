@@ -2,9 +2,6 @@ class BudweiserSlate < Slate
   belongs_to :team, foreign_key: :owner_id
   belongs_to :winner, foreign_key: :winner_id, class_name: "BudweiserUser", optional: true
 
-  after_update :result_slate
-  after_update :change_status
-
   scope :for_owner, ->(owner_id) { where(owner_id: owner_id) } 
 
   jsonb_accessor :data,
