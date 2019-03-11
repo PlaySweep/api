@@ -6,7 +6,7 @@ set :tmp_dir, '/home/deploy/tmp'
 set :branch, 'master'
 set :rails_env, 'beta'
 
-# set :linked_files, %w{config/application.yml}
+set :linked_files, %w{config/database.yml config/master.key}
 
 role :resque_worker, "sweep_beta"
 role :resque_scheduler, "sweep_beta"
