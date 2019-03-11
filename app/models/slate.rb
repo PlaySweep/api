@@ -12,6 +12,11 @@ class Slate < ApplicationRecord
   enum status: [ :inactive, :pending, :started, :complete ]
 
   scope :available, -> { where(status: [1, 2]) }
+  scope :descending, -> { order(start_time: :desc) }
+  scope :for_the_month, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day + 7) }
+
+  jsonb_accessor :data,
+      winner_id: [:integer, default: nil]
 
   def progress current_user_id
     if started?
