@@ -1,5 +1,6 @@
 class Sweep < ApplicationRecord
   belongs_to :user
+  belongs_to :slate
 
   jsonb_accessor :data,
     pick_ids: [:string, array: true, default: []]
