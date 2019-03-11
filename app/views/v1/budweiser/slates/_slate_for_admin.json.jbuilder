@@ -7,5 +7,5 @@ json.events slate.events.ordered, partial: 'admin/events/event_for_admin', as: :
 json.local slate.local
 json.data slate.data
 json.entries slate.entries, partial: 'admin/entries/entry_for_admin', as: :entry
-json.winner slate.winner.full_name
+json.winner slate.try(:winner).try(:full_name)
 json.start_time slate.start_time
