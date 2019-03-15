@@ -62,7 +62,9 @@ class Slate < ApplicationRecord
   end
 
   def change_status
-    StartSlateJob.set(wait_until: start_time.in_time_zone).perform_later(id) if saved_change_to_status?(to: 'pending')
+    difference = (start_time.in_time_zone - DateTime.current.in_time_zone).to_f
+    minutes_until_start = (difference * 24 * 60).to_i
+    StartSlateJob.set(wait: minutes_until_start).perform_later(id) if saved_change_to_status?(from: 'inactive', to: 'pending')
   end
 
   def winner_selected?
