@@ -2,7 +2,7 @@ class V1::Budweiser::Users::SlatesController < BudweiserController
   respond_to :json
 
   def index
-    @slates = current_user.slates.available.descending
+    @slates = current_user.slates.descending.available
     respond_with @slates
   end
 
