@@ -62,9 +62,10 @@ class Slate < ApplicationRecord
   end
 
   def change_status
-    difference = (start_time.to_datetime - DateTime.current).to_f
-    until_start = (difference * 24 * 60).to_i
-    StartSlateJob.set(wait: until_start.minutes).perform_later(id) if saved_change_to_status?(from: 'inactive', to: 'pending')
+    # difference = (start_time.to_datetime - DateTime.current).to_f
+    # until_start = (difference * 24 * 60).to_i
+    # StartSlateJob.set(wait: until_start.minutes).perform_later(id) if saved_change_to_status?(from: 'inactive', to: 'pending')
+    StartSlateJob.set(wait_until: DateTime.current + 2.minutes).perform_later(id) if saved_change_to_status?(from: 'inactive', to: 'pending')
   end
 
   def winner_selected?
