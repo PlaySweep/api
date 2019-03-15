@@ -14,4 +14,4 @@ role :resque_worker, "sweep"
 role :resque_scheduler, "sweep"
 
 set :resque_environment_task, true
-set :workers, { "*" => 4 }
+set :workers, { "*" => 8 }

@@ -1,17 +1,14 @@
 require 'resque/tasks'
-require 'resque/scheduler/tasks'
 
-namespace :resque do
-  task :setup do
-    require 'resque'
+task "resque:setup" => :environment do
+  require 'resque'
 
-    ENV['QUEUE'] = '*'
-    Resque.before_fork = Proc.new do |job|
-      ActiveRecord::Base.connection.disconnect!
-    end
-    Resque.after_fork = Proc.new do |job|
-      ActiveRecord::Base.establish_connection
-    end
+  ENV['QUEUE'] = '*'
+  Resque.before_fork = Proc.new do |job|
+    ActiveRecord::Base.connection.disconnect!
+  end
+  Resque.after_fork = Proc.new do |job|
+    ActiveRecord::Base.establish_connection
   end
 
   task :setup_schedule => :setup do
@@ -37,5 +34,4 @@ namespace :resque do
     require 'jobs'
   end
 
-  task :scheduler => :setup_schedule
 end
