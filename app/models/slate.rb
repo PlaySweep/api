@@ -62,7 +62,7 @@ class Slate < ApplicationRecord
   end
 
   def change_status
-    difference = (start_time.to_datetime - DateTime.current).to_f
+    difference = (start_time.to_datetime.utc - DateTime.current.utc).to_f
     until_start = (difference * 24 * 60).to_i
     StartSlateJob.set(wait: until_start.minutes).perform_later(id) if saved_change_to_status?(from: 'inactive', to: 'pending')
   end
