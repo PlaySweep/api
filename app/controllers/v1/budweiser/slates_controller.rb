@@ -2,12 +2,12 @@ class V1::Budweiser::SlatesController < BudweiserController
   respond_to :json
 
   def index
-    @slates = BudweiserSlate.for_owner(current_user.preference.owner_id).descending.available
+    @slates = Slate.filtered(current_user.roles.map(&:resource_id)).descending.available
     respond_with @slates
   end
 
   def show
-    @slate = BudweiserSlate.find_by(id: params[:id])
+    @slate = Slate.find_by(id: params[:id])
     if @slate
       respond_with @slate
     else

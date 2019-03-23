@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  rolify
 
   has_one :preference, dependent: :destroy
   has_many :sweeps, dependent: :destroy
@@ -8,8 +9,15 @@ class User < ApplicationRecord
   has_many :slates, through: :cards
   has_many :entries, dependent: :destroy
 
+  jsonb_accessor :data,
+    referral: [:string, default: "landing_page"]
+
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
+  scope :count_by_team, ->(team_id) { joins(:preference).where("preferences.data->>'owner_id' = :owner_id", owner_id: "#{team_id}") }
+  scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
+
+  after_create :assign_default_role
 
   def self.by_name full_name
     full_name = full_name.split(' ')
@@ -43,6 +51,12 @@ class User < ApplicationRecord
     else
       return false
     end
+  end
+
+  private  
+
+  def assign_default_role
+    self.add_role(:newuser) if self.roles.blank?
   end
 
 end

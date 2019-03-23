@@ -39,6 +39,7 @@ module SweepApi
     config.autoload_paths << Rails.root.join('lib')
     config.eager_load_paths << Rails.root.join('lib')
     config.autoload_paths << Rails.root.join('lib/analytics/budweiser/*.rb')
+    config.autoload_paths += Dir[Rails.root.join('app', 'models', '*/')]
 
     config.middleware.use ::Rack::MethodOverride
     config.middleware.insert_before 0, Rack::Cors, debug: true, logger: (-> { Rails.logger }) do

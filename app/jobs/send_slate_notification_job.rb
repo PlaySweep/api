@@ -2,7 +2,7 @@ class SendSlateNotificationJob < BudweiserJob
   @queue = :send_slate_notification_job
 
   def perform user_id
-    user = BudweiserUser.find(user_id)
+    user = User.find(user_id)
     if user.cards.size > 1
       FacebookMessaging::Standard.deliver(user, "Your answers are in, #{user.first_name}! You’ll get your results the morning after the game.", "NO_PUSH")
     else

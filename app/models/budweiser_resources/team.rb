@@ -1,4 +1,5 @@
 class Team < Owner
+  resourcify  
   belongs_to :league, foreign_key: :account_id
 
   scope :ordered, -> { order(name: :asc) }

@@ -1,7 +1,10 @@
 class Slate < ApplicationRecord
   INACTIVE, PENDING, STARTED, COMPLETE = 0, 1, 2, 3
 
-  belongs_to :owner
+  resourcify
+
+  belongs_to :team, foreign_key: :owner_id
+  belongs_to :winner, foreign_key: :winner_id, class_name: "User", optional: true
 
   has_many :events, dependent: :destroy
   has_many :entries, dependent: :destroy
@@ -14,13 +17,24 @@ class Slate < ApplicationRecord
   scope :available, -> { where(status: [1, 2]) }
   scope :descending, -> { order(start_time: :desc) }
   scope :for_the_month, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day + 7) }
-
+  scope :filtered, ->(owner_id) { where(owner_id: owner_id) } 
+  scope :total_entry_count, -> { joins(:cards).count }
+  scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
+  
   after_update :result_slate
   after_update :change_status
   after_update :winner_selected?
 
   jsonb_accessor :data,
-      winner_id: [:integer, default: nil]
+    winner_id: [:integer, default: nil],
+    local: [:boolean, default: false],
+    opponent_id: [:integer, default: nil],
+    field: [:string, default: nil],
+    opponent_pitcher: [:string, default: nil],
+    pitcher: [:string, default: nil],
+    era: [:string, default: nil],
+    opponent_era: [:string, default: nil],
+    prizing_category: [:string, default: nil]
 
   def progress current_user_id
     if started?

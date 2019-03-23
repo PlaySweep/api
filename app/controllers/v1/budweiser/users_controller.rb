@@ -4,19 +4,19 @@ class V1::Budweiser::UsersController < BudweiserController
   skip_before_action :authenticate!, only: :create
 
   def index
-    @users = BudweiserUser.all
+    @users = User.all
     respond_with @users
   end
 
   def show
-    @user = BudweiserUser.find_by(facebook_uuid: params[:facebook_uuid])
+    @user = User.find_by(facebook_uuid: params[:facebook_uuid])
     respond_with @user
   end
 
   def create
-    @user = BudweiserUser.create(user_params)
+    @user = User.create(user_params)
     if @user
-      BudweiserPreference.create(user_id: @user.id)
+      Preference.create(user_id: @user.id)
       increment_entries_for_referrer if params[:referrer_uuid] 
     end
     respond_with @user
@@ -24,7 +24,7 @@ class V1::Budweiser::UsersController < BudweiserController
 
   def update
     #TODO refactor this method so it doesnt run every time the user gets updated
-    @user = BudweiserUser.find_by(facebook_uuid: params[:facebook_uuid])
+    @user = User.find_by(facebook_uuid: params[:facebook_uuid])
     @user.update_attributes(user_params)
     unless @user.locked
       if @user.preference.owner_id
@@ -39,7 +39,7 @@ class V1::Budweiser::UsersController < BudweiserController
   private
 
   def increment_entries_for_referrer
-    BudweiserUser.find_by(facebook_uuid: params[:referrer_uuid]).entries.create!
+    User.find_by(facebook_uuid: params[:referrer_uuid]).entries.create!
   end
 
   def user_params

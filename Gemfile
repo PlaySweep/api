@@ -37,6 +37,8 @@ gem 'rack-cors'
 
 gem 'responders'
 
+gem 'rolify'
+
 gem "jsonb_accessor", "~> 1.0.0"
 gem 'faraday'
 gem 'hash_dot'
