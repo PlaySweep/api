@@ -3,6 +3,8 @@ class BudweiserSlate < Slate
   belongs_to :winner, foreign_key: :winner_id, class_name: "BudweiserUser", optional: true
 
   scope :for_owner, ->(owner_id) { where(owner_id: owner_id) } 
+  scope :total_entry_count, -> { joins(:cards).count }
+  scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
 
   jsonb_accessor :data,
       local: [:boolean, default: false],
