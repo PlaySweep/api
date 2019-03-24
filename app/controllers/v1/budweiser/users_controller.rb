@@ -15,9 +15,9 @@ class V1::Budweiser::UsersController < BudweiserController
 
   def create
     @user = User.create(user_params)
-    if @user
-      Preference.create(user_id: @user.id)
-      increment_entries_for_referrer if params[:referrer_uuid] 
+    if @user.save
+      increment_entries_for_referrer if params[:referrer_uuid]
+      @user.add_role params[:team].to_sym, Team.find_by(name: params[:team].split('_').map(&:capitalize).join(' ')) if params[:team]
     end
     respond_with @user
   end
@@ -27,11 +27,7 @@ class V1::Budweiser::UsersController < BudweiserController
     @user = User.find_by(facebook_uuid: params[:facebook_uuid])
     @user.update_attributes(user_params)
     unless @user.locked
-      if @user.preference.owner_id
-        ConfirmAccountNotificationJob.perform_later(@user.id)
-      else
-        PromptTeamSelectionJob.perform_later(@user.id)
-      end
+      @user.has_role?(:new_user) ? ConfirmAccountNotificationJob.perform_later(@user.id) : PromptTeamSelectionJob.perform_later(@user.id)
     end
     respond_with @user
   end
@@ -40,6 +36,10 @@ class V1::Budweiser::UsersController < BudweiserController
 
   def increment_entries_for_referrer
     User.find_by(facebook_uuid: params[:referrer_uuid]).entries.create!
+  end
+
+  def add_default_roles
+    self.add_role(:new_user)
   end
 
   def user_params

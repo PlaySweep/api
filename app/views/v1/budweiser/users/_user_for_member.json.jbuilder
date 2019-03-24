@@ -10,10 +10,9 @@ json.zipcode user.zipcode
 # json.playing_streak user.playing_streak
 json.confirmed user.confirmed
 json.locked user.locked
-json.preference do
-  json.id user.preference.id
-  json.owner_id user.preference.try(:owner_id)
-  json.team_name user.preference.try(:team).try(:name)
-  json.team_entry_image user.preference.try(:team).try(:entry_image)
-  json.slate_messaging user.preference.slate_messaging
+json.roles user.roles.where(resource_name: "Team").each do |role|
+  json.id role.id
+  json.owner_id role.resource_id
+  json.team_name role.name
+  json.team_entry_image Team.find(role.resource_id).try(:entry_image)
 end

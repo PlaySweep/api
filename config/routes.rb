@@ -6,17 +6,11 @@ Rails.application.routes.draw do
           scope module: :users do
             resources :picks, only: [:index, :show, :create, :update]
             resources :slates, only: [:index, :show]
-            resources :preferences, only: [:show, :update]
           end
       end
       resources :slates, only: [:index, :show]
       resources :cards, only: [:create]
       resources :entries, only: [:create]
-      resources :preferences, only: [:index, :show] do
-        member do
-          get 'set_owner', to: 'preferences#set_owner'
-        end
-      end
       get 'fetch_card_for_slate', to: 'cards#fetch_card_for_slate'
     end
   end
