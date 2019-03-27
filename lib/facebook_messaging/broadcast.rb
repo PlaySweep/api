@@ -1,15 +1,20 @@
 module FacebookMessaging
   class Broadcast
-    def self.create_message_and_deliver user
-      conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/me/")
-      quick_replies = [{ content_type: 'text', title: "PLAY NOW ⚾️", payload: "More contests" }]
-      body = [{text: "Opening Day. It's officially time for real, regular season action. We've got #{user.preference.team.name} contests and prizes for you!", quick_replies: quick_replies}].to_json
-      params = { messages: body }
+    def self.deliver
+      DeliverBroadcastJob.perform_later
+    end
 
-      response = conn.post("message_creatives?access_token=#{ENV['ACCESS_TOKEN']}", params)
-      message_creative_id = JSON.parse(response.body)["message_creative_id"]
-      user.preference.team.update_attribute(:broadcast_message_id, message_creative_id)
-      DeliverBroadcastJob.perform_later(user.id)
+    def self.create_broadcast_message
+      conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/me/")
+      Team.first(3).each do |team|
+        quick_replies = [{ content_type: 'text', title: "PLAY NOW ⚾️", payload: "More contests" }]
+        body = [{text: "Opening Day. It's officially time for real, regular season action. We've got #{team.name} contests and prizes for you!", quick_replies: quick_replies}].to_json
+        params = { messages: body }
+
+        response = conn.post("message_creatives?access_token=#{ENV['ACCESS_TOKEN']}", params)
+        message_creative_id = JSON.parse(response.body)["message_creative_id"]
+        team.update_attributes(broadcast_message_id: message_creative_id)
+      end
     end
 
     def self.generate_broadcast_label_for resource:
