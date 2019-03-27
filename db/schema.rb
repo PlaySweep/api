@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_10_164340) do
+ActiveRecord::Schema.define(version: 2019_03_27_123256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,14 +22,6 @@ ActiveRecord::Schema.define(version: 2019_03_10_164340) do
     t.datetime "updated_at", null: false
     t.string "image"
     t.string "tenant"
-  end
-
-  create_table "admins", force: :cascade do |t|
-    t.string "username"
-    t.string "password_digest"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["username"], name: "index_admins_on_username", unique: true
   end
 
   create_table "cards", force: :cascade do |t|
@@ -72,6 +64,8 @@ ActiveRecord::Schema.define(version: 2019_03_10_164340) do
     t.datetime "updated_at", null: false
     t.jsonb "data", default: {}
     t.boolean "active", default: false
+    t.integer "broadcast_message_id"
+    t.integer "broadcast_label_id"
     t.index ["account_id"], name: "index_owners_on_account_id"
   end
 
@@ -93,6 +87,16 @@ ActiveRecord::Schema.define(version: 2019_03_10_164340) do
     t.jsonb "data", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
+    t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
   end
 
   create_table "selections", force: :cascade do |t|
@@ -137,7 +141,6 @@ ActiveRecord::Schema.define(version: 2019_03_10_164340) do
     t.string "avatar"
     t.string "gender"
     t.integer "timezone"
-    t.string "type", default: "User"
     t.jsonb "data", default: {}
     t.boolean "active", default: true
     t.datetime "created_at", null: false
@@ -148,6 +151,14 @@ ActiveRecord::Schema.define(version: 2019_03_10_164340) do
     t.string "zipcode"
     t.date "dob"
     t.boolean "locked", default: false
+  end
+
+  create_table "users_roles", id: false, force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "role_id"
+    t.index ["role_id"], name: "index_users_roles_on_role_id"
+    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+    t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
   add_foreign_key "cards", "slates"
