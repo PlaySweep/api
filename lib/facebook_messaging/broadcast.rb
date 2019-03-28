@@ -4,14 +4,12 @@ module FacebookMessaging
       DeliverBroadcastJob.perform_later
     end
 
-    def self.create_broadcast_message content:, quick_replies: 
+    def self.create_broadcast_message resource:, content:, quick_replies: 
       conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/me/")
-      Team.first(3).each do |team|
-        body = [{text: text, quick_replies: quick_replies}].to_json
-        response = conn.post("message_creatives?access_token=#{ENV['ACCESS_TOKEN']}", { messages: body })
-        message_creative_id = JSON.parse(response.body)["message_creative_id"]
-        team.update_attributes(broadcast_message_id: message_creative_id)
-      end
+      body = [{text: content, quick_replies: quick_replies}].to_json
+      response = conn.post("message_creatives?access_token=#{ENV['ACCESS_TOKEN']}", { messages: body })
+      message_creative_id = JSON.parse(response.body)["message_creative_id"]
+      resource.update_attributes(broadcast_message_id: message_creative_id)
     end
 
     def self.generate_broadcast_label_for resource:
