@@ -10,7 +10,7 @@ class SendLosingSlateMessageJob < BudweiserJob
       },
       { 
         banner: "Well that one was a swing and a miss #{user.first_name}",
-        open: "It's time for you to step back up to the plate, click below to try again👇"
+        open: "It's time for you to step back up to the plate, click below to try again 👇"
       },
       { 
         banner: "You got robbed at the warning track and barely missed getting all three right",

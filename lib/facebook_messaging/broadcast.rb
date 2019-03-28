@@ -4,15 +4,11 @@ module FacebookMessaging
       DeliverBroadcastJob.perform_later
     end
 
-    def self.create_broadcast_message
+    def self.create_broadcast_message content:, quick_replies: 
       conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/me/")
       Team.first(3).each do |team|
-        quick_replies = [{ content_type: 'text', title: "PLAY NOW", payload: "More contests" }]
-        text = "Opening Day. It's officially time for real, regular season action. We've got #{team.name} contests and prizes for you!"
         body = [{text: text, quick_replies: quick_replies}].to_json
-        params = { messages: body }
-
-        response = conn.post("message_creatives?access_token=#{ENV['ACCESS_TOKEN']}", params)
+        response = conn.post("message_creatives?access_token=#{ENV['ACCESS_TOKEN']}", { messages: body })
         message_creative_id = JSON.parse(response.body)["message_creative_id"]
         team.update_attributes(broadcast_message_id: message_creative_id)
       end
