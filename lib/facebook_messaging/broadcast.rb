@@ -7,8 +7,9 @@ module FacebookMessaging
     def self.create_broadcast_message
       conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/me/")
       Team.first(3).each do |team|
-        quick_replies = [{ content_type: 'text', title: "PLAY NOW ⚾️", payload: "More contests" }]
-        body = [{text: "Opening Day. It's officially time for real, regular season action. We've got #{team.name} contests and prizes for you!", quick_replies: quick_replies}].to_json
+        quick_replies = [{ content_type: 'text', title: "PLAY NOW", payload: "More contests" }]
+        text = "Opening Day. It's officially time for real, regular season action. We've got #{team.name} contests and prizes for you!"
+        body = [{text: text, quick_replies: quick_replies}].to_json
         params = { messages: body }
 
         response = conn.post("message_creatives?access_token=#{ENV['ACCESS_TOKEN']}", params)
