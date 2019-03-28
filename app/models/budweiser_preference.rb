@@ -5,11 +5,11 @@ class BudweiserPreference < Preference
       owner_id: [:integer, default: nil],
       slate_messaging: [:boolean, default: true]
 
-  after_update :subscribe_user
+  after_update :subscribe_user_to_broadcast
 
   private
 
-  def subscribe_user
-    FacebookMessaging::Broadcast.subscribe_broadcast(self) if saved_change_to_owner_id?
+  def subscribe_user_to_broadcast
+    FacebookMessaging::Broadcast.subscribe(user_id) if saved_change_to_owner_id?
   end
 end

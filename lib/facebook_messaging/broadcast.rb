@@ -24,8 +24,9 @@ module FacebookMessaging
       end
     end
 
-    def self.subscribe_broadcast user
+    def self.subscribe user_id
       begin
+        user = User.find_by(id: user_id)
         conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/#{user.preference.team.broadcast_label_id}/")
         params = { user: user.facebook_uuid }
         response = conn.post("label?access_token=#{ENV['ACCESS_TOKEN']}", params)
@@ -36,13 +37,13 @@ module FacebookMessaging
           puts "⁉️"
         end
       rescue Facebook::Messenger::FacebookError => e
-        puts "Facebook Messenger Error message\n\t#{e.inspect}"
-        puts "#{user.full_name} Not found (facebook_uuid: #{user.facebook_uuid})"
+        puts "Facebook Messenger Error message\n\t#{e.inspect} for #{user.facebook_uuid}"
       end
     end
 
-    def self.unsubscribe_broadcast user
+    def self.unsubscribe user_id
       begin
+        user = User.find_by(id: user_id)
         conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/#{user.preference.team.broadcast_label_id}/")
         params = { user: user.facebook_uuid }
         response = conn.delete("label?user=#{user.facebook_uuid}&access_token=#{ENV['ACCESS_TOKEN']}", params)
