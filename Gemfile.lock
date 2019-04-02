@@ -301,6 +301,7 @@ DEPENDENCIES
   responders
   resque
   resque-scheduler
+  rufus-scheduler
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data

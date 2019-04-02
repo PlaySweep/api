@@ -23,6 +23,8 @@ gem 'bcrypt', '~> 3.1.7'
 
 gem 'rb-readline'
 
+gem 'rufus-scheduler'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
