@@ -2,18 +2,11 @@ require 'rufus-scheduler'
 
 scheduler = Rufus::Scheduler::singleton
 
-# scheduler.cron '0 4 * * *' do
-#   puts "Creating CSV"
-# Apartment::Tenant.switch!('budweiser')
-# fetch_user_acquisition_data
-#   fetch_engagement_data
-# end
-
-scheduler.every '15m' do
+scheduler.cron '0 22 * * *' do
+  puts "Creating CSV"
   Apartment::Tenant.switch!('budweiser')
-  Rails.logger.info "hello, it's #{Time.now}"
-  Rails.logger.flush
   fetch_user_acquisition_data
+  fetch_engagement_data
 end
 
 def fetch_user_acquisition_data
