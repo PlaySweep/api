@@ -10,7 +10,8 @@ scheduler = Rufus::Scheduler::singleton
 # end
 
 scheduler.every '1m' do
-  puts "Look ma, I'm running 🏃\n" * 10
+  Rails.logger.info "hello, it's #{Time.now}"
+  Rails.logger.flush
 end
 
 def fetch_user_acquisition_data
