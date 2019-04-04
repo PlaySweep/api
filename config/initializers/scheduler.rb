@@ -20,7 +20,7 @@ def fetch_user_acquisition_data
     teams.each do |team|
       team_query = BudweiserUser.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).joins(:preference).where("preferences.data->>'owner_id' = :owner_id", owner_id: "#{team.id}")
       confirmed_team_query = BudweiserUser.where(confirmed: true).where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).joins(:preference).where("preferences.data->>'owner_id' = :owner_id", owner_id: "#{team.id}")
-      csv << [(DateTime.current - 1).to_date, team.name, team_query.count, confirmed_team_query.count, for_referral(resource: team, source: "facebook").count, for_referral(resource: team, source: "instagram").count, for_referral(resource: team, source: "twitter").count, for_referral(resource: team, source: "landing_page").count]
+      csv << [(DateTime.current - 1).to_date.strftime("%Y%m%d"), team.name, team_query.count, confirmed_team_query.count, for_referral(resource: team, source: "facebook").count, for_referral(resource: team, source: "instagram").count, for_referral(resource: team, source: "twitter").count, for_referral(resource: team, source: "landing_page").count]
     end
   end
 end
@@ -37,7 +37,7 @@ def fetch_engagement_data
     csv << ["Date", "Contest", "Team", "Type", "Quantity of Entries", "Prize", "Day of Week", "Contest Winners"]
     slate_ids.each do |slate_id|
       slate = BudweiserSlate.find_by(id: slate_id)
-      csv << [(DateTime.current - 1).to_date, slate_id, slate.team.name, slate.local ? "Local" : "Vs", slate.cards.count, slate.prizing_category, slate.start_time.strftime("%A").capitalize, slate.cards.map(&:status).reject { |status| status == 'loss' }.count]
+      csv << [(DateTime.current - 1).to_date.strftime("%Y%m%d"), slate_id, slate.team.name, slate.local ? "Local" : "Vs", slate.cards.count, slate.prizing_category, slate.start_time.strftime("%A").capitalize, slate.cards.map(&:status).reject { |status| status == 'loss' }.count]
     end
   end
 end
