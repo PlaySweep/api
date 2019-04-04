@@ -16,6 +16,7 @@ class AnalyticsMailer < ApplicationMailer
       to: "ben@endemiclabs.co",
       content_type: "text/html",
       subject: "Analytics",
+      body: "Test 123",
       attachments: {
         filename: 'acquisition_data.csv',
         content: File.read("#{Rails.root}/tmp/acquisition_data.csv")
