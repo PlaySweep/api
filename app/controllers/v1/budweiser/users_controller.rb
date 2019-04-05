@@ -17,18 +17,15 @@ class V1::Budweiser::UsersController < BudweiserController
     @user = User.create(user_params)
     if @user.save
       increment_entries_for_referrer if params[:referrer_uuid]
-      @user.add_role params[:team].to_sym, Team.find_by(name: params[:team].split('_').map(&:capitalize).join(' ')) if params[:team]
+      set_team_role if params[:team]
     end
     respond_with @user
   end
 
   def update
-    #TODO refactor this method so it doesnt run every time the user gets updated
     @user = User.find_by(facebook_uuid: params[:facebook_uuid])
     @user.update_attributes(user_params)
-    unless @user.locked
-      @user.has_role?(:new_user) ? ConfirmAccountNotificationJob.perform_later(@user.id) : PromptTeamSelectionJob.perform_later(@user.id)
-    end
+    handle_confirmation if params[:confirmation] and !@user.locked
     respond_with @user
   end
 
@@ -38,8 +35,17 @@ class V1::Budweiser::UsersController < BudweiserController
     User.find_by(facebook_uuid: params[:referrer_uuid]).entries.create!
   end
 
-  def add_default_roles
-    self.add_role(:new_user)
+  def set_team_role
+    @user.add_role(params[:team].downcase.split(' ').join('_').to_sym, Team.find_by(name: params[:team].split('_').map(&:capitalize).join(' ')))
+  end
+
+  def handle_confirmation
+    if @user.roles.where(resource_type: "Team").blank?
+      PromptTeamSelectionJob.perform_later(@user.id)
+    else
+      @user.add_role(:confirmed_user)
+      ConfirmAccountNotificationJob.perform_later(@user.id)
+    end
   end
 
   def user_params

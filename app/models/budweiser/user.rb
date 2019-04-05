@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :cards, dependent: :destroy
   has_many :slates, through: :cards
   has_many :entries, dependent: :destroy
+  has_one :preference, foreign_key: :user_id
 
   jsonb_accessor :data,
     referral: [:string, default: "landing_page"]
@@ -55,7 +56,7 @@ class User < ApplicationRecord
   private  
 
   def assign_default_role
-    self.add_role(:newuser) if self.roles.blank?
+    self.add_role(:new_user) if self.roles.blank?
   end
 
 end
