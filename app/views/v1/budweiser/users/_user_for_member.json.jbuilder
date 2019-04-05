@@ -10,7 +10,7 @@ json.zipcode user.zipcode
 # json.playing_streak user.playing_streak
 json.confirmed user.confirmed
 json.locked user.locked
-json.roles user.roles.where(resource_name: "Team").each do |role|
+json.roles user.roles.where(resource_type: "Team").each do |role|
   json.id role.id
   json.owner_id role.resource_id
   json.team_name role.name
