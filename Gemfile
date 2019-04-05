@@ -23,6 +23,8 @@ gem 'bcrypt', '~> 3.1.7'
 
 gem 'rb-readline'
 
+gem 'migration_data'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
@@ -44,7 +46,6 @@ gem 'faraday'
 gem 'hash_dot'
 gem 'json'
 gem 'facebook-messenger'
-gem 'migration_data'
 
 gem 'apartment'
 gem 'apartment-activejob'
