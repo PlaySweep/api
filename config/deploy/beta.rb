@@ -3,7 +3,7 @@ set :deploy_to, "/var/www/#{fetch :application}"
 after "deploy:restart", "resque:restart"
 set :tmp_dir, '/home/deploy/tmp'
 
-set :branch, 'release-20190402'
+set :branch, 'release-20190401'
 set :rails_env, 'beta'
 
 set :linked_files, %w{config/database.yml config/master.key}
