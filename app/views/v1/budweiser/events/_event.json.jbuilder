@@ -1,4 +1,4 @@
-json.cache! ["event-{event.id}", event], expires_in: 5.minutes do
+json.cache! ["event/#{event.id}/#{event.updated_at}", event], expires_in: 5.minutes do
   json.id event.id
   json.description event.description
   json.order event.order

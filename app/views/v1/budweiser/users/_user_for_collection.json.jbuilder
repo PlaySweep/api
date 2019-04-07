@@ -1,4 +1,4 @@
-json.cache! ["user-{user.id}", user], expires_in: 5.minutes do
+json.cache! ["user/#{user.id}/#{user.updated_at}", user], expires_in: 5.minutes do
   json.id user.id
   json.facebook_uuid user.facebook_uuid
   json.first_name user.first_name

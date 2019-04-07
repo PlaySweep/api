@@ -28,20 +28,6 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
-  # def playing_streak
-  #   slate_dates = Slate.order("start_time DESC").pluck(:start_time).map(&:to_date)
-  #   picked_dates = slates.order("start_time DESC").pluck(:start_time).map(&:to_date)
-  #   streak = picked_dates.first == slate_dates.first && (!picked_dates.first.nil? && !slate_dates.first.nil?) ? 1 : 0
-  #   picked_dates.each_with_index do |picked_date, index|
-  #     if picked_dates[index+1] == slate_dates[index+1]
-  #       streak += 1
-  #     else
-  #       break
-  #     end
-  #   end
-  #   streak
-  # end
-
   def won_slate? slate_id
     slate = slates.find_by(id: slate_id)
     event_ids = events.where(slate_id: slate_id).map(&:id)
