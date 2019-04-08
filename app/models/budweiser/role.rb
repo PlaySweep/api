@@ -12,4 +12,5 @@ validates :resource_type,
           :allow_nil => true
 
 scopify
+
 end
