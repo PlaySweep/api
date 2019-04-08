@@ -9,4 +9,13 @@ class DataMigration
     end
     puts "All done."
   end
+
+  def self.update_gender
+    Apartment::Tenant.switch!('budweiser')
+    User.all.each do |user|
+      response = HTTParty.get("https://api.genderize.io/?name=#{user.first_name}")
+      json_response = JSON.parse(response.body)
+      user.update_attributes(gender: json_response["gender"]) if user.gender.nil? and json_response["probability"] > 0.75
+    end
+  end
 end
