@@ -1,5 +1,5 @@
 class Slate < ApplicationRecord
-  INACTIVE, PENDING, STARTED, COMPLETE = 0, 1, 2, 3
+  INACTIVE, PENDING, STARTED, COMPLETE, DONE = 0, 1, 2, 3, 4
 
   resourcify
 
@@ -21,9 +21,7 @@ class Slate < ApplicationRecord
   scope :total_entry_count, -> { joins(:cards).count }
   scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
   
-  after_update :result_slate
-  after_update :change_status
-  after_update :winner_selected?
+  after_update :change_status, :result_slate, :start_winner_confirmation_window
 
   jsonb_accessor :data,
     winner_id: [:integer, default: nil],
@@ -34,7 +32,8 @@ class Slate < ApplicationRecord
     pitcher: [:string, default: nil],
     era: [:string, default: nil],
     opponent_era: [:string, default: nil],
-    prizing_category: [:string, default: nil]
+    prizing_category: [:string, default: nil],
+    previous_user_ids: [:string, array: true, default: []]
 
   def progress current_user_id
     if started?
@@ -72,15 +71,15 @@ class Slate < ApplicationRecord
   private
 
   def result_slate
-    send_winning_message and send_losing_message if saved_change_to_status?(to: 'complete') and events_are_completed?
+    (send_winning_message && send_losing_message) and initialize_select_winner_process if saved_change_to_status?(to: 'complete') and events_are_completed?
   end
 
   def change_status
     StartSlateJob.set(wait_until: start_time.to_datetime).perform_later(id) if saved_change_to_status?(from: 'inactive', to: 'pending')
   end
 
-  def winner_selected?
-    entries.each { |entry| entry.update_attributes(used: true) } if saved_change_to_winner_id?
+  def settle_entries
+    entries.each { |entry| entry.update_attributes(used: true) } if saved_change_to_status?(to: 'done')
   end
 
   def send_winning_message
@@ -92,6 +91,14 @@ class Slate < ApplicationRecord
 
   def send_losing_message
     cards.loss.each { |card| SendLosingSlateMessageJob.perform_later(card.user_id)}
+  end
+
+  def initialize_select_winner_process
+    SelectWinnerJob.set(wait_until: (start_time.tomorrow.beginning_of_day + 9.hours).to_datetime).perform_later(id)
+  end
+
+  def start_winner_confirmation_window
+    SendWinnerConfirmationJob.perform_later(winner_id) and HandleConfirmationWindowJob.set(wait_until: 48.hours.from_now.to_datetime).perform_later(id) if saved_change_to_winner_id?
   end
 
 end
