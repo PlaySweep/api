@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :cards, dependent: :destroy
   has_many :slates, through: :cards
   has_many :entries, dependent: :destroy
+  has_many :orders
   has_one :preference, foreign_key: :user_id
 
   jsonb_accessor :data,
