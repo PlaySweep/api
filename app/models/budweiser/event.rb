@@ -16,6 +16,9 @@ class Event < ApplicationRecord
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) }
   scope :ordered, -> { order(order: :asc) }
 
+  jsonb_accessor :data,
+    category: [:string, default: nil]
+
   def winner_ids
     selections.winners.map(&:id)
   end

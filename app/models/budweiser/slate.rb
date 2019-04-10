@@ -11,6 +11,7 @@ class Slate < ApplicationRecord
   has_many :users, through: :events
   has_many :picks, through: :users
   has_many :cards, dependent: :destroy
+  has_many :prizes
 
   enum status: [ :inactive, :pending, :started, :complete ]
 
@@ -32,7 +33,6 @@ class Slate < ApplicationRecord
     pitcher: [:string, default: nil],
     era: [:string, default: nil],
     opponent_era: [:string, default: nil],
-    prizing_category: [:string, default: nil],
     previous_user_ids: [:string, array: true, default: []]
 
   def progress current_user_id

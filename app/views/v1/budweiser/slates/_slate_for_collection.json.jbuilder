@@ -6,7 +6,13 @@ json.event_size slate.events.size
 json.status slate.status
 json.start_time slate.start_time
 json.local slate.local
-json.prizing_category slate.prizing_category
+json.prizes slate.prizes.each do |prize|
+  json.id prize.id
+  json.name prize.product.name
+  json.description prize.product.description
+  json.type prize.product.type
+  json.quantity prize.quantity
+end
 json.team do
   json.id slate.team.id
   json.image slate.team.image

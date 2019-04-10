@@ -12,6 +12,14 @@ class User < ApplicationRecord
   jsonb_accessor :data,
     referral: [:string, default: "landing_page"]
 
+  jsonb_accessor :shipping,
+    line1: [:string, default: nil],
+    line2: [:string, default: nil],
+    city: [:string, default: nil],
+    state: [:string, default: nil],
+    postal_code: [:string, default: nil],
+    country: [:string, default: "United States"]
+
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
   scope :count_by_team, ->(team_id) { joins(:roles).where('roles.resource_id = ?', team_id) }
