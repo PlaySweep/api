@@ -9,6 +9,6 @@ class StartSlateJob < BudweiserJob
 
   def perform slate_id
     slate = Slate.find_by(id: slate_id)
-    slate.started! if slate
+    slate.started! unless slate.nil? || slate.complete?
   end
 end
