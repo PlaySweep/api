@@ -78,6 +78,10 @@ class Slate < ApplicationRecord
     StartSlateJob.set(wait_until: start_time.to_datetime).perform_later(id) if saved_change_to_status?(from: 'inactive', to: 'pending')
   end
 
+  def apply_unused_entries_to_slate
+    card.user.entries.unused.each { |entry| entry.update_attributes(slate_id: id) unless entry.slate_id? }
+  end
+
   def settle_entries
     entries.each { |entry| entry.update_attributes(used: true) } if saved_change_to_status?(to: 'done')
   end
@@ -85,7 +89,7 @@ class Slate < ApplicationRecord
   def send_winning_message
     cards.win.each do |card|
       SendWinningSlateMessageJob.perform_later(card.user_id)
-      card.user.entries.create(slate_id: id) and card.user.entries.unused.each { |entry| entry.update_attributes(slate_id: id) } and card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
+      card.user.entries.create(slate_id: id) and apply_unused_entries_to_slate and card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
     end
   end
 
