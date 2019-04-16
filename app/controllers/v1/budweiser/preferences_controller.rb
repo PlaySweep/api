@@ -13,7 +13,8 @@ class V1::Budweiser::PreferencesController < BudweiserController
 
   def set_owner
     team = Team.find_by(name: params[:team])
-    @preference = current_user.preference.update_attributes(owner_id: team.id)
+    @preference = current_user.preference
+    @preference.update_attributes(owner_id: team.id)
     respond_with @preference
   end
 
