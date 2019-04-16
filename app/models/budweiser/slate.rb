@@ -11,7 +11,7 @@ class Slate < ApplicationRecord
   has_many :users, through: :events
   has_many :picks, through: :users
   has_many :cards, dependent: :destroy
-  has_many :prizes
+  has_many :prizes, dependent: :destroy
 
   enum status: [ :inactive, :pending, :started, :complete ]
 
