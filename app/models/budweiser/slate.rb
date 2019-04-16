@@ -24,6 +24,8 @@ class Slate < ApplicationRecord
   
   after_update :change_status, :result_slate, :start_winner_confirmation_window
 
+  accepts_nested_attributes_for :prizes
+
   jsonb_accessor :data,
     winner_id: [:integer, default: nil],
     local: [:boolean, default: false],
