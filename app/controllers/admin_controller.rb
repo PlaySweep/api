@@ -1,4 +1,3 @@
-#TODO FIX THIS FOR NEW TENANTS
 class AdminController < ActionController::API
   before_action :switch_tenant!
 

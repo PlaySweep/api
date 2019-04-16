@@ -5,7 +5,6 @@ class CreatePrizes < ActiveRecord::Migration[5.2]
       t.references :product, foreign_key: true, index: true
       t.references :sku, foreign_key: true, index: true
       t.integer :quantity, default: 1
-      t.string :category
       t.timestamps
     end
   end

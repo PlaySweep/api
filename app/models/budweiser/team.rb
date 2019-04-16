@@ -1,6 +1,7 @@
 class Team < Owner
   resourcify  
   belongs_to :league, foreign_key: :account_id
+  has_many :products, foreign_key: :owner_id
 
   scope :ordered, -> { order(name: :asc) }
   scope :sponsored, -> { data_where(sponsored: true) }
