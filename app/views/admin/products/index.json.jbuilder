@@ -1,1 +1,1 @@
-json.products @products
+json.products @products, partial: 'admin/products/product', as: :product
