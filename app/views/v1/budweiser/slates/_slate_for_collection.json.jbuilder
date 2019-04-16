@@ -8,9 +8,10 @@ json.start_time slate.start_time
 json.local slate.local
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
+  json.slate_id prize.slate_id
+  json.sku_id prize.product.sku_id
   json.name prize.product.name
   json.description prize.product.description
-  json.type prize.product.type
   json.quantity prize.quantity
   json.image prize.product.image
 end
