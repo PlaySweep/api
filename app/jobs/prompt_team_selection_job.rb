@@ -10,6 +10,6 @@ class PromptTeamSelectionJob < BudweiserJob
         "payload":"#{team.name}_#{team.id}",
       }
     end
-    FacebookMessaging::QuickReply.deliver(user, "Got it, thanks #{user.first_name}! For Spring training, please select one of the available teams below to get started 👇", quick_replies, "SILENT_PUSH")
+    FacebookMessaging::QuickReply.deliver(user, "Got it, thanks #{user.first_name}! Please select one of the available teams below to get started 👇", quick_replies, "SILENT_PUSH")
   end
 end
