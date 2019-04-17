@@ -2,7 +2,7 @@ require 'rufus-scheduler'
 
 scheduler = Rufus::Scheduler::singleton
 
-scheduler.cron '0 22 * * *' do
+scheduler.cron '30 9 * * *' do
   puts "Creating CSV"
   Apartment::Tenant.switch!('budweiser')
   fetch_user_acquisition_data
