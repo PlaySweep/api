@@ -36,7 +36,7 @@ class V1::Budweiser::UsersController < BudweiserController
   end
 
   def set_team_role
-    @user.add_role(params[:team].downcase.split(' ').join('_').to_sym, Team.find_by(name: params[:team].split('_').map(&:capitalize).join(' ')))
+    @user.add_role(params[:team].downcase.split(' ').join('_').to_sym, Team.find_by(name: params[:team])
   end
 
   def handle_confirmation
