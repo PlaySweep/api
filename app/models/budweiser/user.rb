@@ -26,7 +26,7 @@ class User < ApplicationRecord
   scope :count_by_team, ->(team_id) { joins(:roles).where('roles.resource_id = ?', team_id) }
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
 
-  after_create :assign_default_role
+  # after_create :assign_default_role
 
   def self.by_name full_name
     full_name = full_name.split(' ')
