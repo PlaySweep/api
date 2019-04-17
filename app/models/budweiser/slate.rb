@@ -22,7 +22,7 @@ class Slate < ApplicationRecord
   scope :total_entry_count, -> { joins(:cards).count }
   scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
   
-  after_update :change_status, :result_slate, :start_winner_confirmation_window
+  after_update :change_status, :result_slate, :settle_entries #:start_winner_confirmation_window
 
   accepts_nested_attributes_for :prizes
 
@@ -72,8 +72,12 @@ class Slate < ApplicationRecord
 
   private
 
+  # def result_slate
+  #   (send_winning_message && send_losing_message) and initialize_select_winner_process if saved_change_to_status?(to: 'complete') and events_are_completed?
+  # end
+
   def result_slate
-    (send_winning_message && send_losing_message) and initialize_select_winner_process if saved_change_to_status?(to: 'complete') and events_are_completed?
+    (send_winning_message && send_losing_message) if saved_change_to_status?(to: 'complete') and events_are_completed?
   end
 
   def change_status
@@ -84,8 +88,12 @@ class Slate < ApplicationRecord
     card.user.entries.unused.each { |entry| entry.update_attributes(slate_id: id) unless entry.slate_id? }
   end
 
+  # def settle_entries
+  #   entries.each { |entry| entry.update_attributes(used: true) } if saved_change_to_status?(to: 'done')
+  # end
+
   def settle_entries
-    entries.each { |entry| entry.update_attributes(used: true) } if saved_change_to_status?(to: 'done')
+    entries.each { |entry| entry.update_attributes(used: true) } if saved_change_to_winner_id
   end
 
   def send_winning_message
