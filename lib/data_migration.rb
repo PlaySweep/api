@@ -18,4 +18,12 @@ class DataMigration
       user.update_attributes(gender: json_response["gender"]) if user.gender.nil? and json_response["probability"] > 0.75
     end
   end
+
+  def self.remove_jsonb
+    Apartment::Tenant.switch!('budweiser')
+    Slate.all.each do |slate|
+      data = slate.data.reject {|k| k == "prizing_category" }
+      slate.update_attributes(data: data)
+    end
+  end
 end
