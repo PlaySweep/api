@@ -7,4 +7,12 @@ class Card < ApplicationRecord
 
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) } 
 
+  after_create :send_slate_notification
+
+  private
+
+  def send_slate_notification
+    SendSlateNotificationJob.perform_later(user_id)
+  end
+
 end
