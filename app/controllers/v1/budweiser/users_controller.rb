@@ -4,42 +4,48 @@ class V1::Budweiser::UsersController < BudweiserController
   skip_before_action :authenticate!, only: :create
 
   def index
-    @users = BudweiserUser.all
+    @users = User.all
     respond_with @users
   end
 
   def show
-    @user = BudweiserUser.find_by(facebook_uuid: params[:facebook_uuid])
+    @user = User.find_by(facebook_uuid: params[:facebook_uuid])
     respond_with @user
   end
 
   def create
-    @user = BudweiserUser.create(user_params)
-    if @user
-      BudweiserPreference.create(user_id: @user.id)
-      increment_entries_for_referrer if params[:referrer_uuid] 
+    @user = User.create(user_params)
+    if @user.save
+      increment_entries_for_referrer if params[:referrer_uuid]
+      set_team_role if params[:team]
     end
     respond_with @user
   end
 
   def update
-    #TODO refactor this method so it doesnt run every time the user gets updated
-    @user = BudweiserUser.find_by(facebook_uuid: params[:facebook_uuid])
+    @user = User.find_by(facebook_uuid: params[:facebook_uuid])
     @user.update_attributes(user_params)
-    unless @user.locked
-      if @user.preference.owner_id
-        ConfirmAccountNotificationJob.perform_later(@user.id)
-      else
-        PromptTeamSelectionJob.perform_later(@user.id)
-      end
-    end
+    handle_confirmation if params[:confirmation] and !@user.locked
     respond_with @user
   end
 
   private
 
   def increment_entries_for_referrer
-    BudweiserUser.find_by(facebook_uuid: params[:referrer_uuid]).entries.create!
+    User.find_by(facebook_uuid: params[:referrer_uuid]).entries.create!
+  end
+
+  def set_team_role
+    @user.add_role(params[:team].downcase.split(' ').join('_').to_sym, Team.find_by(name: params[:team].split('_').map(&:capitalize).join(' ')))
+  end
+
+  def handle_confirmation
+    if @user.roles.where(resource_type: "Team").blank?
+      PromptTeamSelectionJob.perform_later(@user.id)
+    else
+      @user.add_role(:confirmed_user)
+      ConfirmAccountNotificationJob.perform_later(@user.id)
+    end
   end
 
   def user_params

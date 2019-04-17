@@ -3,7 +3,7 @@ class Admin::SlatesController < AdminController
 
   def index
     team = Team.find(params[:team_id])
-    @slates = team.slates.for_the_month.descending
+    @slates = team.slates.descending
     respond_with @slates
   end
 
@@ -38,6 +38,6 @@ class Admin::SlatesController < AdminController
   end
 
   def slate_params
-    params.require(:slate).permit(:name, :description, :start_time, :type, :owner_id, :status).merge(data: data_params)
+    params.require(:slate).permit(:name, :description, :start_time, :owner_id, :status, prizes_attributes: [:id, :product_id, :sku_id, :quantity]).merge(data: data_params)
   end
 end

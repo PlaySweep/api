@@ -2,7 +2,7 @@ class SendLosingSlateMessageJob < BudweiserJob
   @queue = :send_losing_slate_message_job
 
   def perform user_id
-    user = BudweiserUser.find(user_id)
+    user = User.find(user_id)
     messages = [
       { 
         banner: "Even the best hitters don’t bat 1000",

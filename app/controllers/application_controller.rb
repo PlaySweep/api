@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::API
+  include ActionController::Helpers
+  include ActionController::Caching
+
   before_action :authenticate!
   helper_method :current_user
 

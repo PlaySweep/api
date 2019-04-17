@@ -23,6 +23,8 @@ gem 'bcrypt', '~> 3.1.7'
 
 gem 'rb-readline'
 
+gem 'rufus-scheduler'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
@@ -37,12 +39,13 @@ gem 'rack-cors'
 
 gem 'responders'
 
+gem 'rolify'
+
 gem "jsonb_accessor", "~> 1.0.0"
 gem 'faraday'
 gem 'hash_dot'
 gem 'json'
 gem 'facebook-messenger'
-gem 'migration_data'
 
 gem 'apartment'
 gem 'apartment-activejob'

@@ -1,15 +1,32 @@
 class User < ApplicationRecord
+  rolify
 
-  has_one :preference, dependent: :destroy
   has_many :sweeps, dependent: :destroy
   has_many :picks, dependent: :destroy
   has_many :events, through: :picks
   has_many :cards, dependent: :destroy
   has_many :slates, through: :cards
   has_many :entries, dependent: :destroy
+  has_many :orders
+  has_one :preference, foreign_key: :user_id
+
+  jsonb_accessor :data,
+    referral: [:string, default: "landing_page"]
+
+  jsonb_accessor :shipping,
+    line1: [:string, default: nil],
+    line2: [:string, default: nil],
+    city: [:string, default: nil],
+    state: [:string, default: nil],
+    postal_code: [:string, default: nil],
+    country: [:string, default: "United States"]
 
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
+  scope :count_by_team, ->(team_id) { joins(:roles).where('roles.resource_id = ?', team_id) }
+  scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
+
+  # after_create :assign_default_role
 
   def self.by_name full_name
     full_name = full_name.split(' ')
@@ -20,20 +37,6 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
-  # def playing_streak
-  #   slate_dates = Slate.order("start_time DESC").pluck(:start_time).map(&:to_date)
-  #   picked_dates = slates.order("start_time DESC").pluck(:start_time).map(&:to_date)
-  #   streak = picked_dates.first == slate_dates.first && (!picked_dates.first.nil? && !slate_dates.first.nil?) ? 1 : 0
-  #   picked_dates.each_with_index do |picked_date, index|
-  #     if picked_dates[index+1] == slate_dates[index+1]
-  #       streak += 1
-  #     else
-  #       break
-  #     end
-  #   end
-  #   streak
-  # end
-
   def won_slate? slate_id
     slate = slates.find_by(id: slate_id)
     event_ids = events.where(slate_id: slate_id).map(&:id)
@@ -43,6 +46,12 @@ class User < ApplicationRecord
     else
       return false
     end
+  end
+
+  private  
+
+  def assign_default_role
+    self.add_role(:new_user) if self.roles.blank?
   end
 
 end

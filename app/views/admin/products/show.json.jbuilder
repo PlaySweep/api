@@ -1,0 +1,1 @@
+json.product @product, partial: 'admin/products/product', as: :product

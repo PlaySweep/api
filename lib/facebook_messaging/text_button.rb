@@ -4,7 +4,7 @@ module FacebookMessaging
   class TextButton
     include Facebook::Messenger
 
-    def self.deliver user, title, message, notification_type="REGULAR"
+    def self.deliver user, title, message, notification_type="REGULAR", url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load"
       begin
         Bot.deliver({
           recipient: {
@@ -19,7 +19,7 @@ module FacebookMessaging
                 buttons: [
                   {
                     type: :web_url,
-                    url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load",
+                    url: url,
                     title: title,
                     webview_height_ratio: 'full',
                     messenger_extensions: true

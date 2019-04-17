@@ -2,7 +2,7 @@ class PromptTeamSelectionJob < BudweiserJob
   @queue = :prompt_team_selection_job
 
   def perform user_id
-    user = BudweiserUser.find(user_id)
+    user = User.find(user_id)
     quick_replies = Team.ordered.sponsored.active.map do |team, i|
       {
         "content_type": "text",

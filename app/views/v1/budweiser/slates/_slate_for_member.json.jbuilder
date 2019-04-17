@@ -6,7 +6,15 @@ json.events slate.events.ordered, partial: 'v1/budweiser/events/event', as: :eve
 json.status slate.status
 json.start_time slate.start_time
 json.local slate.local
-json.prizing_category slate.prizing_category
+json.prizes slate.prizes.each do |prize|
+  json.id prize.id
+  json.slate_id prize.slate_id
+  json.sku_id prize.sku_id
+  json.name prize.product.name
+  json.description prize.product.description
+  json.quantity prize.quantity
+  json.image prize.product.image
+end
 json.team do
   json.id slate.team.id
   json.image slate.team.image
