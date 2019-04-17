@@ -17,7 +17,7 @@ class V1::Budweiser::UsersController < BudweiserController
     @user = User.create(user_params)
     if @user.save
       increment_entries_for_referrer if params[:referrer_uuid]
-      @user.add_role(:washington_nationals, Team.find_by(name: "Washington Nationals")) if params[:team]
+      @user.add_role(:washington_nationals, Team.find_by(name: "Washington Nationals"))
     end
     respond_with @user
   end
