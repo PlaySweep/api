@@ -17,7 +17,7 @@ class V1::Budweiser::UsersController < BudweiserController
     @user = User.create(user_params)
     if @user.save
       increment_entries_for_referrer if params[:referrer_uuid]
-      @user.add_role(:washington_nationals, Team.find_by(name: "Washington Nationals"))
+      @user.add_role(params[:team].downcase.split(' ').join('_').to_sym, Team.find_by(name: params[:team])) if params[:team]
     end
     respond_with @user
   end
@@ -33,10 +33,6 @@ class V1::Budweiser::UsersController < BudweiserController
 
   def increment_entries_for_referrer
     User.find_by(facebook_uuid: params[:referrer_uuid]).entries.create!
-  end
-
-  def set_team_role
-    @user.add_role(params[:team].downcase.split(' ').join('_').to_sym, Team.find_by(name: params[:team]))
   end
 
   def handle_confirmation

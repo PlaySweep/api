@@ -14,15 +14,15 @@ def fetch_user_acquisition_data
   CSV.open("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_acquisition_data.csv", "wb") do |csv|
     csv << ["Date", "Team", "Attempted Sign Ups", "Confirmed Users", "Facebook", "Instagram", "Twitter", "Organic"]
     teams.each do |team|
-      team_query = User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).joins(:preference).where("preferences.data->>'owner_id' = :owner_id", owner_id: "#{team.id}")
-      confirmed_team_query = User.where(confirmed: true).where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).joins(:preference).where("preferences.data->>'owner_id' = :owner_id", owner_id: "#{team.id}")
+      team_query = User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).joins(:roles).where("roles.resource_id = ?", team.id)
+      confirmed_team_query = User.where(confirmed: true).where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).joins(:roles).where("roles.resource_id = ?", team.id)
       csv << [(DateTime.current - 1).to_date.strftime("%Y%m%d"), team.name, team_query.count, confirmed_team_query.count, for_referral(resource: team, source: "facebook").count, for_referral(resource: team, source: "instagram").count, for_referral(resource: team, source: "twitter").count, for_referral(resource: team, source: "landing_page").count]
     end
   end
 end
 
 def for_referral resource:, source:
-  User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).joins(:preference).where("preferences.data->>'owner_id' = :owner_id", owner_id: "#{resource.id}").where("users.data->>'referral' = :referral", referral: source)
+  User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).joins(:roles).where("roles.resource_id = ?", team.id).where("users.data->>'referral' = :referral", referral: source)
 end
 
 def fetch_engagement_data
