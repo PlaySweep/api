@@ -7,7 +7,7 @@ class Pick < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
-  validates :selection_id, uniqueness: { scope: :event_id, message: "only 1 per event" }
+  # validates :selection_id, uniqueness: { scope: :event_id, message: "only 1 per event" }
 
   scope :for_slate, ->(slate_id) { joins(:event).where('events.slate_id = ?', slate_id) }
 
