@@ -11,4 +11,8 @@ class Team < Owner
     entry_image: [:string, default: nil],
     local_image: [:string, default: nil],
     sponsored: [:boolean, default: false]
+
+  def abbreviation
+    name.split(' ')[-1]
+  end
 end

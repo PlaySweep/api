@@ -6,7 +6,7 @@ class PromptTeamSelectionJob < BudweiserJob
     quick_replies = Team.ordered.sponsored.active.map do |team, i|
       {
         "content_type": "text",
-        "title": team.name,
+        "title": team.abbreviation,
         "payload":"#{team.name}_#{team.id}",
       }
     end
