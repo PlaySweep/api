@@ -26,6 +26,7 @@ class V1::Budweiser::UsersController < BudweiserController
     @user = User.find_by(facebook_uuid: params[:facebook_uuid])
     @user.update_attributes(user_params)
     handle_confirmation if params[:confirmation] and !@user.locked
+    @user.add_role(params[:team].downcase.split(' ').join('_').to_sym, Team.find_by(name: params[:team])) if params[:team]
     respond_with @user
   end
 
