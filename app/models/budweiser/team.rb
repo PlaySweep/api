@@ -10,9 +10,7 @@ class Team < Owner
   jsonb_accessor :data,
     entry_image: [:string, default: nil],
     local_image: [:string, default: nil],
-    sponsored: [:boolean, default: false]
-
-  def abbreviation
-    name.split(' ')[-1]
-  end
+    sponsored: [:boolean, default: false],
+    initials: [:string, default: nil],
+    abbreviation: [:string, default: nil]
 end
