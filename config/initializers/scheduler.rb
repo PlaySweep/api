@@ -3,10 +3,15 @@ require 'rufus-scheduler'
 scheduler = Rufus::Scheduler::singleton
 
 scheduler.cron '30 9 * * *' do
-  puts "Creating CSV"
+  puts "Creating CSV..."
   Apartment::Tenant.switch!('budweiser')
   fetch_user_acquisition_data
   fetch_engagement_data
+end
+
+scheduler.cron '45 9 * * *' do
+  puts "Emailing Ben Analytics..."
+  DataMailer.analytics.deliver_now
 end
 
 def fetch_user_acquisition_data

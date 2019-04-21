@@ -2,7 +2,7 @@ class V1::Budweiser::SlatesController < BudweiserController
   respond_to :json
 
   def index
-    @slates = Slate.filtered(current_user.roles.map(&:resource_id)).descending.available
+    @slates = Slate.filtered(current_user.roles.map(&:resource_id)).ascending.available
     respond_with @slates
   end
 
