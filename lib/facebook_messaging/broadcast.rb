@@ -1,5 +1,8 @@
+require 'facebook/messenger'
+load 'lib/facebook_messaging/base.rb'
+
 module FacebookMessaging
-  class Broadcast
+  class Broadcast < Base
     def self.deliver
       DeliverBroadcastJob.perform_later
     end
@@ -7,7 +10,7 @@ module FacebookMessaging
     def self.create_broadcast_message resource:, content:, quick_replies: 
       conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/me/")
       body = [{text: content, quick_replies: quick_replies}].to_json
-      response = conn.post("message_creatives?access_token=#{ENV['ACCESS_TOKEN']}", { messages: body })
+      response = conn.post("message_creatives?access_token=#{credentials.send(Apartment::Tenant.current).try(:access_token))}", { messages: body })
       message_creative_id = JSON.parse(response.body)["message_creative_id"]
       resource.update_attributes(broadcast_message_id: message_creative_id)
     end
@@ -16,7 +19,7 @@ module FacebookMessaging
       begin
         conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/me/")
         params = { name: "#{resource.class.name} #{resource.id}" }
-        response = conn.post("custom_labels?access_token=#{ENV['ACCESS_TOKEN']}", params)
+        response = conn.post("custom_labels?access_token=#{credentials.send(Apartment::Tenant.current).try(:access_token))}", params)
         label_id = JSON.parse(response.body)["id"]
         resource.update_attributes(broadcast_label_id: label_id)
       rescue Facebook::Messenger::FacebookError => e
@@ -30,7 +33,7 @@ module FacebookMessaging
         if user.roles.find_by(resource_type: "Team").any?
           conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/#{user.roles.find_by(resource_type: "Team").resource.broadcast_label_id}/")
           params = { user: user.facebook_uuid }
-          response = conn.post("label?access_token=#{ENV['ACCESS_TOKEN']}", params)
+          response = conn.post("label?access_token=#{credentials.send(Apartment::Tenant.current).try(:access_token))}", params)
           success = JSON.parse(response.body)["success"]
           if success == true
             puts "Successfully subscribed user with Broadcast Label 👍"
@@ -49,7 +52,7 @@ module FacebookMessaging
         if user.roles.find_by(resource_type: "Team").any?
           conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/#{user.roles.find_by(resource_type: "Team").resource.broadcast_label_id}/")
           params = { user: user.facebook_uuid }
-          response = conn.delete("label?user=#{user.facebook_uuid}&access_token=#{ENV['ACCESS_TOKEN']}", params)
+          response = conn.delete("label?user=#{user.facebook_uuid}&access_token=#{credentials.send(Apartment::Tenant.current).try(:access_token))}", params)
           success = JSON.parse(response.body)["success"]
           if success == true
             puts "Successfully unsubscribed user with Broadcast Label 👍"
@@ -66,7 +69,7 @@ module FacebookMessaging
     def self.fetch_all_labels
       begin
         conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/me/")
-        response = conn.get("custom_labels?fields=name&access_token=#{ENV['ACCESS_TOKEN']}")
+        response = conn.get("custom_labels?fields=name&access_token=#{credentials.send(Apartment::Tenant.current).try(:access_token))}")
         data = JSON.parse(response.body)["data"]
         puts data
       rescue Facebook::Messenger::FacebookError => e
@@ -77,7 +80,7 @@ module FacebookMessaging
     def self.destroy label_id
       begin
         conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/#{label_id}")
-        response = conn.delete("?access_token=#{ENV['ACCESS_TOKEN']}")
+        response = conn.delete("?access_token=#{credentials.send(Apartment::Tenant.current).try(:access_token))}")
         success = JSON.parse(response.body)["success"]
         if success == true
           puts "Successfully deleted Broadcast Label 👍"
