@@ -9,10 +9,20 @@ class Pick < ApplicationRecord
 
   validates :selection_id, uniqueness: { scope: :user_id, message: "only 1 per event" }
 
+  around_save :catch_uniqueness_exception
+
   scope :for_slate, ->(slate_id) { joins(:event).where('events.slate_id = ?', slate_id) }
 
   def current_slate
     event.slate
+  end
+
+  private
+
+  def catch_uniqueness_exception
+    yield
+  rescue ActiveRecord::RecordNotUnique
+    self.errors.add(:selection, :taken)
   end
 
 end
