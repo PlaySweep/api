@@ -15,8 +15,8 @@ class Team < Owner
     sponsored: [:boolean, default: false],
     initials: [:string, default: nil],
     abbreviation: [:string, default: nil],
-    lat: [:string, default: nil],
-    long: [:string, default: nil]
+    lat: [:float, default: nil],
+    long: [:float, default: nil]
 
   private
 
