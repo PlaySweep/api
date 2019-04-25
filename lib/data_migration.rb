@@ -21,11 +21,13 @@ class DataMigration
 
   def self.update_team_details_for league
     Apartment::Tenant.switch!('budweiser')
-    response = HTTParty.get("https://erikberg.com/#{league}/teams.json")
+    response = Faraday.get("https://erikberg.com/#{league}/teams.json")
     json_response = JSON.parse(response.body)
-    json_team = team['team_id'].split('-').map(&:capitalize).join(' ')
-    t = Team.find_by(name: json_team)
-    t.update_attributes(initials: json_team["abbreviation"], abbreviation: json_team["last_name"]) if t
+    json_response.each do |team|
+      json_team = team['team_id'].split('-').map(&:capitalize).join(' ')
+      t = Team.find_by(name: json_team)
+      t.update_attributes(initials: team["abbreviation"], abbreviation: team["last_name"]) if t
+    end
   end
 
   def self.remove_jsonb
