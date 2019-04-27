@@ -32,7 +32,7 @@ module FacebookMessaging
     def self.subscribe user_id
       begin
         user = User.find_by(id: user_id)
-        if user.roles.find_by(resource_type: "Team").any?
+        if user.roles.find_by(resource_type: "Team")
           conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/#{user.roles.find_by(resource_type: "Team").resource.broadcast_label_id}/")
           params = { user: user.facebook_uuid }
           response = conn.post("label?access_token=#{$credentials.send(Apartment::Tenant.current).access_token}", params)
