@@ -2,16 +2,21 @@ require 'rufus-scheduler'
 
 scheduler = Rufus::Scheduler::singleton
 
-scheduler.cron '30 9 * * *' do
+scheduler.cron '30 10 * * *' do
   puts "Creating CSV..."
   Apartment::Tenant.switch!('budweiser')
   fetch_user_acquisition_data
   fetch_engagement_data
 end
 
-scheduler.cron '45 9 * * *' do
+scheduler.cron '45 10 * * *' do
   puts "Emailing Ben Analytics..."
   DataMailer.analytics.deliver_now
+end
+
+scheduler.cron '*/15 * * * *' do
+  puts "Start games..."
+  Slate.pending.where("start_time < ?", DateTime.current).each { |slate| slate.started! }
 end
 
 def fetch_user_acquisition_data
