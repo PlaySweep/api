@@ -14,11 +14,6 @@ scheduler.cron '45 10 * * *' do
   DataMailer.analytics.deliver_now
 end
 
-scheduler.cron '*/15 * * * *' do
-  puts "Start games..."
-  Slate.pending.where("start_time < ?", DateTime.current).each { |slate| slate.started! }
-end
-
 def fetch_user_acquisition_data
   teams = Team.active
   CSV.open("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_acquisition_data.csv", "wb") do |csv|
