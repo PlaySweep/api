@@ -1,5 +1,6 @@
 budweiser:
-  access_token: 12345
-
+  access_token: ENV.fetch("ACCESS_TOKEN")
+  webview_url: Env.fetch("WEBVIEW_URL")
 turner: 
-  access_token: 54321
+  access_token: ENV.fetch("TURNER_ACCESS_TOKEN")
+  webview_url: ENV.fetch("TURNER_WEBVIEW_URL")
