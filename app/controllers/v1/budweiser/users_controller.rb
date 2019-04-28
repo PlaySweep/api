@@ -9,7 +9,7 @@ class V1::Budweiser::UsersController < BudweiserController
   end
 
   def show
-    @user = User.find_by(facebook_uuid: params[:facebook_uuid])
+    @user = current_user
     respond_with @user
   end
 
@@ -17,16 +17,16 @@ class V1::Budweiser::UsersController < BudweiserController
     @user = User.create(user_params)
     if @user.save
       increment_entries_for_referrer if params[:referrer_uuid]
-      @user.add_role(params[:team].downcase.split(' ').join('_').to_sym, Team.find_by(name: params[:team])) if params[:team]
+      add_role and subscribe_to(resource: Team.find_by(name: params[:team]), user: @user) if params[:team]
     end
     respond_with @user
   end
 
   def update
-    @user = User.find_by(facebook_uuid: params[:facebook_uuid])
+    @user = current_user
     @user.update_attributes(user_params)
     handle_confirmation if params[:confirmation] and !@user.locked
-    @user.add_role(params[:team].downcase.split(' ').join('_').to_sym, Team.find_by(name: params[:team])) if params[:team]
+    add_role and subscribe_to(resource: Team.find_by(name: params[:team]), user: @user) if params[:team] 
     respond_with @user
   end
 
@@ -43,6 +43,15 @@ class V1::Budweiser::UsersController < BudweiserController
       @user.add_role(:confirmed_user)
       ConfirmAccountNotificationJob.perform_later(@user.id)
     end
+  end
+
+  def add_role
+    symbolized_role = params[:team].downcase.split(' ').join('_').to_sym
+    @user.add_role(symbolized_role, Team.find_by(name: params[:team]))
+  end
+
+  def subscribe_to resource:, user:
+    FacebookMessaging::Broadcast.subscribe(resource: resource, user: user)
   end
 
   def user_params

@@ -37,4 +37,11 @@ class DataMigration
       slate.update_attributes(data: data)
     end
   end
+
+  def self.update_broadcast_labels
+    Apartment::Tenant.switch!('budweiser')
+    Team.all.each do |team|
+      team.targets.create(name: "#{team.class.name} #{team.id}", label_id: team.broadcast_label_id, category: "Global")
+    end
+  end
 end
