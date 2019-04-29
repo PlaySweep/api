@@ -7,11 +7,12 @@ class Pick < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
-  validates :selection_id, uniqueness: { scope: :user_id, message: "only 1 per event" }
+  validates :selection_id, :event_id, uniqueness: { scope: :user_id, message: "only 1 per event" }
 
   around_save :catch_uniqueness_exception
 
   scope :for_slate, ->(slate_id) { joins(:event).where('events.slate_id = ?', slate_id) }
+  scope :duplicates, -> { select([:user_id, :selection_id, :event_id]).group(:user_id, :selection_id, :event_id).having("count(*) > 1").size }
 
   def current_slate
     event.slate

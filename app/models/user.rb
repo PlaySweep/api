@@ -34,22 +34,13 @@ class User < ApplicationRecord
   end
 
   def full_name
-    if first_name && last_name
-      "#{first_name} #{last_name}"
-    else
-      ""
-    end
+    first_name && last_name ? "#{first_name} #{last_name}" : ""
   end
 
-  def won_slate? slate_id
-    slate = slates.find_by(id: slate_id)
-    event_ids = events.where(slate_id: slate_id).map(&:id)
+  def won_slate? slate
+    event_ids = events.where(slate_id: slate.id).map(&:id)
     picks_for_slate = picks.where(event_id: event_ids).map(&:selection_id)
-    if picks_for_slate.sort == slate.winners.map(&:id).sort
-      return true
-    else
-      return false
-    end
+    picks_for_slate.sort == slate.winners.map(&:id).uniq.sort
   end
 
   private  
