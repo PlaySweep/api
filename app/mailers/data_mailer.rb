@@ -12,4 +12,16 @@ class DataMailer < ApplicationMailer
       body: "Attached below."
     )
   end
+
+  def analytics_for day
+    acquistion_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_acquisition_data.csv")
+    engagement_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_engagement_data.csv")
+    attachments["#{(DateTime.current - day).to_date}_acquisition_data.csv"] = { mime_type: 'text/csv', content: acquistion_csv }
+    attachments["#{(DateTime.current - day).to_date}_engagement_data.csv"] = { mime_type: 'text/csv', content: engagement_csv }
+    mail(
+      to: "ben@endemiclabs.co",
+      subject: "Analytics - #{(DateTime.current - day).to_date}",
+      body: "Attached below."
+    )
+  end
 end

@@ -15,7 +15,7 @@ scheduler.cron '45 10 * * *' do
 end
 
 def fetch_user_acquisition_data
-  teams = Team.active
+  teams = Team.all
   CSV.open("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_acquisition_data.csv", "wb") do |csv|
     csv << ["Date", "Team", "Attempted Sign Ups", "Confirmed Users", "Facebook", "Instagram Post", "Instagram Story", "Twitter", "Organic"]
     teams.each do |team|
@@ -31,7 +31,7 @@ def for_referral resource:, source:
 end
 
 def fetch_engagement_data
-  slate_ids = Team.active.map do |team|
+  slate_ids = Team.all.map do |team|
     Slate.complete.where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).filtered(team.id).joins(:cards).group(:id).order(Arel.sql("COUNT(cards.id) DESC")).count.keys
   end.flatten
   CSV.open("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_engagement_data.csv", "wb") do |csv|
