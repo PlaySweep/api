@@ -13,7 +13,7 @@ class Slate < ApplicationRecord
   has_many :cards, dependent: :destroy
   has_many :prizes, dependent: :destroy
 
-  enum status: [ :inactive, :pending, :started, :complete ]
+  enum status: [ :inactive, :pending, :started, :complete, :done ]
 
   scope :available, -> { where(status: [1, 2]) }
   scope :ascending, -> { order(start_time: :asc) }
