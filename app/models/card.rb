@@ -5,6 +5,8 @@ class Card < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
+  validates :slate_id, uniqueness: { scope: :user_id, message: "only 1 Card per Slate" }
+
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) } 
 
   after_create :send_slate_notification
