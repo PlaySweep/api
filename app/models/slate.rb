@@ -18,6 +18,7 @@ class Slate < ApplicationRecord
   scope :available, -> { where(status: [1, 2]) }
   scope :ascending, -> { order(start_time: :asc) }
   scope :descending, -> { order(start_time: :desc) }
+  scope :since_last_week, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day) }
   scope :for_the_month, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day + 7) }
   scope :filtered, ->(owner_id) { where(owner_id: owner_id) } 
   scope :total_entry_count, -> { joins(:cards).count }

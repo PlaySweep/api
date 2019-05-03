@@ -16,11 +16,13 @@ class SelectWinnerJob < BudweiserJob
         user_id = winner_collection.sample.user_id
         slate.previous_user_ids.push(user_id)
         slate.update_attributes(winner_id: user_id, previous_user_ids: slate.previous_user_ids)
+        puts "Found #{User.find(user_id).inspect} in winning cards"
         found_a_winner = true
       else
         user_id = loser_collection.sample.user_id
         slate.previous_user_ids.push(user_id)
         slate.update_attributes(winner_id: user_id, previous_user_ids: slate.previous_user_ids)
+        puts "Found #{User.find(user_id).inspect} in losing cards"
         found_a_winner = true
       end
     end
