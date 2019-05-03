@@ -6,6 +6,8 @@ json.events slate.events.ordered, partial: 'v1/turner/events/event', as: :event
 json.status slate.status
 json.start_time slate.start_time
 json.local slate.local
+json.winner slate.winner, partial: 'v1/budweiser/users/user_for_member', as: :user
+json.total_sweeps slate.cards.win.size
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
   json.slate_id prize.slate_id
@@ -21,9 +23,11 @@ json.team do
   json.local_image slate.team.try(:local_image)
   json.field slate.field
   json.pitcher slate.try(:pitcher)
+  json.standing slate.try(:standing)
 end
 json.opponent do
   json.id slate.try(:opponent).try(:id)
   json.image slate.try(:opponent).try(:image)
   json.pitcher slate.try(:opponent_pitcher)
+  json.standing slate.try(:opponent_standing)
 end if slate.opponent
