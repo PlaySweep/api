@@ -37,7 +37,8 @@ class Slate < ApplicationRecord
     pitcher: [:string, default: nil],
     era: [:string, default: nil],
     opponent_era: [:string, default: nil],
-    previous_user_ids: [:string, array: true, default: []]
+    previous_user_ids: [:string, array: true, default: []],
+    standing: [:string, default: nil]
 
   def progress current_user_id
     if started?
