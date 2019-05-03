@@ -45,7 +45,12 @@ class V1::Budweiser::UsersController < BudweiserController
     end
   end
 
+  def data_params
+    return params[:user][:data] if params[:user][:data].nil?
+    JSON.parse(params[:user][:data].to_json)
+  end
+
   def user_params
-    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed, :locked, :gender, :referral)
+    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed, :locked, :gender, :referral).merge(data: data_params)
   end
 end
