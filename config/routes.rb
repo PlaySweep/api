@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       resources :slates, only: [:index, :show]
       resources :cards, only: [:create]
       resources :entries, only: [:create]
+      resources :orders, only: [:create]
       get 'fetch_card_for_slate', to: 'cards#fetch_card_for_slate'
     end
 
