@@ -21,11 +21,9 @@ json.team do
   json.local_image slate.team.try(:local_image)
   json.field slate.field
   json.pitcher slate.try(:pitcher)
-  json.era slate.try(:era)
 end
 json.opponent do
   json.id slate.try(:opponent).try(:id)
   json.image slate.try(:opponent).try(:image)
   json.pitcher slate.try(:opponent_pitcher)
-  json.era slate.try(:opponent_era)
 end if slate.opponent
