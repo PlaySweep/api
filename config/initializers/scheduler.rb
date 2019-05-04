@@ -2,6 +2,12 @@ require 'rufus-scheduler'
 
 scheduler = Rufus::Scheduler::singleton
 
+if Rails.env == "beta"
+  scheduler.every "30s" do
+    puts "I run in Beta Env"
+  end
+end
+
 scheduler.cron '30 10 * * *' do
   puts "Creating CSV..."
   Apartment::Tenant.switch!('budweiser')
