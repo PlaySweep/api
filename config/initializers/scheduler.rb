@@ -2,22 +2,18 @@ require 'rufus-scheduler'
 
 scheduler = Rufus::Scheduler::singleton
 
-if Rails.env == "beta"
-  scheduler.every "30s" do
-    puts "I run in Beta Env"
+unless Rails.env.production?
+  scheduler.cron '30 10 * * *' do
+    puts "Creating CSV..."
+    Apartment::Tenant.switch!('budweiser')
+    fetch_user_acquisition_data
+    fetch_engagement_data
   end
-end
 
-scheduler.cron '30 10 * * *' do
-  puts "Creating CSV..."
-  Apartment::Tenant.switch!('budweiser')
-  fetch_user_acquisition_data
-  fetch_engagement_data
-end
-
-scheduler.cron '45 10 * * *' do
-  puts "Emailing Ben Analytics..."
-  DataMailer.analytics.deliver_now
+  scheduler.cron '45 10 * * *' do
+    puts "Emailing Ben Analytics..."
+    DataMailer.analytics.deliver_now
+  end
 end
 
 def fetch_user_acquisition_data
