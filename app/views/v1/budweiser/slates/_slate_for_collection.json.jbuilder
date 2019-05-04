@@ -9,6 +9,7 @@ json.local slate.local
 json.result slate.result
 json.score slate.score
 json.winner slate.winner, partial: 'v1/budweiser/users/user_for_member', as: :user
+json.previous_user_ids slate.previous_user_ids
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
   json.slate_id prize.slate_id

@@ -7,6 +7,7 @@ json.status slate.status
 json.start_time slate.start_time
 json.local slate.local
 json.winner slate.winner, partial: 'v1/budweiser/users/user_for_member', as: :user
+json.previous_user_ids slate.previous_user_ids
 json.total_sweeps slate.cards.win.size
 json.result slate.result
 json.score slate.score

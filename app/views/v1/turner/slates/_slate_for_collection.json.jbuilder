@@ -8,6 +8,7 @@ json.start_time slate.start_time
 json.local slate.local
 json.result slate.result
 json.score slate.score
+json.previous_user_ids slate.previous_user_ids
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
   json.slate_id prize.slate_id
