@@ -12,6 +12,7 @@ json.prizes slate.prizes.each do |prize|
   json.name prize.product.name
   json.description prize.product.description
   json.quantity prize.quantity
+  json.category prize.product.category
 end
 json.data slate.data
 json.entries slate.entries, partial: 'admin/entries/entry_for_admin', as: :entry

@@ -18,6 +18,7 @@ json.prizes slate.prizes.each do |prize|
   json.description prize.product.description
   json.quantity prize.quantity
   json.image prize.product.image
+  json.category prize.product.category
 end
 json.team do
   json.id slate.team.id
