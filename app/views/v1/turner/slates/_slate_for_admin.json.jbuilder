@@ -5,8 +5,6 @@ json.event_size slate.events.size
 json.status slate.status
 json.events slate.events.ordered, partial: 'admin/events/event_for_admin', as: :event
 json.local slate.local
-json.result slate.result
-json.score slate.score
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
   json.slate_id prize.slate_id

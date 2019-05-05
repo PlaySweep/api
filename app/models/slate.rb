@@ -92,10 +92,6 @@ class Slate < ApplicationRecord
     entries.each { |entry| entry.update_attributes(used: true) } if saved_change_to_status?(to: 'done')
   end
 
-  # def settle_entries
-  #   entries.each { |entry| entry.update_attributes(used: true) } if saved_change_to_winner_id
-  # end
-
   def send_winning_message
     cards.win.each do |card|
       SendWinningSlateMessageJob.perform_later(card.user_id)
