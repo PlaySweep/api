@@ -94,13 +94,13 @@ class Slate < ApplicationRecord
 
   def send_winning_message
     cards.win.each do |card|
-      SendWinningSlateMessageJob.perform_later(card.user_id)
+      SendWinningSlateMessageJob.perform_later(card.user_id, card.slate_id)
       card.user.entries.create(slate_id: id) and card.user.entries.unused.each { |entry| entry.update_attributes(slate_id: id) unless entry.slate_id? } and card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
     end
   end
 
   def send_losing_message
-    cards.loss.each { |card| SendLosingSlateMessageJob.perform_later(card.user_id)}
+    cards.loss.each { |card| SendLosingSlateMessageJob.perform_later(card.user_id, card.slate_id)}
   end
 
   def initialize_select_winner_process
