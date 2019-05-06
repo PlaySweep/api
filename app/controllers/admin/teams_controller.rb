@@ -5,6 +5,7 @@ class Admin::TeamsController < AdminController
     @teams = Team.ordered
     @teams = @teams.sponsored if params[:sponsored]
     @teams = @teams.active if params[:active]
+    @teams = @teams.active.by_name(params[:team]) if params[:team]
     respond_with @teams
   end
 

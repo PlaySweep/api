@@ -58,8 +58,9 @@ class V1::Budweiser::UsersController < BudweiserController
   end
 
   def add_role
-    symbolized_role = params[:team].downcase.split(' ').join('_').to_sym
-    @user.add_role(symbolized_role, Team.by_name(params[:team]).first)
+    team = Team.by_name(params[:team]).first
+    symbolized_role = team.name.downcase.split(' ').join('_').to_sym
+    @user.add_role(symbolized_role, team)
   end
 
   def remove_role
