@@ -2,6 +2,7 @@ class V1::Budweiser::UsersController < BudweiserController
   respond_to :json
 
   skip_before_action :authenticate!, only: :create
+  before_action :set_user, only: [:add_role, :remove_role]
 
   def index
     @users = User.all
@@ -26,12 +27,16 @@ class V1::Budweiser::UsersController < BudweiserController
     @user = current_user
     @user.update_attributes(user_params)
     handle_confirmation if params[:confirmation] and !@user.locked
-    unsubscribe(user: @user) and remove_role if params[:team]
+    remove_role if params[:team]
     add_role and subscribe_to(resource: Team.find_by(name: params[:team]), user: @user) if params[:team] 
     respond_with @user
   end
 
   private
+
+  def set_user
+    @user = current_user
+  end
 
   def increment_entries_for_referrer
     User.find_by(facebook_uuid: params[:referrer_uuid]).entries.create!
