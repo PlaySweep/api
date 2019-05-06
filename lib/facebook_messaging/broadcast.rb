@@ -68,7 +68,8 @@ module FacebookMessaging
     def self.unsubscribe user:
       begin
         if user.roles.find_by(resource_type: "Team")
-          label_id = user.roles.find_by(resource_type: "Team").resource.targets.find_by(name: "#{resource.class.name} #{resource.id}").label_id
+          resource = user.roles.find_by(resource_type: "Team").resource
+          label_id = resource.targets.find_by(name: "#{resource.class.name} #{resource.id}").label_id
           conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/#{label_id}")
           params = { user: user.facebook_uuid }
           response = conn.delete("label?user=#{user.facebook_uuid}&access_token=#{ENV["ACCESS_TOKEN"]}", params)
