@@ -18,7 +18,7 @@ class V1::Budweiser::UsersController < BudweiserController
     if @user.save
       increment_entries_for_referrer if params[:referrer_uuid]
       if params[:team]
-        team = Team.find_by(name: params[:team])
+        team = Team.by_name(params[:team]).first
         add_role
         subscribe_to(resource: team, user: @user)
       end
@@ -31,7 +31,7 @@ class V1::Budweiser::UsersController < BudweiserController
     @user.update_attributes(user_params)
     handle_confirmation if params[:confirmation] and !@user.locked
     if params[:team]
-      team = Team.find_by(name: params[:team])
+      team = Team.by_name(params[:team]).first
 
       remove_role
       unsubscribe(user: @user)
@@ -59,7 +59,7 @@ class V1::Budweiser::UsersController < BudweiserController
 
   def add_role
     symbolized_role = params[:team].downcase.split(' ').join('_').to_sym
-    @user.add_role(symbolized_role, Team.find_by(name: params[:team]))
+    @user.add_role(symbolized_role, Team.by_name(params[:team]).first)
   end
 
   def remove_role

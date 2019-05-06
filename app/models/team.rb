@@ -3,6 +3,7 @@ class Team < Owner
   belongs_to :league, foreign_key: :account_id
   has_many :products, foreign_key: :owner_id
 
+  scope :by_name, ->(name) { where('owners.name ilike ?', "%#{name}%") }
   scope :ordered, -> { order(name: :asc) }
   scope :sponsored, -> { data_where(sponsored: true) }
   scope :active, -> { where(active: true) }
