@@ -52,7 +52,7 @@ class V1::Budweiser::UsersController < BudweiserController
   end
 
   def remove_role
-    symbolised_role = @user.roles.find_by(resource_type: "Team").resource.name.downcase.split(' ').join('_').to_sym
+    symbolized_role = @user.roles.find_by(resource_type: "Team").resource.name.downcase.split(' ').join('_').to_sym
     team = @user.roles.find_by(resource_type: "Team").resource
     @user.remove_role(symbolized_role, team)
   end
