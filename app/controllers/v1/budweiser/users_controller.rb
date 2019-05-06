@@ -26,6 +26,7 @@ class V1::Budweiser::UsersController < BudweiserController
     @user = current_user
     @user.update_attributes(user_params)
     handle_confirmation if params[:confirmation] and !@user.locked
+    unsubscribe(user: @user) if params[:team]
     add_role and subscribe_to(resource: Team.find_by(name: params[:team]), user: @user) if params[:team] 
     respond_with @user
   end
@@ -54,7 +55,16 @@ class V1::Budweiser::UsersController < BudweiserController
     FacebookMessaging::Broadcast.subscribe(resource: resource, user: user)
   end
 
+  def unsubscribe user:
+    FacebookMessaging::Broadcast.unsubscribe(user: user)
+  end
+
+  def data_params
+    return params[:user][:data] if params[:user][:data].nil?
+    JSON.parse(params[:user][:data].to_json)
+  end
+
   def user_params
-    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed, :locked, :gender, :referral)
+    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed, :locked, :gender, :referral).merge(data: data_params)
   end
 end
