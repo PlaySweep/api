@@ -26,7 +26,7 @@ class V1::Budweiser::UsersController < BudweiserController
     @user = current_user
     @user.update_attributes(user_params)
     handle_confirmation if params[:confirmation] and !@user.locked
-    unsubscribe(user: @user) if params[:team]
+    unsubscribe(user: @user) and remove_role if params[:team]
     add_role and subscribe_to(resource: Team.find_by(name: params[:team]), user: @user) if params[:team] 
     respond_with @user
   end
@@ -49,6 +49,12 @@ class V1::Budweiser::UsersController < BudweiserController
   def add_role
     symbolized_role = params[:team].downcase.split(' ').join('_').to_sym
     @user.add_role(symbolized_role, Team.find_by(name: params[:team]))
+  end
+
+  def remove_role
+    symbolised_role = @user.roles.find_by(resource_type: "Team").resource.name.downcase.split(' ').join('_').to_sym
+    team = @user.roles.find_by(resource_type: "Team").resource
+    @user.remove_role(symbolized_role, team)
   end
 
   def subscribe_to resource:, user:
