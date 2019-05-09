@@ -3,6 +3,30 @@ class PromptTeamSelectionJob < BudweiserJob
 
   def perform user_id
     user = User.find(user_id)
-    FacebookMessaging::Standard.deliver(user, "Got it, thanks #{user.first_name}! Give us a nearby city and I'll do a quick search to find what teams are available for you 👇", "SILENT_PUSH")
+    available_teams = []
+    teams = Team.active
+    radius = 300
+    coordinates = Geocoder.search(user.zipcode.to_i).first.coordinates
+    if coordinates
+      while available_teams.size < 3
+        teams.each do |team|
+          distance = Haversine.distance(coordinates.first, coordinates.second, team.lat.to_f, team.long.to_f).to_miles
+          if distance < radius
+            available_teams << team unless available_teams.include?(team) || available_teams.size > 3
+          end
+        end
+        radius *= 5
+      end
+      url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load"
+      text = "I found some teams near you!\n\nBut if you don't see the team you want - we have more 👇"
+      quick_replies = available_teams.map do |team|
+        {
+          "content_type": "text",
+          "title": team.abbreviation,
+          "payload":"#{team.name}_#{team.id}",
+        }
+      end
+      FacebookMessaging::TextButton.deliver(user, "Select team ⚾️", text, "SILENT_PUSH", url, quick_replies)
+    end
   end
 end

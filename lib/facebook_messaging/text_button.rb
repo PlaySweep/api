@@ -4,9 +4,9 @@ module FacebookMessaging
   class TextButton
     include Facebook::Messenger
 
-    def self.deliver user, title, message, notification_type="REGULAR", url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load"
+    def self.deliver user, title, message, notification_type="REGULAR", url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load", quick_replies=nil
       begin
-        Bot.deliver({
+        @template = {
           recipient: {
             id: user.facebook_uuid
           },
@@ -26,11 +26,16 @@ module FacebookMessaging
                   }
                 ]
               }
-            }
+            },
+            quick_replies: quick_replies
           },
           message_type: "UPDATE",
           notification_type: notification_type
-        }, access_token: ENV["ACCESS_TOKEN"])
+        }
+        if quick_replies && quick_replies.any?
+          @template[:message][:quick_replies] = quick_replies
+        end
+        Bot.deliver(@template, access_token: ENV["ACCESS_TOKEN"])
       rescue Facebook::Messenger::FacebookError => e
         puts "Facebook Messenger Error message\n\t#{e.inspect}"
         puts "#{user.full_name} Not found (facebook_uuid: #{user.facebook_uuid})"     

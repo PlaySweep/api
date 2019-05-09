@@ -101,9 +101,11 @@ GEM
     fugit (1.1.6)
       et-orbi (~> 1.1, >= 1.1.6)
       raabro (~> 1.1)
+    geocoder (1.5.1)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     hash_dot (2.4.1)
+    haversine (0.3.2)
     httparty (0.16.3)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
@@ -283,7 +285,9 @@ DEPENDENCIES
   connection_pool
   facebook-messenger
   faraday
+  geocoder
   hash_dot
+  haversine
   jbuilder (~> 2.5)
   json
   jsonb_accessor (~> 1.0.0)
