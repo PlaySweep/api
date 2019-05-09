@@ -3,13 +3,6 @@ class PromptTeamSelectionJob < BudweiserJob
 
   def perform user_id
     user = User.find(user_id)
-    quick_replies = Team.ordered.sponsored.active.map do |team, i|
-      {
-        "content_type": "text",
-        "title": team.abbreviation,
-        "payload":"#{team.name}_#{team.id}",
-      }
-    end
-    FacebookMessaging::QuickReply.deliver(user, "Got it, thanks #{user.first_name}! Please select one of the available teams below to get started 👇", quick_replies, "SILENT_PUSH")
+    FacebookMessaging::Standard.deliver(user, "Got it, thanks #{user.first_name}! Give us a nearby city and I'll do a quick search to find what teams are available for you 👇", "SILENT_PUSH")
   end
 end
