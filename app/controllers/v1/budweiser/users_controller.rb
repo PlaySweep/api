@@ -64,9 +64,12 @@ class V1::Budweiser::UsersController < BudweiserController
   end
 
   def remove_role
-    symbolized_role = @user.roles.find_by(resource_type: "Team").resource.name.downcase.split(' ').join('_').to_sym
-    team = @user.roles.find_by(resource_type: "Team").resource
-    @user.remove_role(symbolized_role, team)
+    previous_role = @user.roles.find_by(resource_type: "Team")
+    if previous_role.present?
+      symbolized_role = previous_role.resource.name.downcase.split(' ').join('_').to_sym
+      previous_team = previous_role.resource
+      @user.remove_role(symbolized_role, previous_team)
+    end
   end
 
   def subscribe_to resource:, user:
