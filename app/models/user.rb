@@ -26,8 +26,6 @@ class User < ApplicationRecord
   scope :count_by_team, ->(team_id) { joins(:roles).where('roles.resource_id = ?', team_id) }
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
 
-  # after_create :assign_default_role
-
   def self.by_name full_name
     full_name = full_name.split(' ')
     find_by_first_name_and_last_name(full_name[0], full_name[-1])
@@ -45,12 +43,6 @@ class User < ApplicationRecord
     event_ids = events.where(slate_id: slate.id).map(&:id)
     picks_for_slate = picks.where(event_id: event_ids).map(&:selection_id)
     picks_for_slate.sort == slate.winners.map(&:id).uniq.sort
-  end
-
-  private  
-
-  def assign_default_role
-    self.add_role(:new_user) if self.roles.blank?
   end
 
 end
