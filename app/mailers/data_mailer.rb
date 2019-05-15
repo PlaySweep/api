@@ -24,4 +24,14 @@ class DataMailer < ApplicationMailer
       body: "Attached below."
     )
   end
+
+  def products
+    products_csv = File.read("#{Rails.root}/tmp/products.csv")
+    attachments["#{Rails.root}/tmp/products.csv"] = { mime_type: 'text/csv', content: products_csv }
+    mail(
+      to: "ben@endemiclabs.co",
+      subject: "Products CSV #{DateTime.current.to_date}",
+      body: "Attached below."
+    )
+  end
 end

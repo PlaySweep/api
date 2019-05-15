@@ -53,3 +53,12 @@ def fetch_orders
     end
   end
 end
+
+def fetch_products
+  CSV.open("#{Rails.root}/tmp/products.csv", "wb") do |csv|
+    csv << ["SKU", "Product Name", "Product Weight (lbs)", "Length (inches)", "Height (inches)", "Width (inches)", "Replacement Value", "Customs Declaration Value", "Country of Origin", "Type of Packaging"]
+    Product.where(category: ["Apparel", "Merchandise"]).each do |product|
+      csv << [product.skus.first.code, product.name, product.skus.first.weight, "NA", "NA", "NA", "40.00", "40.00", "US", "1"]
+    end
+  end
+end
