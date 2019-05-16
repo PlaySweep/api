@@ -12,7 +12,7 @@ unless Rails.env.production?
 
   scheduler.cron '45 10 * * *' do
     puts "Emailing Ben Analytics..."
-    DataMailer.analytics.deliver_now
+    DataMailer.products.deliver_now
   end
 end
 
@@ -34,7 +34,7 @@ end
 
 def fetch_engagement_data
   slate_ids = Team.all.map do |team|
-    Slate.complete.where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).filtered(team.id).joins(:cards).group(:id).order(Arel.sql("COUNT(cards.id) DESC")).count.keys
+    Slate.where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).filtered(team.id).joins(:cards).group(:id).order(Arel.sql("COUNT(cards.id) DESC")).count.keys
   end.flatten
   CSV.open("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_engagement_data.csv", "wb") do |csv|
     csv << ["Date", "Contest", "Team", "Type", "Quantity of Entries", "Prize", "Day of Week", "Contest Winners"]
@@ -59,6 +59,24 @@ def fetch_products
     csv << ["SKU", "Product Name", "Product Weight (lbs)", "Length (inches)", "Height (inches)", "Width (inches)", "Replacement Value", "Customs Declaration Value", "Country of Origin", "Type of Packaging"]
     Product.where(category: ["Apparel", "Merchandise"]).each do |product|
       csv << [product.skus.first.code, product.name, product.skus.first.weight, "NA", "NA", "NA", "40.00", "40.00", "US", "1"]
+    end
+  end
+end
+
+def fetch_prizes
+  CSV.open("#{Rails.root}/tmp/prizes.csv", "wb") do |csv|
+    csv << ["Contest ID", "Contest Date", "Team", "Prize", "Winner Name"]
+    Slate.complete.each do |slate|
+      csv << [slate.id, slate.start_time.to_date.strftime("%Y%m%d"), slate.team.abbreviation, slate.prizes.first ? slate.prizes.first.product.name : "NA", slate.winner_id ? slate.winner.full_name : "NA"]
+    end
+  end
+end
+
+def fetch_contests
+  CSV.open("#{Rails.root}/tmp/contests.csv", "wb") do |csv|
+    csv << ["name", "start_time", "type", "status", "owner_id", "local", "field", "opponent_id"]
+    Slate.all.each do |slate|
+      csv << [slate.name, slate.start_time.to_datetime.utc, slate.type, slate.status, slate.owner_id, slate.local, slate.field, slate.opponent_id]
     end
   end
 end

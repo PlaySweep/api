@@ -2,6 +2,8 @@ class Sweep < ApplicationRecord
   belongs_to :user
   belongs_to :slate
 
+  scope :descending, -> { joins(:slate).merge(Slate.descending) }
+
   jsonb_accessor :data,
     pick_ids: [:string, array: true, default: []]
 

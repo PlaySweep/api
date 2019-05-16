@@ -13,6 +13,7 @@ class Pick < ApplicationRecord
 
   scope :for_slate, ->(slate_id) { joins(:event).where('events.slate_id = ?', slate_id) }
   scope :duplicates, -> { select([:user_id, :selection_id, :event_id]).group(:user_id, :selection_id, :event_id).having("count(*) > 1").size }
+  scope :descending, -> { joins(:event).merge(Event.descending) }
 
   def current_slate
     event.slate

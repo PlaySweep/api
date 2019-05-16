@@ -52,4 +52,14 @@ class DataMigration
       Team.find_by(name: team[:name]).update_attributes(lat: team[:lat], long: team[:long] )
     end
   end
+
+  def remove_dups user:
+    ids = user.picks.select(:event_id).group(:event_id).having("count(*) > 1")
+    duplicates = user.picks.where(event_id: ids)
+    if duplicates.length == 2
+      duplicates.last.destroy
+    else
+      puts "NOT 2!"
+    end
+  end
 end

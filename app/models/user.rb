@@ -26,6 +26,22 @@ class User < ApplicationRecord
   scope :count_by_team, ->(team_id) { joins(:roles).where('roles.resource_id = ?', team_id) }
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
 
+  def streak
+    i = 0
+    consecutive_sweeps = 0
+    owner_id = roles.where(resource_type: "Team").first.resource_id
+    sweeps.descending.each do |sweep|
+      consecutive_sweeps += 1 if sweep.slate.id == (Slate.filtered(owner_id).finished.descending.any? && Slate.filtered(owner_id).finished.descending[i].id)
+    end
+    consecutive_sweeps
+  end
+
+  def pick_streak
+    consecutive_picks = 0
+    picks.where(status: [1, 2]).descending.each { |pick| consecutive_picks += 1 if pick.win? }
+    consecutive_picks
+  end
+
   def self.by_name full_name
     full_name = full_name.split(' ')
     find_by_first_name_and_last_name(full_name[0], full_name[-1])
