@@ -39,9 +39,11 @@ class Event < ApplicationRecord
   private
 
   def update_picks
-    if saved_change_to_status?(to: 'complete') and winner_ids.any?
+    if saved_change_to_status?(from: 'incomplete', to: 'complete') and winner_ids.any?
       picks.where(selection_id: winner_ids).map(&:win!)
       picks.where(selection_id: loser_ids).map(&:loss!)
+    elsif saved_change_to_status?(from: 'complete', to: 'incomplete')
+      picks.map(&:pending!)
     end
   end
 
