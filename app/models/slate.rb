@@ -89,10 +89,6 @@ class Slate < ApplicationRecord
     (send_winning_message && send_losing_message) and initialize_select_winner_process if saved_change_to_status?(to: 'complete') and events_are_completed?
   end
 
-  # def result_slate
-  #   (send_winning_message && send_losing_message) if saved_change_to_status?(to: 'complete') and events_are_completed?
-  # end
-
   def change_status
     StartSlateJob.set(wait_until: start_time.to_datetime).perform_later(id) if saved_change_to_status?(from: 'inactive', to: 'pending')
   end

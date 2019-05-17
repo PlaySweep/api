@@ -48,10 +48,7 @@ class Event < ApplicationRecord
   end
 
   def result_card
-    #TODO refactor events.ordered method logic (may not be last event that is completed last)
-    if saved_change_to_status?(to: 'complete') && slate.events.ordered.last.id == id
-     cards.each { |card| card.user.won_slate?(slate) ? card.win! : card.loss! }
-    end
+    ResultCardsJob.perform_later(slate_id) if saved_change_to_status?(from: 'incomplete', to: 'complete') && slate.events_are_completed?
   end
 
 end

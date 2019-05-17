@@ -3,16 +3,16 @@ require 'rufus-scheduler'
 scheduler = Rufus::Scheduler::singleton
 
 unless Rails.env.production?
-  scheduler.cron '30 10 * * *' do
+  scheduler.cron '45 04 * * *' do
     puts "Creating CSV..."
     Apartment::Tenant.switch!('budweiser')
     fetch_user_acquisition_data
     fetch_engagement_data
   end
 
-  scheduler.cron '45 10 * * *' do
+  scheduler.cron '00 05 * * *' do
     puts "Emailing Ben Analytics..."
-    DataMailer.products.deliver_now
+    DataMailer.analytics.deliver_now
   end
 end
 

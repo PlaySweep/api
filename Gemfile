@@ -20,6 +20,7 @@ gem 'resque', require: 'resque/server'
 gem 'resque-scheduler'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
+gem 'popcorn_notify'
 
 gem 'rb-readline'
 
