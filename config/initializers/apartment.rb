@@ -4,8 +4,8 @@
 #
 # require 'apartment/elevators/generic'
 # require 'apartment/elevators/domain'
-require 'apartment/elevators/subdomain'
-# require 'apartment/elevators/first_subdomain'
+# require 'apartment/elevators/subdomain'
+require 'apartment/elevators/first_subdomain'
 # require 'apartment/elevators/host'
 
 #
@@ -24,8 +24,8 @@ Apartment.configure do |config|
   # - an array of strings representing each Tenant name.
   # - a hash which keys are tenant names, and values custom db config (must contain all key/values required in database.yml)
   #
-  # config.tenant_names = lambda{ Account.pluck(:subdomain) }
-  config.tenant_names = ['budweiser']
+  config.tenant_names = lambda{ Tenant.pluck(:subdomain) }
+  # config.tenant_names = ['budweiser', 'turner']
   # config.tenant_names = {
   #   'tenant1' => {
   #     adapter: 'postgresql',
@@ -103,9 +103,9 @@ end
 #   request.host.split('.').first
 # }
 
-Apartment::Elevators::Subdomain.excluded_subdomains = ['api', 'api-beta', 'www', 'b61fa884']
+Apartment::Elevators::FirstSubdomain.excluded_subdomains = ['www', 'public', 'api', 'admin'].concat(Tenant.pluck(:subdomain).each { |subdomain| subdomain.concat("-beta") })
 
 # Rails.application.config.middleware.use Apartment::Elevators::Domain
-Rails.application.config.middleware.use Apartment::Elevators::Subdomain
-# Rails.application.config.middleware.use Apartment::Elevators::FirstSubdomain
+# Rails.application.config.middleware.use Apartment::Elevators::Subdomain
+Rails.application.config.middleware.use Apartment::Elevators::FirstSubdomain
 # Rails.application.config.middleware.use Apartment::Elevators::Host
