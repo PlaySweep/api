@@ -9,8 +9,6 @@ class Team < Owner
   scope :sponsored, -> { data_where(sponsored: true) }
   scope :active, -> { where(active: true) }
 
-  after_update :create_broadcast_label
-
   jsonb_accessor :data,
     entry_image: [:string, default: nil],
     local_image: [:string, default: nil],
@@ -21,12 +19,6 @@ class Team < Owner
     long: [:float, default: nil]
 
   private
-
-  def create_broadcast_label
-    if saved_change_to_active?(to: true)
-      FacebookMessaging::Broadcast.generate_broadcast_label_for(resource: self)
-    end
-  end
 
   def destroy_broadcast_label
     if saved_change_to_active?(to: false)

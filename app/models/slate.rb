@@ -51,21 +51,9 @@ class Slate < ApplicationRecord
   end
 
   def progress current_user_id
-    if started?
-      :started
-    elsif users.find_by(id: current_user_id).present?
-      if cards.find_by(user_id: current_user_id).try(:user).try(:picks)
-        if cards.find_by(user_id: current_user_id).try(:user).try(:picks).where(event_id: [events.map(&:id)]).size == events.size
-          :complete
-        end
-      end
-    elsif users.find_by(id: current_user_id).present?
-      if cards.find_by(user_id: current_user_id).try(:user).try(:picks)
-        if cards.find_by(user_id: current_user_id).try(:user).try(:picks).where(event_id: [events.map(&:id)]).size != events.size
-          :unfinished
-        end
-      end
-    elsif users.find_by(id: current_user_id).nil?
+    if cards.find_by(user_id: current_user_id, slate_id: id)
+      :complete
+    else
       :new
     end
   end
