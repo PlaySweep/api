@@ -13,7 +13,7 @@ class PromptTeamSelectionJob < BudweiserJob
         break if available_teams.size == 3
         radius *= 3
       end
-      url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load"
+      url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/teams/initial_load"
       text = "Here's what I found...\n\nIf you don't see the team you want - we have more 👇"
       quick_replies = available_teams.map do |team|
         {
