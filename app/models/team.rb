@@ -7,6 +7,7 @@ class Team < Owner
   scope :by_name, ->(name) { where('owners.name ilike ?', "%#{name}%") }
   scope :ordered, -> { order(name: :asc) }
   scope :sponsored, -> { data_where(sponsored: true) }
+  scope :by_division, ->(division) { data_where(division: division) }
   scope :active, -> { where(active: true) }
 
   jsonb_accessor :data,
@@ -16,7 +17,8 @@ class Team < Owner
     initials: [:string, default: nil],
     abbreviation: [:string, default: nil],
     lat: [:float, default: nil],
-    long: [:float, default: nil]
+    long: [:float, default: nil],
+    division: [:string, default: nil]
 
   private
 
