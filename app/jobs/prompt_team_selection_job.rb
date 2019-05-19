@@ -14,7 +14,7 @@ class PromptTeamSelectionJob < BudweiserJob
         radius *= 3
       end
       url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load"
-      text = "I found some teams near you!\n\nBut if you don't see the team you want - we have more 👇"
+      text = "Here's what I found...\n\nIf you don't see the team you want - we have more 👇"
       quick_replies = available_teams.map do |team|
         {
           "content_type": "text",
@@ -22,7 +22,7 @@ class PromptTeamSelectionJob < BudweiserJob
           "payload":"#{team.name}_#{team.id}",
         }
       end
-      FacebookMessaging::TextButton.deliver(user, "Select team ⚾️", text, "SILENT_PUSH", url, quick_replies)
+      FacebookMessaging::TextButton.deliver(user, "More Teams ⚾️", text, "SILENT_PUSH", url, quick_replies)
     end
   end
 end

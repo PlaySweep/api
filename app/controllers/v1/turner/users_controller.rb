@@ -40,7 +40,6 @@ class V1::Turner::UsersController < TurnerController
     if @user.roles.where(resource_type: "Team").blank?
       PromptTeamSelectionJob.perform_later(@user.id)
     else
-      @user.add_role(:confirmed_user)
       ConfirmAccountNotificationJob.perform_later(@user.id)
     end
   end
