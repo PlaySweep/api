@@ -97,7 +97,7 @@ class Slate < ApplicationRecord
   end
 
   def initialize_select_winner_process
-    SelectWinnerJob.set(wait_until: (1.minute.from_now).to_datetime).perform_later(id)
+    SelectWinnerJob.set(wait_until: 24.hours.from_now.to_datetime).perform_later(id)
   end
 
   def start_winner_confirmation_window
