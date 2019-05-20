@@ -79,12 +79,17 @@ class V1::Budweiser::UsersController < BudweiserController
     FacebookMessaging::Broadcast.unsubscribe(user: user)
   end
 
+  def shipping_params
+    return params[:user][:shipping] if params[:user][:shipping].nil?
+    JSON.parse(params[:user][:shipping].to_json)
+  end
+
   def data_params
     return params[:user][:data] if params[:user][:data].nil?
     JSON.parse(params[:user][:data].to_json)
   end
 
   def user_params
-    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed, :locked, :gender, :referral).merge(data: data_params)
+    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed, :locked, :gender, :referral).merge(data: data_params).merge(shipping: shipping_params)
   end
 end
