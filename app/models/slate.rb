@@ -1,5 +1,5 @@
 class Slate < ApplicationRecord
-  INACTIVE, PENDING, STARTED, COMPLETE, DONE = 0, 1, 2, 3, 4
+  INACTIVE, PENDING, STARTED, COMPLETE, DONE, POSTPONED = 0, 1, 2, 3, 4, 5
 
   resourcify
 
@@ -13,7 +13,7 @@ class Slate < ApplicationRecord
   has_many :cards, dependent: :destroy
   has_many :prizes, dependent: :destroy
 
-  enum status: [ :inactive, :pending, :started, :complete, :done ]
+  enum status: [ :inactive, :pending, :started, :complete, :done, :postponed ]
 
   scope :available, -> { where(status: [1, 2]) }
   scope :finished, -> { where(status: [3, 4]) }
