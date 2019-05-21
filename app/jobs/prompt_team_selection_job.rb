@@ -7,10 +7,12 @@ class PromptTeamSelectionJob < BudweiserJob
     radius = 300
     coordinates = Geocoder.search(user.zipcode.to_i).first.coordinates
     if coordinates
-      Team.active.each do |team|
-        distance = Haversine.distance(coordinates.first, coordinates.second, team.lat.to_f, team.long.to_f).to_miles
-        available_teams.push(team) if distance < radius
-        break if available_teams.size == 3
+      while available_teams.size < 3
+        Team.active.each do |team|
+          distance = Haversine.distance(coordinates.first, coordinates.second, team.lat.to_f, team.long.to_f).to_miles
+          available_teams.push(team) if distance < radius
+          break if available_teams.size == 3
+        end
         radius *= 3
       end
       url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/teams/initial_load"

@@ -66,7 +66,7 @@ end
 def fetch_prizes
   CSV.open("#{Rails.root}/tmp/prizes.csv", "wb") do |csv|
     csv << ["Contest ID", "Contest Date", "Team", "Prize", "Winner Name"]
-    Slate.complete.each do |slate|
+    Slate.finished.each do |slate|
       csv << [slate.id, slate.start_time.to_date.strftime("%Y%m%d"), slate.team.abbreviation, slate.prizes.first ? slate.prizes.first.product.name : "NA", slate.winner_id ? slate.winner.full_name : "NA"]
     end
   end

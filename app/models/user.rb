@@ -52,7 +52,7 @@ class User < ApplicationRecord
   end
 
   def abbreviated_name
-    "#{first_name} #{last_name[0]}."
+    first_name && last_name ? "#{first_name} #{last_name[0]}." : ""
   end
 
   def won_slate? slate
