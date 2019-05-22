@@ -3,21 +3,31 @@ require 'rufus-scheduler'
 scheduler = Rufus::Scheduler::singleton
 
 unless Rails.env.production?
-  scheduler.cron '45 04 * * *' do
+  scheduler.cron '45 17 * * *' do
     puts "Creating CSV..."
     Apartment::Tenant.switch!('budweiser')
     fetch_user_acquisition_data
     fetch_engagement_data
   end
 
-  scheduler.cron '00 05 * * *' do
+  scheduler.cron '00 18 * * *' do
     puts "Emailing Ben Analytics..."
     DataMailer.analytics.deliver_now
+  end
+
+  scheduler.cron '45 05 * * *' do
+    puts "Fetch previous day orders..."
+    fetch_orders
+  end
+
+  scheduler.cron '00 06 * * *' do
+    puts "Send orders..."
+    DataMailer.orders_for_yesterday.deliver_now
   end
 end
 
 def fetch_user_acquisition_data
-  teams = Team.all
+  teams = Team.active
   CSV.open("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_acquisition_data.csv", "wb") do |csv|
     csv << ["Date", "Team", "Attempted Sign Ups", "Confirmed Users", "Facebook", "Instagram Post", "Instagram Story", "Twitter", "Organic"]
     teams.each do |team|
@@ -46,7 +56,7 @@ def fetch_engagement_data
 end
 
 def fetch_orders
-  CSV.open("#{Rails.root}/tmp/orders.csv", "wb") do |csv|
+  CSV.open("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_orders.csv", "wb") do |csv|
     csv << ["Order Number", "Order Date", "Recipient Name", "Email", "Phone", "Street Line 1", "Street Line 2", "City", "State/Province", "Zip/Postal Code", "Country", "Item Title", "SKU", "Order Weight", "Order Unit"]
     Order.pending.for_yesterday.each do |order|
       csv << [order.id, order.created_at.strftime("%m/%d/%Y"), order.user.full_name, order.user.email, order.user.phone_number, order.user.shipping["line1"], order.user.shipping["line2"], order.user.shipping["city"], order.user.shipping["state"], order.user.shipping["postal_code"], order.user.shipping["country"], order.prize.product.name, order.prize.sku.code, order.prize.sku.weight, order.prize.sku.unit]

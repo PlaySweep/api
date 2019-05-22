@@ -20,7 +20,7 @@ class V1::Budweiser::UsersController < BudweiserController
       if params[:team]
         team = Team.by_name(params[:team]).first
         add_role
-        subscribe_to(resource: team, user: @user)
+        # TODO add new targets to subscribe to => subscribe_to(resource: team, user: @user)
       end
     end
     respond_with @user
@@ -34,10 +34,10 @@ class V1::Budweiser::UsersController < BudweiserController
       team = Team.by_name(params[:team]).first
 
       remove_role
-      unsubscribe(user: @user)
+      # unsubscribe(user: @user)
 
       add_role
-      subscribe_to(resource: team, user: @user)
+      # subscribe_to(resource: team, user: @user)
     end
     respond_with @user
   end

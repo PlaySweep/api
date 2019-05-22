@@ -71,10 +71,14 @@ class Slate < ApplicationRecord
     Team.find_by(id: opponent_id)
   end
 
+  def resulted?
+    (result && score).present?
+  end
+
   private
 
   def result_slate
-    (send_winning_message && send_losing_message) and initialize_select_winner_process if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
+    (send_winning_message && send_losing_message) and initialize_select_winner_process if saved_change_to_status?(from: 'started', to: 'complete') and (resulted? && events_are_completed?)
   end
 
   def change_status
