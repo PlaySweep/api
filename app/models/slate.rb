@@ -3,7 +3,8 @@ class Slate < ApplicationRecord
 
   resourcify
 
-  belongs_to :team, foreign_key: :owner_id
+  belongs_to :owner, optional: true
+  belongs_to :team, foreign_key: :owner_id, optional: true
   belongs_to :winner, foreign_key: :winner_id, class_name: "User", optional: true
 
   has_many :events, dependent: :destroy
@@ -21,7 +22,8 @@ class Slate < ApplicationRecord
   scope :descending, -> { order(start_time: :desc) }
   scope :since_last_week, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day) }
   scope :for_the_month, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day + 7) }
-  scope :filtered, ->(owner_id) { where(owner_id: owner_id) } 
+  scope :filtered, ->(role_ids) { where(owner_id: role_ids) } 
+  scope :unfiltered, -> { data_where(global: true) } 
   scope :total_entry_count, -> { joins(:cards).count }
   scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
   
@@ -40,7 +42,9 @@ class Slate < ApplicationRecord
     standing: [:string, default: nil],
     opponent_standing: [:string, default: nil],
     result: [:string, default: nil],
-    score: [:string, default: nil]
+    score: [:string, default: nil],
+    global: [:boolean, default: false],
+    team_id: [:integer, default: nil]
 
   def next
     team.slates.where("start_time > ?", start_time).last

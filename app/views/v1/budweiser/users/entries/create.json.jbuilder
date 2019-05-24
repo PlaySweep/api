@@ -1,0 +1,1 @@
+json.entry @entry, partial: 'v1/budweiser/users/entries/entry', as: :entry

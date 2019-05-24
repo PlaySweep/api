@@ -1,4 +1,6 @@
 class Owner < ApplicationRecord
+  resourcify 
+  
   belongs_to :account 
   has_many :slates
   has_many :messages, as: :messageable

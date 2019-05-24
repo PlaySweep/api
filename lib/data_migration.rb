@@ -63,4 +63,5 @@ class DataMigration
       puts "NOT 2!"
     end
   end
+
 end

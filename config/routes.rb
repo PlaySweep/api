@@ -6,6 +6,7 @@ Rails.application.routes.draw do
           scope module: :users do
             resources :picks, only: [:index, :show, :create, :update]
             resources :slates, only: [:index, :show]
+            resources :entries, only: [:create]
             resources :roles, only: [:create]
           end
       end

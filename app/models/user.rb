@@ -38,7 +38,10 @@ class User < ApplicationRecord
 
   def pick_streak
     consecutive_picks = 0
-    picks.where(status: [1, 2]).descending.each { |pick| consecutive_picks += 1 if pick.win? }
+    picks.completed.descending.each do |pick|
+      return consecutive_picks if pick.loss?
+      consecutive_picks += 1 if pick.win?
+    end
     consecutive_picks
   end
 

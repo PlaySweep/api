@@ -3,6 +3,7 @@ class V1::Budweiser::SlatesController < BudweiserController
 
   def index
     @slates = Slate.filtered(current_user.roles.map(&:resource_id)).ascending.pending
+    @slates = Slate.unfiltered.ascending.pending if params[:global]
     respond_with @slates
   end
 
