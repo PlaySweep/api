@@ -17,5 +17,6 @@ json.roles user.roles.where(resource_type: "Team").each do |role|
   json.team_name role.name.split('_').map(&:capitalize).join(' ')
   json.team_entry_image Team.find(role.resource_id).try(:entry_image)
   json.type role.resource_type
+  json.abbreviation Team.find(role.resource_id).try(:abbreviation)
 end
 json.shipping user.shipping
