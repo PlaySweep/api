@@ -17,18 +17,14 @@ module FacebookMessaging
                 template_type: 'generic',
                 elements: [
                     {
-                    title: "Status",
-                    subtitle: "Check your status or make changes to your selections.",
-                    default_action: {
-                      type: "web_url",
-                      url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
-                      webview_height_ratio: "full",
-                    },
+                    title: "All-Star Contest",
+                    image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/cardinals_fb_lockup2.png",
+                    subtitle: "Make your selections and win prizes!",
                     buttons: [
                       {
                         type: :web_url,
-                        url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
-                        title: "Status",
+                        url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=1",
+                        title: "Play now",
                         webview_height_ratio: 'full',
                         messenger_extensions: true
                       }
@@ -36,6 +32,7 @@ module FacebookMessaging
                   },
                   {
                   title: "Invite friends",
+                  image_url: "https://www.underconsideration.com/brandnew/archives/budweiser_2016_logo_detail.png",
                   subtitle: "Earn entries into our daily prize drawings when your friends join!",
                   buttons: [
                     {
@@ -44,13 +41,27 @@ module FacebookMessaging
                       payload: "INVITE FRIENDS"
                     }
                   ]
-                }
+                },
+                {
+                title: "Status",
+                image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/fb_status_logo.png",
+                subtitle: "Check your status or make changes to your selections.",
+                buttons: [
+                  {
+                    type: :web_url,
+                    url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
+                    title: "Status",
+                    webview_height_ratio: 'full',
+                    messenger_extensions: true
+                  }
+                ]
+                },
               ]
             }
           }
         },
           message_type: "UPDATE",
-          notification_type: "SILENT_PUSH"
+          notification_type: "NO_PUSH"
         }
 
         if quick_replies && quick_replies.any?
@@ -77,13 +88,23 @@ module FacebookMessaging
                 template_type: 'generic',
                 elements: [
                   {
-                  title: "Leaderboard",
+                  title: "#{user.roles.find_by(resource_type: "Team").resource.abbreviation} Contests",
+                  image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/cardinals_fb_lockup2.png",
+                  subtitle: "Make your selections and win prizes!",
+                  buttons: [
+                    {
+                      type: :web_url,
+                      url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=2",
+                      title: "Play now",
+                      webview_height_ratio: 'full',
+                      messenger_extensions: true
+                    }
+                  ]
+                },
+                  {
+                  title: "All-Star Game Leaderboard",
+                  image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/allstar_fb_logo.png",
                   subtitle: "See how you rank against the competition!",
-                  default_action: {
-                    type: "web_url",
-                    url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/leaderboard/allstar",
-                    webview_height_ratio: "full",
-                  },
                   buttons: [
                     {
                       type: :web_url,
@@ -94,48 +115,26 @@ module FacebookMessaging
                     }
                   ]
                 },
+                {
+                title: "Status",
+                image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/fb_status_logo.png",
+                subtitle: "Check your status or make changes to your selections.",
+                buttons: [
                   {
-                  title: "Contests",
-                  subtitle: "Make your selections and win prizes!",
-                  default_action: {
-                    type: "web_url",
-                    url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load",
-                    webview_height_ratio: "full",
-                  },
-                  buttons: [
-                    {
-                      type: :web_url,
-                      url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load",
-                      title: "Play now",
-                      webview_height_ratio: 'full',
-                      messenger_extensions: true
-                    }
-                  ]
-                },
-                  {
-                  title: "Status",
-                  subtitle: "Check your status or make changes to your selections.",
-                  default_action: {
-                    type: "web_url",
+                    type: :web_url,
                     url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
-                    webview_height_ratio: "full",
-                  },
-                  buttons: [
-                    {
-                      type: :web_url,
-                      url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
-                      title: "Status",
-                      webview_height_ratio: 'full',
-                      messenger_extensions: true
-                    }
-                  ]
-                }
+                    title: "Status",
+                    webview_height_ratio: 'full',
+                    messenger_extensions: true
+                  }
+                ]
+              }
               ]
             }
           }
         },
           message_type: "UPDATE",
-          notification_type: "SILENT_PUSH"
+          notification_type: "NO_PUSH"
         }
 
         if quick_replies && quick_replies.any?

@@ -10,6 +10,7 @@ class V1::Budweiser::UsersController < BudweiserController
 
   def show
     @user = current_user
+    WelcomeBackJob.perform_later(@user.id) if @user and params[:onboard]
     respond_with @user
   end
 
@@ -22,6 +23,7 @@ class V1::Budweiser::UsersController < BudweiserController
         add_role
         # TODO add new targets to subscribe to => subscribe_to(resource: team, user: @user)
       end
+      WelcomeJob.perform_later(@user.id) if params[:onboard]
     end
     respond_with @user
   end

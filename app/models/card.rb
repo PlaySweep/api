@@ -15,7 +15,7 @@ class Card < ApplicationRecord
   private
 
   def send_slate_notification
-    SendSlateNotificationJob.perform_later(user_id)
+    SendSlateNotificationJob.perform_later(user_id, slate_id)
   end
 
   def catch_uniqueness_exception
