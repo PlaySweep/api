@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   rolify
 
+  belongs_to :league, foreign_key: :account_id
   has_many :sweeps, dependent: :destroy
   has_many :picks, dependent: :destroy
   has_many :events, through: :picks
