@@ -16,6 +16,4 @@ json.prizes slate.prizes.each do |prize|
   json.quantity prize.quantity
 end
 json.data slate.data
-json.entries slate.entries, partial: 'admin/entries/entry_for_admin', as: :entry
-json.winner slate.try(:winner).try(:full_name)
 json.start_time slate.start_time

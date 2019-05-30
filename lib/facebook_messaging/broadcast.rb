@@ -1,4 +1,7 @@
 require 'facebook/messenger'
+require 'net/http'
+require 'uri'
+require 'json'
 
 module FacebookMessaging
   class Broadcast
@@ -7,7 +10,7 @@ module FacebookMessaging
         resource = resource_type.capitalize.constantize.find_by(id: resource_id)
         message = Message.find_by(id: message_id)
         label_id = resource.targets.find_by(name: "#{resource.class.name} #{resource.id}").label_id
-        conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/me/")
+        conn = Faraday.new(:url => "https://graph.facebook.com/v3.3/me/")
         params = { message_creative_id: message.creative_id, custom_label_id: label_id, notification_type: message.notification_type.upcase }
         response = conn.post("broadcast_messages?access_token=#{ENV["ACCESS_TOKEN"]}", params)
         broadcast_id = JSON.parse(response.body)["broadcast_id"]
@@ -15,6 +18,19 @@ module FacebookMessaging
       rescue Facebook::Messenger::FacebookError => e
         puts "Facebook Messenger Error message\n\t#{e.inspect}"
       end
+    end
+
+    def deliver message_creative_id
+     conn = Faraday.new(:url => "https://graph.facebook.com/v3.3/me/")
+     params = { message_creative_id: message_creative_id, notification_type: "REGULAR", messaging_type: "MESSAGE_TAG", tag: "NON_PROMOTIONAL_SUBSCRIPTION" }
+     response = conn.post("broadcast_messages?access_token=#{ENV["ACCESS_TOKEN"]}", params)
+     broadcast_id = JSON.parse(response.body)["broadcast_id"]
+     if broadcast_id
+      puts "Success"
+     else
+      puts "Failed"
+      puts response.inspect
+     end
     end
 
     def self.create_message resource:, content:, notification_type: "regular", schedule_time: DateTime.current, buttons: ["Play now"]
@@ -30,6 +46,43 @@ module FacebookMessaging
         end
       rescue Facebook::Messenger::FacebookError => e
         puts "Facebook Messenger Error message\n\t#{e.inspect}"
+      end
+    end
+
+    def create_media_message attachment_id
+
+      uri = URI.parse("https://graph.facebook.com/v3.3/me/message_creatives?access_token=#{ENV["ACCESS_TOKEN"]}")
+      request = Net::HTTP::Post.new(uri)
+      request.content_type = "application/json"
+      request.body = JSON.dump({
+        "messages" => [
+          {
+            "attachment" => {
+              "type" => "template",
+              "payload" => {
+                "template_type" => "media",
+                "elements" => [
+                  {
+                    "media_type" => "image",
+                    "attachment_id" => attachment_id,
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      })
+
+      req_options = {
+        use_ssl: uri.scheme == "https",
+      }
+
+      response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+        data = http.request(request)
+      end
+      if response.code == 200
+        body = JSON.parse(response.body)
+        body.message_creative_id
       end
     end
 

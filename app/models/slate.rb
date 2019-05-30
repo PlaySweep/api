@@ -16,11 +16,12 @@ class Slate < ApplicationRecord
 
   enum status: [ :inactive, :pending, :started, :complete, :done, :postponed ]
 
+  scope :for_admin, -> { where(status: [0, 1, 2]) }
   scope :available, -> { where(status: [1, 2]) }
   scope :finished, -> { where(status: [3, 4]) }
   scope :ascending, -> { order(start_time: :asc) }
   scope :descending, -> { order(start_time: :desc) }
-  scope :since_last_week, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day) }
+  scope :since_last_week, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 5, DateTime.current.end_of_day + 2) }
   scope :for_the_month, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day + 7) }
   scope :filtered, ->(role_ids) { where(owner_id: role_ids) } 
   scope :unfiltered, -> { data_where(global: true) } 
