@@ -2,14 +2,15 @@ Rails.application.routes.draw do
   mount Resque::Server.new, at: '/resque'
   namespace :v1, defaults: { format: :json } do
     namespace :budweiser do
-        resources :users, only: [:index, :show, :create, :update], param: :facebook_uuid do
-          scope module: :users do
-            resources :picks, only: [:index, :show, :create, :update]
-            resources :slates, only: [:index, :show]
-            resources :entries, only: [:create]
-            resources :roles, only: [:create]
-          end
+      resources :users, only: [:index, :show, :create, :update], param: :facebook_uuid do
+        scope module: :users do
+          resources :picks, only: [:index, :show, :create, :update]
+          resources :slates, only: [:index, :show]
+          resources :entries, only: [:create]
+          resources :roles, only: [:create]
+        end
       end
+      resources :statuses, only: [:index, :show], param: :facebook_uuid
       resources :slates, only: [:index, :show, :update]
       resources :cards, only: [:create]
       resources :entries, only: [:create]

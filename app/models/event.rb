@@ -15,7 +15,9 @@ class Event < ApplicationRecord
 
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) }
   scope :ordered, -> { order(order: :asc) }
+  scope :most_recent, -> { order(order: :desc) }
   scope :descending, -> { joins(:slate).merge(Slate.descending) }
+  scope :unfiltered, -> { joins(:slate).merge(Slate.unfiltered) }
 
   jsonb_accessor :data,
     category: [:string, default: nil]

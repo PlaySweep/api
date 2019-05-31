@@ -28,19 +28,23 @@ class User < ApplicationRecord
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
 
+  def self.by_highest_streak
+    active.sort_by(&:pick_streak).reverse
+  end
+
   def streak
     i = 0
     consecutive_sweeps = 0
     owner_id = roles.where(resource_type: "Team").first.resource_id
     sweeps.descending.each do |sweep|
-      consecutive_sweeps += 1 if sweep.slate.id == (Slate.filtered(owner_id).finished.descending.any? && Slate.filtered(owner_id).finished.descending[i].id)
+      consecutive_sweeps += 1 if sweep.slate.id == (Slate.unfiltered(owner_id).finished.descending.any? && Slate.unfiltered(owner_id).finished.descending[i].id)
     end
     consecutive_sweeps
   end
 
   def pick_streak
     consecutive_picks = 0
-    picks.completed.descending.each do |pick|
+    picks.unfiltered.completed.most_recent.each do |pick|
       return consecutive_picks if pick.loss?
       consecutive_picks += 1 if pick.win?
     end

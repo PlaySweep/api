@@ -15,6 +15,8 @@ class Pick < ApplicationRecord
   scope :duplicates, -> { select([:user_id, :selection_id, :event_id]).group(:user_id, :selection_id, :event_id).having("count(*) > 1").size }
   scope :descending, -> { joins(:event).merge(Event.descending) }
   scope :completed, -> { where(status: [1, 2]) }
+  scope :unfiltered, -> { joins(:event).merge(Event.unfiltered) }
+  scope :most_recent, -> { joins(:event).merge(Event.most_recent) }
 
   def current_slate
     event.slate
