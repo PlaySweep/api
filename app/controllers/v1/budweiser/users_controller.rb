@@ -41,6 +41,7 @@ class V1::Budweiser::UsersController < BudweiserController
       add_role
       # subscribe_to(resource: team, user: @user)
     end
+    # unsubscribe(user: @user) if params[:unsubscribe]
     respond_with @user
   end
 
