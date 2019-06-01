@@ -64,6 +64,11 @@ class User < ApplicationRecord
     first_name && last_name ? "#{first_name} #{last_name[0]}." : ""
   end
 
+  def initials
+    split_names = full_name.split(' ')
+    "#{split_names[0][0]}#{split_names[-1][0]}"
+  end
+
   def won_slate? slate
     event_ids = events.where(slate_id: slate.id).map(&:id)
     picks_for_slate = picks.where(event_id: event_ids).map(&:selection_id)
