@@ -10,6 +10,7 @@ class Pick < ApplicationRecord
   validates :selection_id, :event_id, uniqueness: { scope: :user_id, message: "only 1 per event" }
 
   around_save :catch_uniqueness_exception
+  after_update :update_user_stats
 
   scope :for_slate, ->(slate_id) { joins(:event).where('events.slate_id = ?', slate_id) }
   scope :duplicates, -> { select([:user_id, :selection_id, :event_id]).group(:user_id, :selection_id, :event_id).having("count(*) > 1").size }
@@ -28,6 +29,10 @@ class Pick < ApplicationRecord
     yield
   rescue ActiveRecord::RecordNotUnique
     self.errors.add(:selection, :taken)
+  end
+
+  def update_user_stats
+    user.update_leaderboard if saved_change_to_status?(from: 'pending')
   end
 
 end

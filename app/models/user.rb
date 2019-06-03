@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  STREAK_LEADERBOARD = Leaderboard.new('streak_leaderboard', {score_key: :streak})
+
   rolify
 
   belongs_to :league, foreign_key: :account_id
@@ -29,10 +31,30 @@ class User < ApplicationRecord
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
 
   def self.by_highest_streak
-    active.sort_by(&:pick_streak).reverse
+    active.sort_by(&:rank)
   end
 
   def streak
+    STREAK_LEADERBOARD.score_for(id)
+  end
+
+  def rank
+    STREAK_LEADERBOARD.rank_for(id)
+  end
+
+  def ordinal_position
+    rank.ordinalize.last(2)
+  end
+
+  def tied
+    STREAK_LEADERBOARD.total_members_in_score_range(streak, streak) > 1.0
+  end
+
+  def update_leaderboard
+    STREAK_LEADERBOARD.rank_member(id.to_s, pick_streak, { name: full_name }.to_json)
+  end
+
+  def sweep_streak
     i = 0
     consecutive_sweeps = 0
     owner_id = roles.where(resource_type: "Team").first.resource_id
@@ -65,8 +87,7 @@ class User < ApplicationRecord
   end
 
   def initials
-    split_names = full_name.split(' ')
-    "#{split_names[0][0]}#{split_names[-1][0]}"
+    "#{first_name[0]}#{last_name[0]}"
   end
 
   def won_slate? slate

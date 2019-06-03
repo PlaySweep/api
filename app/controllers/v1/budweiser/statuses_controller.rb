@@ -4,8 +4,7 @@ class V1::Budweiser::StatusesController < BudweiserController
   skip_before_action :authenticate!
 
   def index
-    @users = User.active.limit(params[:limit]).by_highest_streak if params[:limit]
-    @users = User.active.limit(25).by_highest_streak
+    @users = User.active.limit(params[:limit]).by_highest_streak
     respond_with @users
   end
 
