@@ -3,7 +3,7 @@ class Admin::SlatesController < AdminController
 
   def index
     team = Team.find(params[:team_id])
-    @slates = team.slates.for_admin
+    @slates = team.slates.for_admin.descending
     respond_with @slates
   end
 
