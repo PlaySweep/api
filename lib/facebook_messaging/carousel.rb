@@ -23,7 +23,7 @@ module FacebookMessaging
                     buttons: [
                       {
                         type: :web_url,
-                        url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=1",
+                        url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=2",
                         title: "Play now",
                         webview_height_ratio: 'full',
                         messenger_extensions: true
@@ -109,7 +109,7 @@ module FacebookMessaging
                   buttons: [
                     {
                       type: :web_url,
-                      url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=2",
+                      url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=1",
                       title: "Play now",
                       webview_height_ratio: 'full',
                       messenger_extensions: true

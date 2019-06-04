@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
   include ActionController::Caching
 
   before_action :authenticate!
-  helper_method :current_user
+  helper_method :current_user, :current_account
 
   def authenticate!
     if request.env["HTTP_AUTHORIZATION"]
@@ -11,6 +11,10 @@ class ApplicationController < ActionController::API
     else
       render json: [] 
     end
+  end
+
+  def current_account
+    @current_account ||= Account.find_by(name: "MLB")
   end
 
   def current_user
