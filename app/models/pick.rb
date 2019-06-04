@@ -10,7 +10,7 @@ class Pick < ApplicationRecord
   validates :selection_id, :event_id, uniqueness: { scope: :user_id, message: "only 1 per event" }
 
   around_save :catch_uniqueness_exception
-  after_update :update_user_stats
+  # after_update :update_user_stats_for_streak_leaderboard
 
   scope :for_slate, ->(slate_id) { joins(:event).where('events.slate_id = ?', slate_id) }
   scope :duplicates, -> { select([:user_id, :selection_id, :event_id]).group(:user_id, :selection_id, :event_id).having("count(*) > 1").size }
@@ -31,8 +31,11 @@ class Pick < ApplicationRecord
     self.errors.add(:selection, :taken)
   end
 
-  def update_user_stats
-    user.update_leaderboard if saved_change_to_status?(from: 'pending')
+  def update_user_stats_for_streak_leaderboard
+    board = Board.fetch(leaderboard: :streak_leaderboard)
+    current_streak = board.score_for(user_id) || 0
+    board.rank_member(user_id, current_streak += 1, { name: user.full_name }.to_json) if saved_change_to_status?(from: 'pending', to: 'win') 
+    board.rank_member(user_id, 0, { name: user.full_name }.to_json) if saved_change_to_status?(from: 'pending', to: 'loss')    
   end
 
 end

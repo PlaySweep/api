@@ -18,13 +18,41 @@ module FacebookMessaging
                 elements: [
                     {
                     title: "All-Star Contest",
-                    image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/cardinals_fb_lockup2.png",
-                    subtitle: "Make your selections and win prizes!",
+                    image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/allstar_prizing_image.png",
+                    subtitle: "Play the All-Star Contest for a chance to win tickets to the game and more!",
                     buttons: [
                       {
                         type: :web_url,
                         url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=1",
                         title: "Play now",
+                        webview_height_ratio: 'full',
+                        messenger_extensions: true
+                      }
+                    ]
+                  },
+                    {
+                    title: "All-Star Contest Leaderboard",
+                    image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/allstar_fb_logo.png",
+                    subtitle: "See how you rank against the competition!",
+                    buttons: [
+                      {
+                        type: :web_url,
+                        url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/leaderboard/allstar",
+                        title: "Leaderboard",
+                        webview_height_ratio: 'full',
+                        messenger_extensions: true
+                      }
+                    ]
+                  },
+                    {
+                    title: "All-Star Contest Prizing",
+                    image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/allstar_prizing_logo.png",
+                    subtitle: "There are tons of prizes on the line for the All-Star Contest! Check the full list below 🎉",
+                    buttons: [
+                      {
+                        type: :web_url,
+                        url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
+                        title: "Prizes",
                         webview_height_ratio: 'full',
                         messenger_extensions: true
                       }
@@ -41,21 +69,7 @@ module FacebookMessaging
                       payload: "INVITE FRIENDS"
                     }
                   ]
-                },
-                {
-                title: "Status",
-                image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/fb_status_logo.png",
-                subtitle: "Check your status or make changes to your selections.",
-                buttons: [
-                  {
-                    type: :web_url,
-                    url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
-                    title: "Status",
-                    webview_height_ratio: 'full',
-                    messenger_extensions: true
-                  }
-                ]
-                },
+                }
               ]
             }
           }
@@ -76,6 +90,7 @@ module FacebookMessaging
     end
 
     def self.deliver_global user, url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load", quick_replies=nil
+      team = user.roles.find_by(resource_type: "Team").resource
       begin
         @template = {
           recipient: {
@@ -88,9 +103,9 @@ module FacebookMessaging
                 template_type: 'generic',
                 elements: [
                   {
-                  title: "#{user.roles.find_by(resource_type: "Team").resource.abbreviation} Contests",
-                  image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/cardinals_fb_lockup2.png",
-                  subtitle: "Make your selections and win prizes!",
+                  title: "#{team.abbreviation} Contests",
+                  image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/cardinals_fb_lockup2.png", #team.entry_image,
+                  subtitle: "Make selections for your #{team.name} every day and win awesome prizes!",
                   buttons: [
                     {
                       type: :web_url,
@@ -102,7 +117,7 @@ module FacebookMessaging
                   ]
                 },
                   {
-                  title: "All-Star Game Leaderboard",
+                  title: "All-Star Contest Leaderboard",
                   image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/allstar_fb_logo.png",
                   subtitle: "See how you rank against the competition!",
                   buttons: [
@@ -116,14 +131,14 @@ module FacebookMessaging
                   ]
                 },
                 {
-                title: "Status",
-                image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/fb_status_logo.png",
-                subtitle: "Check your status or make changes to your selections.",
+                title: "All-Star Contest Prizes",
+                image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/allstar_prizing_logo.png",
+                subtitle: "There are tons of prizes on the line for the All-Star Contest!",
                 buttons: [
                   {
                     type: :web_url,
                     url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
-                    title: "Status",
+                    title: "Prizes",
                     webview_height_ratio: 'full',
                     messenger_extensions: true
                   }

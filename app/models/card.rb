@@ -11,6 +11,7 @@ class Card < ApplicationRecord
 
   around_save :catch_uniqueness_exception
   after_create :send_slate_notification
+  after_update :update_user_stats_for_sweep_leaderboard
 
   private
 
@@ -22,6 +23,15 @@ class Card < ApplicationRecord
     yield
   rescue ActiveRecord::RecordNotUnique
     self.errors.add(:slate, :taken)
+  end
+
+  def update_user_stats_for_sweep_leaderboard
+    if slate.global
+      board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
+      current_sweep_streak = board.score_for(user_id) || 0
+      board.rank_member(user_id.to_s, current_sweep_streak += 1, { name: user.full_name }.to_json) if saved_change_to_status?(from: 'pending', to: 'win')
+      board.rank_member(user_id.to_s, 0, { name: user.full_name }.to_json) if saved_change_to_status?(from: 'pending', to: 'loss')
+    end
   end
 
 end
