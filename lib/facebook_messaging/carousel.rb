@@ -57,19 +57,7 @@ module FacebookMessaging
                         messenger_extensions: true
                       }
                     ]
-                  },
-                  {
-                  title: "Invite friends",
-                  image_url: "https://www.underconsideration.com/brandnew/archives/budweiser_2016_logo_detail.png",
-                  subtitle: "Earn entries into our daily prize drawings when your friends join!",
-                  buttons: [
-                    {
-                      type: :postback,
-                      title: "Invite friends",
-                      payload: "INVITE FRIENDS"
-                    }
-                  ]
-                }
+                  }
               ]
             }
           }
