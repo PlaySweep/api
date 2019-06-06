@@ -47,11 +47,11 @@ module FacebookMessaging
                     {
                     title: "All-Star Contest Prizing",
                     image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/allstar_prizing_logo.png",
-                    subtitle: "There are tons of prizes on the line for the All-Star Contest! Check the full list below 🎉",
+                    subtitle: "There are tons of prizes on the line for the All-Star Contest!",
                     buttons: [
                       {
                         type: :web_url,
-                        url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
+                        url: "#{ENV["WEBVIEW_URL"]}/prizing/allstar",
                         title: "Prizes",
                         webview_height_ratio: 'full',
                         messenger_extensions: true
@@ -125,7 +125,7 @@ module FacebookMessaging
                 buttons: [
                   {
                     type: :web_url,
-                    url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
+                    url: "#{ENV["WEBVIEW_URL"]}/prizing/allstar",
                     title: "Prizes",
                     webview_height_ratio: 'full',
                     messenger_extensions: true

@@ -13,7 +13,7 @@ class WelcomeBackJob < BudweiserJob
       end
     else
       FacebookMessaging::Standard.deliver(user, "Welcome back to the Budweiser Sweep #{user.first_name}!\n\nI notice you still haven't confirmed your account with us 👐", "NO_PUSH")
-      FacebookMessaging::TextButton.deliver(user, "Confirm account", "No problem - just tap below to finish up a few quick details and get started winning prizes 👇", "NO_PUSH", "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/account")
+      FacebookMessaging::TextButton.deliver(user, "Confirm account", "Just tap below to finish up a few quick details and get started winning prizes 👇", "NO_PUSH", "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/account")
     end
   end
 end
