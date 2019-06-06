@@ -99,7 +99,7 @@ class Slate < ApplicationRecord
       card.user.entries.create(slate_id: id)
       card.user.entries.unused.each { |entry| entry.update_attributes(slate_id: id) unless entry.slate_id? }
       card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
-      SendWinningSlateMessageJob.perform_later(card.user_id, card.slate_id)
+      SendWinningSlateMessageJob.set(wait_until: 1.minute.from_now.to_datetime).perform_later(card.user_id, card.slate_id)
     end
   end
 
