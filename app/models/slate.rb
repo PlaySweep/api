@@ -104,7 +104,7 @@ class Slate < ApplicationRecord
   end
 
   def send_losing_message
-    cards.loss.each { |card| SendLosingSlateMessageJob.perform_later(card.user_id, card.slate_id)}
+    cards.loss.each { |card| SendLosingSlateMessageJob.set(wait_until: 1.minute.from_now.to_datetime).perform_later(card.user_id, card.slate_id)}
   end
 
   def initialize_select_winner_process
