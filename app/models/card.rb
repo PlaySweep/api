@@ -28,9 +28,10 @@ class Card < ApplicationRecord
   def update_user_stats_for_sweep_leaderboard
     if slate.global
       board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
-      current_sweep_streak = board.score_for(user_id) || 0
-      board.rank_member(user_id.to_s, current_sweep_streak += 1, { name: user.full_name }.to_json) if saved_change_to_status?(from: 'pending', to: 'win')
-      board.rank_member(user_id.to_s, 0, { name: user.full_name }.to_json) if saved_change_to_status?(from: 'pending', to: 'loss')
+      highest_streak = user.highest_sweep_streak
+      if highest_streak > board.score_for(user_id)
+        board.rank_member(user_id, highest_streak, { name: user.full_name }.to_json) if saved_change_to_status?(from: 'pending', to: 'win')
+      end
     end
   end
 

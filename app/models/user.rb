@@ -3,6 +3,7 @@ class User < ApplicationRecord
 
   belongs_to :league, foreign_key: :account_id
   has_many :sweeps, dependent: :destroy
+  has_many :streaks, dependent: :destroy
   has_many :picks, dependent: :destroy
   has_many :events, through: :picks
   has_many :cards, dependent: :destroy
@@ -52,21 +53,19 @@ class User < ApplicationRecord
     Board.fetch(leaderboard: :allstar_sweep_leaderboard).total_members_in_score_range(streak, streak) > 1.0
   end
 
-  def sweep_streak
-    consecutive_sweeps = 0
-    sweeps.descending.each_with_index do |sweep, i|
-      if slates.unfiltered.finished.descending[i].id == Slate.unfiltered.finished.descending[i].id
-        if sweep.slate.id == Slate.unfiltered.finished.descending[i].id
-          consecutive_sweeps += 1
-        end
-      end
-    end
-    consecutive_sweeps
+  def highest_sweep_streak
+    streaks.find_by(type: "Sweep").try(:highest) || 0
   end
 
-  def pick_streak
+  def current_sweep_streak
+    streaks.find_by(type: "Sweep").try(:current) || 0
+  end
+
+  def current_pick_streak
+    # TODO change logic to bring back picks in correct order without using updated at
+    # streaks.find_by(type: "Pick").try(:current) || 0
     consecutive_picks = 0
-    picks.unfiltered.completed.most_recent.each do |pick|
+    picks.unfiltered.completed.order(updated_at: :desc).each do |pick|
       return consecutive_picks if pick.loss?
       consecutive_picks += 1 if pick.win?
     end

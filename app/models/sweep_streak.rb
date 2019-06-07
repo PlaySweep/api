@@ -1,0 +1,2 @@
+class SweepStreak < Streak
+end
