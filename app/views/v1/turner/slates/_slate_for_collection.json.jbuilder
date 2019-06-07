@@ -24,8 +24,12 @@ json.team do
   json.image slate.team.image
   json.local_image slate.team.try(:local_image)
   json.field slate.field
+  json.pitcher slate.try(:pitcher)
+  json.standing slate.try(:standing)
 end
 json.opponent do
   json.id slate.try(:opponent).try(:id)
   json.image slate.try(:opponent).try(:image)
+  json.pitcher slate.try(:opponent_pitcher)
+  json.standing slate.try(:opponent_standing)
 end if slate.opponent

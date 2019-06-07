@@ -4,7 +4,7 @@ class Slate < ApplicationRecord
   resourcify
 
   belongs_to :owner, optional: true
-  belongs_to :team, foreign_key: :owner_id, optional: true
+  # belongs_to :team, foreign_key: :owner_id, optional: true
   belongs_to :winner, foreign_key: :winner_id, class_name: "User", optional: true
 
   has_many :events, dependent: :destroy
@@ -80,10 +80,19 @@ class Slate < ApplicationRecord
     (result && score).present?
   end
 
+  def team
+    return Team.find_by(id: owner_id) unless global?
+    Team.find_by(id: team_id)
+  end
+
   private
 
   def result_slate
-    (send_winning_message && send_losing_message) and initialize_select_winner_process if saved_change_to_status?(from: 'started', to: 'complete') and (resulted? && events_are_completed?)
+    if global?
+      send_winning_message and send_losing_message if saved_change_to_status?(from: 'started', to: 'complete') and (resulted? && events_are_completed?)
+    else
+      (send_winning_message and send_losing_message) and initialize_select_winner_process if saved_change_to_status?(from: 'started', to: 'complete') and (resulted? && events_are_completed?)
+    end
   end
 
   def change_status
@@ -96,10 +105,15 @@ class Slate < ApplicationRecord
 
   def send_winning_message
     cards.win.each do |card|
-      card.user.entries.create(slate_id: id)
-      card.user.entries.unused.each { |entry| entry.update_attributes(slate_id: id) unless entry.slate_id? }
-      card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
-      SendWinningSlateMessageJob.set(wait_until: 1.minute.from_now.to_datetime).perform_later(card.user_id, card.slate_id)
+      if global?
+        card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
+        SendWinningSlateMessageJob.set(wait_until: 1.minute.from_now.to_datetime).perform_later(card.user_id, card.slate_id)
+      else
+        card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
+        card.user.entries.create(slate_id: id)
+        card.user.entries.unused.each { |entry| entry.update_attributes(slate_id: id) unless entry.slate_id? }
+        SendWinningSlateMessageJob.set(wait_until: 1.minute.from_now.to_datetime).perform_later(card.user_id, card.slate_id)
+      end
     end
   end
 
