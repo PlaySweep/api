@@ -53,7 +53,7 @@ def for_referral resource:, source:
 end
 
 def fetch_engagement_data
-  slate_ids = Team.all.map do |team|
+  slate_ids = Team.active.map do |team|
     Slate.where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).filtered(team.id).joins(:cards).group(:id).order(Arel.sql("COUNT(cards.id) DESC")).count.keys
   end.flatten
   CSV.open("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_engagement_data.csv", "wb") do |csv|
@@ -78,6 +78,15 @@ def fetch_orders_from_yesterday
   CSV.open("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_orders.csv", "wb") do |csv|
     csv << ["Order Number", "Order Date", "Recipient Name", "Email", "Phone", "Street Line 1", "Street Line 2", "City", "State/Province", "Zip/Postal Code", "Country", "Item Title", "SKU", "Order Weight", "Order Unit"]
     Order.pending.for_yesterday.each do |order|
+      csv << [order.id, order.created_at.strftime("%m/%d/%Y"), order.user.full_name, order.user.email, order.user.phone_number, order.user.shipping["line1"], order.user.shipping["line2"], order.user.shipping["city"], order.user.shipping["state"], order.user.shipping["postal_code"], order.user.shipping["country"], order.prize.product.name, order.prize.sku.code, order.prize.sku.weight, order.prize.sku.unit]
+    end
+  end
+end
+
+def fetch_orders_for_today
+  CSV.open("#{Rails.root}/tmp/#{(DateTime.current).to_date}_orders.csv", "wb") do |csv|
+    csv << ["Order Number", "Order Date", "Recipient Name", "Email", "Phone", "Street Line 1", "Street Line 2", "City", "State/Province", "Zip/Postal Code", "Country", "Item Title", "SKU", "Order Weight", "Order Unit"]
+    Order.pending.where('orders.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day, DateTime.current.end_of_day).each do |order|
       csv << [order.id, order.created_at.strftime("%m/%d/%Y"), order.user.full_name, order.user.email, order.user.phone_number, order.user.shipping["line1"], order.user.shipping["line2"], order.user.shipping["city"], order.user.shipping["state"], order.user.shipping["postal_code"], order.user.shipping["country"], order.prize.product.name, order.prize.sku.code, order.prize.sku.weight, order.prize.sku.unit]
     end
   end
