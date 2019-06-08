@@ -62,14 +62,13 @@ class User < ApplicationRecord
   end
 
   def current_pick_streak
-    # TODO change logic to bring back picks in correct order without using updated at
-    # streaks.find_by(type: "PickStreak").try(:current) || 0
-    consecutive_picks = 0
-    picks.unfiltered.completed.order(updated_at: :desc).each do |pick|
-      return consecutive_picks if pick.loss?
-      consecutive_picks += 1 if pick.win?
-    end
-    consecutive_picks
+    streaks.find_by(type: "PickStreak").try(:current) || 0
+    # consecutive_picks = 0
+    # picks.unfiltered.completed.order(updated_at: :desc).each do |pick|
+    #   return consecutive_picks if pick.loss?
+    #   consecutive_picks += 1 if pick.win?
+    # end
+    # consecutive_picks
   end
 
   def self.by_name full_name

@@ -10,7 +10,7 @@ class Pick < ApplicationRecord
   validates :selection_id, :event_id, uniqueness: { scope: :user_id, message: "only 1 per event" }
 
   around_save :catch_uniqueness_exception
-  # after_update :update_user_stats_for_streak_leaderboard
+  after_update :update_user_streaks
 
   scope :for_slate, ->(slate_id) { joins(:event).where('events.slate_id = ?', slate_id) }
   scope :duplicates, -> { select([:user_id, :selection_id, :event_id]).group(:user_id, :selection_id, :event_id).having("count(*) > 1").size }
@@ -31,11 +31,16 @@ class Pick < ApplicationRecord
     self.errors.add(:selection, :taken)
   end
 
-  def update_user_stats_for_streak_leaderboard
-    board = Board.fetch(leaderboard: :streak_leaderboard)
-    current_streak = board.score_for(user_id) || 0
-    board.rank_member(user_id, current_streak += 1, { name: user.full_name }.to_json) if saved_change_to_status?(from: 'pending', to: 'win') 
-    board.rank_member(user_id, 0, { name: user.full_name }.to_json) if saved_change_to_status?(from: 'pending', to: 'loss')    
+  def update_user_streaks
+    if saved_change_to_status?(from: 'pending', to: 'win')
+      streak = user.streaks.find_or_create_by(type: "PickStreak")
+      streak.update_attributes(current: streak.current += 1)
+      if streak.highest < streak.current
+        streak.update_attributes(highest: streak.current)
+      end
+    elsif saved_change_to_status?(from: 'pending', to: 'loss')
+      user.streaks.find_by(type: "PickStreak").update_attributes(current: 0)
+    end
   end
 
 end

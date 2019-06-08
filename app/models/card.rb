@@ -11,7 +11,7 @@ class Card < ApplicationRecord
 
   around_save :catch_uniqueness_exception
   after_create :send_slate_notification
-  after_update :update_user_sweeps
+  after_update :update_user_streaks
 
   private
 
@@ -25,12 +25,14 @@ class Card < ApplicationRecord
     self.errors.add(:slate, :taken)
   end
 
-  def update_user_sweeps
+  def update_user_streaks
     if slate.global
       if saved_change_to_status?(from: 'pending', to: 'win')
         streak = user.streaks.find_or_create_by(type: "SweepStreak")
         streak.update_attributes(current: streak.current += 1)
-        streak.update_attributes(highest: streak.current) and update_user_stats_for_sweep_leaderboard if streak.highest < streak.current
+        if streak.highest < streak.current
+          streak.update_attributes(highest: streak.current) and update_user_stats_for_sweep_leaderboard
+        end
       elsif saved_change_to_status?(from: 'pending', to: 'loss')
         user.streaks.find_by(type: "SweepStreak").update_attributes(current: 0)
       end

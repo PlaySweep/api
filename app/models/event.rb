@@ -11,7 +11,7 @@ class Event < ApplicationRecord
 
   enum status: [ :incomplete, :complete ]
 
-  after_update :update_picks, :result_card
+  after_update :update_picks
 
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) }
   scope :ordered, -> { order(order: :asc) }
@@ -47,10 +47,6 @@ class Event < ApplicationRecord
     elsif saved_change_to_status?(from: 'complete', to: 'incomplete')
       picks.map(&:pending!)
     end
-  end
-
-  def result_card
-    ResultCardsJob.perform_later(slate_id) if saved_change_to_status?(from: 'incomplete', to: 'complete') && slate.events_are_completed?
   end
 
 end

@@ -1,0 +1,2 @@
+class PickStreak < Streak
+end

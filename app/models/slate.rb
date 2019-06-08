@@ -28,7 +28,7 @@ class Slate < ApplicationRecord
   scope :total_entry_count, -> { joins(:cards).count }
   scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
   
-  after_update :change_status, :result_slate, :settle_entries, :start_winner_confirmation_window
+  after_update :change_status, :result_card, :result_slate, :settle_entries, :start_winner_confirmation_window
 
   accepts_nested_attributes_for :prizes
 
@@ -87,9 +87,13 @@ class Slate < ApplicationRecord
 
   private
 
+  def result_card
+    ResultCardsJob.perform_later(id) if saved_change_to_status?(from: 'started', to: 'complete')
+  end
+
   def result_slate
     if global?
-      send_winning_message and send_losing_message if saved_change_to_status?(from: 'started', to: 'complete') and (resulted? && events_are_completed?)
+      send_winning_message and send_losing_message if saved_change_to_status?(from: 'started', to: 'complete') and (events_are_completed?)
     else
       (send_winning_message and send_losing_message) and initialize_select_winner_process if saved_change_to_status?(from: 'started', to: 'complete') and (resulted? && events_are_completed?)
     end

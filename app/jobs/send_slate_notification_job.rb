@@ -6,7 +6,7 @@ class SendSlateNotificationJob < BudweiserJob
     slate = Slate.find(slate_id)
     if user.cards.size > 1
       if slate.global
-        FacebookMessaging::Standard.deliver(user, "Nice job #{user.first_name}, your answers for the All-Star Contest are in 👍", "NO_PUSH")
+        FacebookMessaging::Standard.deliver(user, "Nice job #{user.first_name}, your answers in the Road to All-Star are in 👍", "NO_PUSH")
         FacebookMessaging::Carousel.deliver_global(user)
       else
         FacebookMessaging::Standard.deliver(user, "Nice job #{user.first_name}, your answers are in 👍", "NO_PUSH")
