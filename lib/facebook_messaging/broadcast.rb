@@ -89,7 +89,7 @@ module FacebookMessaging
     def self.create_target_for resource:, category: "Global"
       begin
         conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/me/")
-        name = "#{resource.class.name} #{resource.id}"
+        name = "#{category} #{resource.id}"
         params = { name: name }
         response = conn.post("custom_labels?access_token=#{ENV["ACCESS_TOKEN"]}", params)
         label_id = JSON.parse(response.body)["id"]
@@ -102,7 +102,7 @@ module FacebookMessaging
     def self.subscribe resource:, user:
       begin
         if user.roles.find_by(resource_type: resource.class.name)
-          label_id = resource.targets.find_by(name: "#{resource.class.name} #{resource.id}").label_id
+          label_id = resource.targets.find_by(category: "Team").label_id
           conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/#{label_id}")
           params = { user: user.facebook_uuid }
           response = conn.post("label?access_token=#{ENV["ACCESS_TOKEN"]}", params)

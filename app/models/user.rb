@@ -9,7 +9,7 @@ class User < ApplicationRecord
   has_many :cards, dependent: :destroy
   has_many :slates, through: :cards
   has_many :entries, dependent: :destroy
-  has_many :orders
+  has_many :orders, dependent: :destroy
   has_one :preference, foreign_key: :user_id
 
   jsonb_accessor :data,
@@ -54,16 +54,16 @@ class User < ApplicationRecord
   end
 
   def highest_sweep_streak
-    streaks.find_by(type: "Sweep").try(:highest) || 0
+    streaks.find_by(type: "SweepStreak").try(:highest) || 0
   end
 
   def current_sweep_streak
-    streaks.find_by(type: "Sweep").try(:current) || 0
+    streaks.find_by(type: "SweepStreak").try(:current) || 0
   end
 
   def current_pick_streak
     # TODO change logic to bring back picks in correct order without using updated at
-    # streaks.find_by(type: "Pick").try(:current) || 0
+    # streaks.find_by(type: "PickStreak").try(:current) || 0
     consecutive_picks = 0
     picks.unfiltered.completed.order(updated_at: :desc).each do |pick|
       return consecutive_picks if pick.loss?

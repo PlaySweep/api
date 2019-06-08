@@ -17,16 +17,8 @@ class SendLosingSlateMessageJob < BudweiserJob
         open: "It's time for you to step back up to the plate, click below to try again 👇"
       },
       { 
-        banner: "You got robbed at the warning track and barely missed getting all three right",
-        open: "Click below for your shot at more prizes 👇"
-      },
-      { 
         banner: "The outcome didn't go your way, but don't let that stop you from trying again!",
         open: "More contests available. Click below 👇"
-      },
-      { 
-        banner: "It just wasn't your time...yet",
-        open: "You didn't get all 3 right. But we have more prizes and games available now. Click below 👇"
       }
     ]
 

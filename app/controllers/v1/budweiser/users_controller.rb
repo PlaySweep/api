@@ -20,8 +20,8 @@ class V1::Budweiser::UsersController < BudweiserController
       increment_entries_for_referrer if params[:referrer_uuid]
       if params[:team]
         team = Team.by_name(params[:team]).first
-        add_role
-        # TODO add new targets to subscribe to => subscribe_to(resource: team, user: @user)
+        add_role if team
+        subscribe_to(resource: team, user: @user)
       end
       WelcomeJob.perform_later(@user.id) if params[:onboard]
     end
@@ -34,14 +34,15 @@ class V1::Budweiser::UsersController < BudweiserController
     handle_confirmation if params[:confirmation] and !@user.locked
     if params[:team]
       team = Team.by_name(params[:team]).first
+      if team
+        unsubscribe(user: @user)
+        remove_role
 
-      remove_role
-      # unsubscribe(user: @user)
-
-      add_role
-      # subscribe_to(resource: team, user: @user)
+        add_role
+        subscribe_to(resource: team, user: @user)
+      end
     end
-    # unsubscribe(user: @user) if params[:unsubscribe]
+    unsubscribe(user: @user) if params[:unsubscribe]
     respond_with @user
   end
 
@@ -93,6 +94,6 @@ class V1::Budweiser::UsersController < BudweiserController
   end
 
   def user_params
-    params.require(:user).permit(:facebook_uuid, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed, :locked, :gender, :referral).merge(data: data_params).merge(shipping: shipping_params)
+    params.require(:user).permit(:facebook_uuid, :active, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :zipcode, :confirmed, :locked, :gender, :referral).merge(data: data_params).merge(shipping: shipping_params)
   end
 end

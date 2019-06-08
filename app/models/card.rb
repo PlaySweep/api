@@ -11,7 +11,7 @@ class Card < ApplicationRecord
 
   around_save :catch_uniqueness_exception
   after_create :send_slate_notification
-  after_update :update_user_stats_for_sweep_leaderboard
+  after_update :update_user_sweeps
 
   private
 
@@ -25,14 +25,22 @@ class Card < ApplicationRecord
     self.errors.add(:slate, :taken)
   end
 
-  def update_user_stats_for_sweep_leaderboard
+  def update_user_sweeps
     if slate.global
-      board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
-      highest_streak = user.highest_sweep_streak
-      if highest_streak > board.score_for(user_id)
-        board.rank_member(user_id, highest_streak, { name: user.full_name }.to_json) if saved_change_to_status?(from: 'pending', to: 'win')
+      if saved_change_to_status?(from: 'pending', to: 'win')
+        streak = user.streaks.find_or_create_by(type: "SweepStreak")
+        streak.update_attributes(current: streak.current += 1)
+        streak.update_attributes(highest: streak.current) and update_user_stats_for_sweep_leaderboard if streak.highest < streak.current
+      elsif saved_change_to_status?(from: 'pending', to: 'loss')
+        user.streaks.find_by(type: "SweepStreak").update_attributes(current: 0)
       end
     end
+  end
+
+  def update_user_stats_for_sweep_leaderboard
+    board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
+    highest_streak = user.highest_sweep_streak
+    board.rank_member(user_id, highest_streak, { name: user.full_name }.to_json)
   end
 
 end

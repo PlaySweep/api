@@ -17,7 +17,7 @@ class V1::Turner::UsersController < TurnerController
     @user = User.create(user_params)
     if @user.save
       increment_entries_for_referrer if params[:referrer_uuid]
-      @user.add_role(params[:team].downcase.split(' ').join('_').to_sym, Team.find_by(name: params[:team])) if params[:team]
+      @user.add_role(params[:team].downcase.split(' ').join('_').to_sym, Team.find_by(name: params[:team])) if Team.find_by(name: params[:team])
     end
     respond_with @user
   end
