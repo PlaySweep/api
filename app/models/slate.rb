@@ -111,18 +111,18 @@ class Slate < ApplicationRecord
     cards.win.each do |card|
       if global?
         card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
-        SendWinningSlateMessageJob.set(wait_until: 1.minute.from_now.to_datetime).perform_later(card.user_id, card.slate_id)
+        SendWinningSlateMessageJob.perform_later(card.user_id, card.slate_id)
       else
         card.user.sweeps.create(slate_id: id, pick_ids: card.user.picks.for_slate(id).map(&:id))
         card.user.entries.create(slate_id: id)
         card.user.entries.unused.each { |entry| entry.update_attributes(slate_id: id) unless entry.slate_id? }
-        SendWinningSlateMessageJob.set(wait_until: 1.minute.from_now.to_datetime).perform_later(card.user_id, card.slate_id)
+        SendWinningSlateMessageJob.perform_later(card.user_id, card.slate_id)
       end
     end
   end
 
   def send_losing_message
-    cards.loss.each { |card| SendLosingSlateMessageJob.set(wait_until: 1.minute.from_now.to_datetime).perform_later(card.user_id, card.slate_id)}
+    cards.loss.each { |card| SendLosingSlateMessageJob.perform_later(card.user_id, card.slate_id)}
   end
 
   def initialize_select_winner_process
