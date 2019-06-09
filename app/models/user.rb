@@ -39,7 +39,7 @@ class User < ApplicationRecord
   end
 
   def streak
-    Board.fetch(leaderboard: :allstar_sweep_leaderboard).score_for(id)
+    Board.fetch(leaderboard: :allstar_sweep_leaderboard).score_for(id) || 0
   end
 
   def rank
