@@ -21,12 +21,12 @@ if Rails.env.production?
   end
 
 
-  scheduler.cron '15 06 * * *' do
+  scheduler.cron '15 16 * * *' do
     Apartment::Tenant.switch!('budweiser')
     fetch_orders_from_yesterday
   end
 
-  scheduler.cron '20 06 * * *' do
+  scheduler.cron '20 16 * * *' do
     DataMailer.orders_for_yesterday.deliver_now
   end
 
@@ -39,7 +39,7 @@ def fetch_user_acquisition_data
     teams.each do |team|
       team_query = User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).joins(:roles).where("roles.resource_id = ?", team.id)
       confirmed_team_query = User.where(confirmed: true).where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1).joins(:roles).where("roles.resource_id = ?", team.id)
-      csv << [(DateTime.current - 1).to_date.strftime("%Y%m%d"), team.name, team_query.count, confirmed_team_query.count, for_referral(resource: team, source: "facebook").count, for_referral(resource: team, source: "instagrampost").count, for_referral(resource: team, source: "instagramstory").count, for_referral(resource: team, source: "twitter").count, for_referral(resource: team, source: "landing_page").count]
+      csv << [(DateTime.current - 1).to_date.strftime("%Y%m%d"), team.name, team_query.count, confirmed_team_query.count, for_referral(resource: team, source: "facebook").count, for_referral(resource: team, source: "instagrampost").count, for_referral(resource: team, source: "instagramstory").count, for_referral(resource: team, source: "twitter").count, for_referral(resource: team, source: "landing_page").count, for_referral(resource: team, source: "asg_facebook").count]
     end
   end
 end
@@ -62,7 +62,7 @@ def fetch_engagement_data
 end
 
 def fetch_orders
-  CSV.open("#{Rails.root}/tmp/#{(DateTime.current).to_date}_orders.csv", "wb") do |csv|
+  CSV.open("#{Rails.root}/tmp/orders.csv", "wb") do |csv|
     csv << ["Order Number", "Order Date", "Recipient Name", "Email", "Phone", "Street Line 1", "Street Line 2", "City", "State/Province", "Zip/Postal Code", "Country", "Item Title", "SKU", "Order Weight", "Order Unit"]
     Order.pending.each do |order|
       csv << [order.id, order.created_at.strftime("%m/%d/%Y"), order.user.full_name, order.user.email, order.user.phone_number, order.user.shipping["line1"], order.user.shipping["line2"], order.user.shipping["city"], order.user.shipping["state"], order.user.shipping["postal_code"], order.user.shipping["country"], order.prize.product.name, order.prize.sku.code, order.prize.sku.weight, order.prize.sku.unit]
