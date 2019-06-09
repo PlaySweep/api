@@ -89,6 +89,10 @@ class User < ApplicationRecord
     "#{first_name[0]}#{last_name[0]}"
   end
 
+  def default_image
+    "https://s3.amazonaws.com/budweiser-sweep-assets/bud_sweep_baseball_logo.png"
+  end
+
   def won_slate? slate
     event_ids = events.where(slate_id: slate.id).map(&:id)
     picks_for_slate = picks.where(event_id: event_ids).map(&:selection_id)
