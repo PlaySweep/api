@@ -2,27 +2,21 @@ require 'rufus-scheduler'
 
 scheduler = Rufus::Scheduler::singleton
 
-return if defined?(Rails::Console) || Rails.env.test? || File.split($0).last == 'rake'
-
 if Rails.env.production?
-  scheduler.cron '* * * * *' do
-    puts "Test running..."
-  end
 
-  scheduler.cron '00 06 * * *' do
+  scheduler.cron '05 16 * * *' do
     Apartment::Tenant.switch!('budweiser')
     fetch_user_acquisition_data
   end
 
-  scheduler.cron '05 06 * * *' do
+  scheduler.cron '05 16 * * *' do
     Apartment::Tenant.switch!('budweiser')
     fetch_engagement_data
   end
 
-  scheduler.cron '10 06 * * *' do
+  scheduler.cron '10 16 * * *' do
     DataMailer.analytics.deliver_now
   end
-
 
 
   scheduler.cron '15 06 * * *' do
