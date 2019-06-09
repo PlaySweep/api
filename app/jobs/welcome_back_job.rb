@@ -4,7 +4,8 @@ class WelcomeBackJob < BudweiserJob
   def perform user_id
     user = User.find(user_id)
     if user.confirmed
-      if team = user.roles.find_by(resource_type: "Team").try(:resource)
+      team = user.roles.find_by(resource_type: "Team").try(:resource)
+      if team
         FacebookMessaging::Standard.deliver(user, "Welcome back to the Budweiser Sweep #{user.first_name}!\n\nYou're currently playing for the #{team.abbreviation} - but you can change by typing 'switch' 👌", "NO_PUSH")
         FacebookMessaging::TextButton.deliver(user, "Play now", "There are more #{team.abbreviation} games to play!", "NO_PUSH")
       else

@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   rolify
 
-  belongs_to :league, foreign_key: :account_id
+  belongs_to :league, foreign_key: :account_id, optional: true
   has_many :sweeps, dependent: :destroy
   has_many :streaks, dependent: :destroy
   has_many :picks, dependent: :destroy
@@ -29,6 +29,7 @@ class User < ApplicationRecord
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
 
+  before_create :associate_account
   after_create :insert_user_into_leaderboard
   
   def self.top_streak limit:
@@ -96,9 +97,13 @@ class User < ApplicationRecord
 
   private
 
+  def associate_account
+    self.account_id = Account.find_by(name: "MLB").id
+  end
+
   def insert_user_into_leaderboard
     begin
-      Board.fetch(leaderboard: :allstar_sweep_leaderboard).rank_member(id.to_s, 0, { name: full_name }.to_json)
+      Board.fetch(leaderboard: :allstar_sweep_leaderboard).rank_member(id, 0, { name: full_name }.to_json)
     rescue Exception => e
       puts "Error in Redis Leaderboard insert #{e}"
     end

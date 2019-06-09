@@ -15,7 +15,7 @@ class V1::Budweiser::UsersController < BudweiserController
   end
 
   def create
-    @user = current_account.users.create(user_params)
+    @user = User.create(user_params)
     if @user.save
       increment_entries_for_referrer if params[:referrer_uuid]
       if params[:team]
