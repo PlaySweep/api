@@ -5,16 +5,15 @@ require 'json'
 
 module FacebookMessaging
   class Broadcast
-    def deliver_for resource_type:, resource_id:, message_id: 
+    def deliver_for resource: 
       begin
-        resource = resource_type.capitalize.constantize.find_by(id: resource_id)
-        message = Message.find_by(id: message_id)
-        label_id = resource.targets.find_by(name: "#{resource.class.name} #{resource.id}").label_id
         conn = Faraday.new(:url => "https://graph.facebook.com/v3.3/me/")
+        message = Message.find_by(messageable_type: resource.class.name, used: false, failed_at: nil)
+        label_id = resource.targets.find_by(name: "#{resource.class.name} #{resource.id}").label_id
         params = { message_creative_id: message.creative_id, custom_label_id: label_id, notification_type: message.notification_type.upcase }
         response = conn.post("broadcast_messages?access_token=#{ENV["ACCESS_TOKEN"]}", params)
         broadcast_id = JSON.parse(response.body)["broadcast_id"]
-        broadcast_id ? message.update_attributes(broadcast_id: broadcast_id) : message.update_attributes(failed_at: DateTime.current)
+        broadcast_id ? message.update_attributes(broadcast_id: broadcast_id, used: true) : message.update_attributes(failed_at: DateTime.current)
       rescue Facebook::Messenger::FacebookError => e
         puts "Facebook Messenger Error message\n\t#{e.inspect}"
       end
