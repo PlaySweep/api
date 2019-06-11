@@ -39,7 +39,7 @@ class Pick < ApplicationRecord
         streak.update_attributes(highest: streak.current)
       end
     elsif saved_change_to_status?(from: 'pending', to: 'loss')
-      user.streaks.find_by(type: "PickStreak").update_attributes(current: 0)
+      user.streaks.find_or_create_by(type: "PickStreak").update_attributes(current: 0)
     end
   end
 

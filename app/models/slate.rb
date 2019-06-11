@@ -87,7 +87,11 @@ class Slate < ApplicationRecord
   private
 
   def result_card
-    ResultCardsJob.perform_later(id) if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
+    if global?
+      ResultCardsJob.perform_later(id) if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
+    else
+      ResultCardsJob.perform_later(id) and initialize_select_winner_process if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
+    end
   end
 
   def change_status
@@ -96,6 +100,10 @@ class Slate < ApplicationRecord
 
   def settle_entries
     entries.each { |entry| entry.update_attributes(used: true) } if saved_change_to_status?(to: 'done')
+  end
+
+  def initialize_select_winner_process
+    SelectWinnerJob.set(wait_until: 24.hours.from_now.to_datetime).perform_later(id)
   end
 
   def start_winner_confirmation_window
