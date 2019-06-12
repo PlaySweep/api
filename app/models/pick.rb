@@ -7,6 +7,7 @@ class Pick < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
+  validate :has_started?
   validates :selection_id, :event_id, uniqueness: { scope: :user_id, message: "only 1 per event" }
 
   around_save :catch_uniqueness_exception
@@ -24,6 +25,12 @@ class Pick < ApplicationRecord
   end
 
   private
+
+  def has_started?
+    if event.slate.started?
+      self.errors.add(:pick, "Slate has already started")
+    end
+  end
 
   def catch_uniqueness_exception
     yield

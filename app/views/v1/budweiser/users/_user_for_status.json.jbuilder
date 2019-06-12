@@ -1,5 +1,6 @@
 json.id user.id
 json.facebook_uuid user.facebook_uuid
+json.current_sweep_streak user.current_sweep_streak
 json.streak user.streak
 json.initials user.initials
 json.rank user.rank
