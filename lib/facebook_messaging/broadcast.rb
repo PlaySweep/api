@@ -150,6 +150,18 @@ module FacebookMessaging
       end
     end
 
+    def self.cancel broadcast_id:
+      conn = Faraday.new(:url => "https://graph.facebook.com/v3.3/me/")
+      params = { operation: "cancel" }
+      response = conn.post("#{broadcast_id}?access_token=#{ENV["ACCESS_TOKEN"]}", params)
+      success = JSON.parse(response.body)["success"]
+      if success == true
+        puts "Successfully deleted Broadcast Label 👍"
+      else
+        puts "⁉️"
+      end
+    end
+
     def self.destroy label_id:
       begin
         conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/#{label_id}")

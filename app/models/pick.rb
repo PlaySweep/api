@@ -1,4 +1,6 @@
 class Pick < ApplicationRecord
+  include ActiveModel::Dirty
+
   PENDING, WIN, LOSS = 0, 1, 2
 
   belongs_to :event
@@ -7,9 +9,9 @@ class Pick < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
-  validate :has_started?
   validates :selection_id, :event_id, uniqueness: { scope: :user_id, message: "only 1 per event" }
 
+  before_save :has_started?
   around_save :catch_uniqueness_exception
   after_update :update_user_streaks
 
@@ -27,9 +29,7 @@ class Pick < ApplicationRecord
   private
 
   def has_started?
-    if event.slate.started?
-      self.errors.add(:pick, "Slate has already started")
-    end
+    restore_attributes if event.slate.started? and selection_id_changed?
   end
 
   def catch_uniqueness_exception
