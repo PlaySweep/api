@@ -99,6 +99,11 @@ class User < ApplicationRecord
     picks_for_slate.sort == slate.winners.map(&:id).uniq.sort
   end
 
+  def completed_selections_for slate
+    events = picks.pending.where( event_id: slate.events.map(&:id) )
+    events.size == slate.events.size
+  end
+
   private
 
   def associate_account

@@ -5,7 +5,7 @@ require 'json'
 
 module FacebookMessaging
   class Broadcast
-    def deliver_for resource: 
+    def self.deliver_for resource: 
       begin
         conn = Faraday.new(:url => "https://graph.facebook.com/v3.3/me/")
         message = Message.find_by(messageable_type: "Owner", messageable_id: resource.id, used: false, failed_at: nil)
