@@ -1,26 +1,6 @@
 class DataMailer < ApplicationMailer
   default from: "ryan@endemiclabs.co"
 
-  def user_acquisition_analytics day:
-    acquistion_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_acquisition_data.csv")
-    attachments["#{(DateTime.current - day).to_date}_acquisition_data.csv"] = { mime_type: 'text/csv', content: acquistion_csv }
-    mail(
-      to: "ben@endemiclabs.co",
-      subject: "Analytics - #{(DateTime.current - day).to_date}",
-      body: "Attached below."
-    )
-  end
-
-  def user_engagement_analytics day:
-    engagement_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_engagement_data.csv")
-    attachments["#{(DateTime.current - day).to_date}_engagement_data.csv"] = { mime_type: 'text/csv', content: engagement_csv }
-    mail(
-      to: "ben@endemiclabs.co",
-      subject: "Analytics - #{(DateTime.current - day).to_date}",
-      body: "Attached below."
-    )
-  end
-
   def analytics
     acquistion_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_acquisition_data.csv")
     engagement_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_engagement_data.csv")
@@ -33,14 +13,12 @@ class DataMailer < ApplicationMailer
     )
   end
 
-  def analytics_for_today
-    acquistion_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current).to_date}_acquisition_data.csv")
-    engagement_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current).to_date}_engagement_data.csv")
-    attachments["#{(DateTime.current).to_date}_acquisition_data.csv"] = { mime_type: 'text/csv', content: acquistion_csv }
-    attachments["#{(DateTime.current).to_date}_engagement_data.csv"] = { mime_type: 'text/csv', content: engagement_csv }
+  def national_analytics
+    national_engagement_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_national_engagement_data.csv")
+    attachments["#{(DateTime.current - 1).to_date}_national_engagement_data.csv"] = { mime_type: 'text/csv', content: national_engagement_csv }
     mail(
       to: "ben@endemiclabs.co",
-      subject: "Analytics - #{(DateTime.current).to_date}",
+      subject: "Analytics - #{(DateTime.current - 1).to_date}",
       body: "Attached below."
     )
   end
@@ -57,26 +35,6 @@ class DataMailer < ApplicationMailer
     )
   end
 
-  def products
-    products_csv = File.read("#{Rails.root}/tmp/products.csv")
-    attachments["#{Rails.root}/tmp/products.csv"] = { mime_type: 'text/csv', content: products_csv }
-    mail(
-      to: "ben@endemiclabs.co",
-      subject: "Products CSV #{DateTime.current.to_date}",
-      body: "Attached below."
-    )
-  end
-
-  def prizes
-    prizes_csv = File.read("#{Rails.root}/tmp/prizes.csv")
-    attachments["#{Rails.root}/tmp/prizes.csv"] = { mime_type: 'text/csv', content: prizes_csv }
-    mail(
-      to: "ben@endemiclabs.co",
-      subject: "Prizes CSV #{DateTime.current.to_date}",
-      body: "Attached below."
-    )
-  end
-
   def orders
     orders_csv = File.read("#{Rails.root}/tmp/orders.csv")
     attachments["#{Rails.root}/tmp/orders.csv"] = { mime_type: 'text/csv', content: orders_csv }
@@ -87,23 +45,14 @@ class DataMailer < ApplicationMailer
     )
   end
 
-  def orders_for_today
-    orders_csv = File.read("#{Rails.root}/tmp/#{DateTime.current.to_date}_orders.csv")
-    attachments["#{Rails.root}/tmp/#{DateTime.current.to_date}_orders.csv"] = { mime_type: 'text/csv', content: orders_csv }
+  def orders_to email:
+    orders_csv = File.read("#{Rails.root}/tmp/orders.csv")
+    attachments["#{Rails.root}/tmp/orders.csv"] = { mime_type: 'text/csv', content: orders_csv }
     mail(
-      to: "ben@endemiclabs.co",
-      subject: "Orders CSV #{DateTime.current.to_date}",
+      to: email,
+      subject: "Orders CSV #{(DateTime.current).to_date}",
       body: "Attached below."
     )
   end
 
-  def orders_for_yesterday
-    orders_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_orders.csv")
-    attachments["#{Rails.root}/tmp/#{(DateTime.current - 1).to_date}_orders.csv"] = { mime_type: 'text/csv', content: orders_csv }
-    mail(
-      to: "ben@endemiclabs.co",
-      subject: "Orders CSV #{(DateTime.current - 1).to_date}",
-      body: "Attached below."
-    )
-  end
 end
