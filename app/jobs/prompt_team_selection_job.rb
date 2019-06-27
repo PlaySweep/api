@@ -24,7 +24,7 @@ class PromptTeamSelectionJob < BudweiserJob
           "payload":"#{team.name}_#{team.id}",
         }
       end
-      FacebookMessaging::TextButton.deliver(user, "More Teams ⚾️", text, "SILENT_PUSH", url, quick_replies)
+      FacebookMessaging::TextButton.deliver(user, "More Teams", text, "SILENT_PUSH", url, quick_replies)
     end
   end
 end

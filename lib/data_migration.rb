@@ -30,6 +30,37 @@ class DataMigration
     end
   end
 
+  def self.update_team_details_for
+    Apartment::Tenant.switch!('budweiser')
+    [
+      { name: "Buffalo Bills", abbreviation: "Bills", division: "afc", image: "https://cdn.freebiesupply.com/images/large/2x/buffalo-bills-logo-transparent.png" },
+      { name: "Miami Dolphins", abbreviation: "Dolphins", division: "afc", image: "https://cdn.freebiesupply.com/images/large/2x/miami-dolphins-logo-transparent.png" },
+      { name: "New England Patriots", abbreviation: "Patriots", division: "afc", image: "https://cdn.freebiesupply.com/images/large/2x/new-england-patriots-logo-transparent.png" },
+      { name: "New York Jets", abbreviation: "Jets", division: "afc", image: "https://cdn.freebiesupply.com/images/large/2x/new-york-jets-logo-transparent.png" },
+      { name: "Cincinnati Bengals", abbreviation: "Bengals", division: "afc", image: "https://cdn.freebiesupply.com/logos/large/2x/cinncinati-bengals-1-logo-png-transparent.png" },
+      { name: "Baltimore Ravens", abbreviation: "Ravens", division: "afc", image: "https://cdn.freebiesupply.com/images/thumbs/1x/baltimore-ravens-logo.png" },
+      { name: "Indianapolis Colts", abbreviation: "Colts", division: "afc", image: "https://cdn.freebiesupply.com/images/large/2x/indianapolis-colts-logo-transparent.png" },
+      { name: "Tennessee Titans", abbreviation: "Titans", division: "afc", image: "https://cdn.freebiesupply.com/images/large/2x/tennessee-titans-logo-transparent.png" },
+      { name: "Denver Broncos", abbreviation: "Broncos", division: "afc", image: "https://cdn.freebiesupply.com/images/thumbs/1x/denver-broncos-logo.png" },
+      { name: "Kansas City Chiefs", abbreviation: "Chiefs", division: "afc", image: "https://cdn.freebiesupply.com/images/thumbs/1x/kansas-city-chiefs-logo.png" },
+      { name: "Los Angeles Charers", abbreviation: "Chargers", division: "afc", image: "https://cdn.freebiesupply.com/logos/large/2x/san-diego-chargers-logo-png-transparent.png" },
+      { name: "Oakland Raiders", abbreviation: "Raiders", division: "afc", image: "https://cdn.freebiesupply.com/images/large/2x/oakland-raiders-logo-transparent.png" }
+    ]
+
+    # { name: "Philadelphia Eagles", abbreviation: "Eagles", division: "nfc" },
+    # { name: "New York Giants", abbreviation: "Giants", division: "nfc" },
+    # { name: "Washington Redskins", abbreviation: "Redskins", division: "nfc" },
+    # { name: "Oakland Raiders", abbreviation: "Raiders", division: "nfc" },
+    # { name: "Tampa Bay Buccaneers", abbreviation: "Buccaneers", division: "nfc" },
+    # { name: "Atlanta Falcons", abbreviation: "Falcons", division: "nfc" },
+    # { name: "Carolina Panthers", abbreviation: "Panthers", division: "nfc" },
+    # { name: "New Orleans Saints", abbreviation: "Saints", division: "nfc" },
+    # { name: "San Francisco 49ers", abbreviation: "49ers", division: "nfc" },
+    # { name: "Arizona Cardinals", abbreviation: "Cardinals", division: "nfc" },
+    # { name: "Los Angeles Rams", abbreviation: "Rams", division: "nfc" },
+    # { name: "Seattle Seahawks", abbreviation: "Seahawks", division: "nfc" }
+  end
+
   def self.remove_jsonb
     Apartment::Tenant.switch!('budweiser')
     Slate.all.each do |slate|

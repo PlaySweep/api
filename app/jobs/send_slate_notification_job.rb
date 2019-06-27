@@ -10,14 +10,14 @@ class SendSlateNotificationJob < BudweiserJob
         FacebookMessaging::Carousel.deliver_global(user)
       else
         FacebookMessaging::Standard.deliver(user, "Nice job #{user.first_name}, your answers are in 👍", "NO_PUSH")
-        FacebookMessaging::Carousel.deliver_team(user)
+        FacebookMessaging::Carousel.deliver_bud(user)
       end
     else
-      FacebookMessaging::Standard.deliver(user, "Congratulations #{user.first_name}, you completed your first Budweiser Sweep Contest!\n\nWe’ll notify you of your results when the games are complete - so feel free to ask things like invite friends, more games, status, and much more in the meantime 👍", "NO_PUSH")
+      FacebookMessaging::Standard.deliver(user, "Congratulations #{user.first_name}, you completed your first Bud Light Sweep Contest!\n\nWe’ll notify you of your results when the games are complete - so feel free to ask things like invite friends, more games, status, and much more in the meantime 👍", "NO_PUSH")
       if slate.global
         FacebookMessaging::Carousel.deliver_global(user)
       else
-        FacebookMessaging::Carousel.deliver_team(user)
+        FacebookMessaging::Carousel.deliver_bud(user)
       end
     end
   end
