@@ -30,4 +30,6 @@ unless Rails.env.production?
 
   event6.selections.create(description: "Nationals", order: 1)
   event6.selections.create(description: "Marlins", order: 2)
+
 end
+

@@ -115,4 +115,35 @@ class DataMigration
     end
   end
 
+  def create_slate team_name:, abbreviation:, owner_id:, start_time:, standing:
+    slate = Slate.create(name: team_name, local: true, owner_id: owner_id, start_time: start_time, standing: standing)
+    ["Will the #{abbreviation} win? The #{abbreviation} won 11 games last season.", "Will the #{abbreviation} throw for 250 yards or more? The #{abbreviation} averaged 257.8 passing yards per game last season.", "Will the #{abbreviation} defense create 2 or more turnovers? The #{abbreviation} averaged 2.5 takeaways per game last season.", "Will the #{abbreviation} score 3 or more touchdowns? In 2018, the #{abbreviation} averaged 2.8 touchdowns per game.", "Will the #{abbreviation} sack the opposing quarterback 2 or more times? In 2018, the #{abbreviation} averaged 2.3 sacks per game.", "Will the #{abbreviation} make 1 or more field goals? The #{abbreviation} averaged 1.2 made field goals per game last season."].each_with_index do |description, index|
+      slate.events.create(description: description, order: index+1)
+    end
+  end
+
+  def schedule
+    # Week 1
+    # Chiefs @ Jags
+    # Falcons @ Vikings
+    # Titans @ Browns
+    # Bills @ Jets
+    # Ravens @ Dolphins
+    # Redskins @ Eagles
+    # Rams @ Panthers
+    # Colts @ Chargers
+    # Bengals @ Seahawks
+    # Giants @ Cowboys
+    # 49ers @ Bucs
+    # Lions @ Cardinals
+    # Steelers @ Patriots
+
+    # MNF
+    # Texans @ Saints
+    # Broncos @ Raiders
+
+  end
+
+
+
 end

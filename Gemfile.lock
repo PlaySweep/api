@@ -157,6 +157,7 @@ GEM
     pg (1.1.3)
     popcorn_notify (0.1.0)
       faraday (~> 0.9)
+    possessive (1.0.1)
     public_suffix (3.0.3)
     puma (3.12.0)
     raabro (1.1.6)
@@ -301,6 +302,7 @@ DEPENDENCIES
   mixpanel-ruby
   pg (>= 0.18, < 2.0)
   popcorn_notify
+  possessive
   puma (~> 3.11)
   rack-cors
   rails (~> 5.2.1)

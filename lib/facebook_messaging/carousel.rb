@@ -18,9 +18,9 @@ module FacebookMessaging
                 template_type: 'generic',
                 elements: [
             {
-            title: "#{team.abbreviation} Contests",
-            image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/cleveland_browns_fb_logo.png",
-            subtitle: "Make selections for your #{team.name} every day and win awesome prizes!",
+            title: "#{team.abbreviation.possessive} Contests",
+            image_url: team.entry_image,
+            subtitle: "Make selections for your #{team.name} every week and win awesome prizes!",
             buttons: [
               {
                 type: :web_url,
@@ -78,9 +78,9 @@ module FacebookMessaging
                 template_type: 'generic',
                 elements: [
           {
-          title: "#{team.abbreviation} Contests",
-          image_url: team.local_image,
-          subtitle: "Make selections for your #{team.name} every day and win awesome prizes!",
+          title: "#{team.abbreviation.possessive} Contests",
+          image_url: team.entry_image,
+          subtitle: "Make selections for your #{team.name} every week and win awesome prizes!",
           buttons: [
             {
               type: :web_url,
@@ -211,9 +211,9 @@ module FacebookMessaging
                 template_type: 'generic',
                 elements: [
                   {
-                  title: "#{team.abbreviation} Contests",
-                  image_url: team.local_image,
-                  subtitle: "Make selections for your #{team.name} every day and win awesome prizes!",
+                  title: "#{team.abbreviation.possessive} Contests",
+                  image_url: team.entry_image,
+                  subtitle: "Make selections for your #{team.name} every week and win awesome prizes!",
                   buttons: [
                     {
                       type: :web_url,

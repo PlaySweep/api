@@ -25,6 +25,7 @@ json.team do
   json.id slate.team.id
   json.image slate.team.image
   json.local_image slate.team.try(:local_image)
+  json.entry_image slate.team.try(:entry_image)
   json.field slate.field
   json.pitcher slate.try(:pitcher)
   json.standing slate.try(:standing)
