@@ -32,9 +32,9 @@ module FacebookMessaging
           ]
         },
           {
-          title: "Road to All-Star",
+          title: "All-Star Week",
           image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/allstar_prizing_image.png",
-          subtitle: "Play the Road to All-Star for a chance to win tickets to the game and more!",
+          subtitle: "Play in contests all All-Star Week for a chance to win prizes!",
           buttons: [
             {
               type: :web_url,
@@ -77,9 +77,9 @@ module FacebookMessaging
                 template_type: 'generic',
                 elements: [
                     {
-                    title: "Road to All-Star",
+                    title: "All-Star Week",
                     image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/allstar_prizing_image.png",
-                    subtitle: "Play the Road to All-Star for a chance to win tickets to the game and more!",
+                    subtitle: "Play in contests all All-Star Week for a chance to win prizes!",
                     buttons: [
                       {
                         type: :web_url,
@@ -93,7 +93,7 @@ module FacebookMessaging
                     {
                     title: "Road to All-Star Leaderboard",
                     image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/allstar_fb_logo.png",
-                    subtitle: "See how you rank against the competition!",
+                    subtitle: "See how you did against the competition in the 2019 Road To All-Star!",
                     buttons: [
                       {
                         type: :web_url,
@@ -167,7 +167,7 @@ module FacebookMessaging
                   {
                   title: "Road to All-Star Leaderboard",
                   image_url: "https://s3.amazonaws.com/budweiser-sweep-assets/allstar_fb_logo.png",
-                  subtitle: "See how you rank against the competition!",
+                  subtitle: "See how you did against the competition in the 2019 Road To All-Star!",
                   buttons: [
                     {
                       type: :web_url,
