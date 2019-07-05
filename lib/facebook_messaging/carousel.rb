@@ -103,20 +103,6 @@ module FacebookMessaging
                         messenger_extensions: true
                       }
                     ]
-                  },
-                    {
-                    title: "Road to All-Star Prizing",
-                    image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/allstar_prizing_logo.png",
-                    subtitle: "There are tons of prizes on the line for the Road to All-Star!",
-                    buttons: [
-                      {
-                        type: :web_url,
-                        url: "#{ENV["WEBVIEW_URL"]}/prizing/allstar",
-                        title: "Prizes",
-                        webview_height_ratio: 'full',
-                        messenger_extensions: true
-                      }
-                    ]
                   }
               ]
             }
@@ -177,21 +163,7 @@ module FacebookMessaging
                       messenger_extensions: true
                     }
                   ]
-                },
-                {
-                title: "Road to All-Star Prizes",
-                image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/allstar_prizing_logo.png",
-                subtitle: "There are tons of prizes on the line for the Road to All-Star!",
-                buttons: [
-                  {
-                    type: :web_url,
-                    url: "#{ENV["WEBVIEW_URL"]}/prizing/allstar",
-                    title: "Prizes",
-                    webview_height_ratio: 'full',
-                    messenger_extensions: true
-                  }
-                ]
-              }
+                }
               ]
             }
           }
