@@ -11,7 +11,7 @@ class Card < ApplicationRecord
 
   around_save :catch_uniqueness_exception
   after_create :send_slate_notification
-  after_update :notify_results, :update_user_streaks
+  after_update :notify_results
 
   private
 
