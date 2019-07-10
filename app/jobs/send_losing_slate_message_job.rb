@@ -13,10 +13,6 @@ class SendLosingSlateMessageJob < BudweiserJob
 
     messages = [
       { 
-        banner: "Even the best hitters don’t bat 1000",
-        open: "You didn’t get all 3 right, but play again for another shot! Click below 👇"
-      },
-      { 
         banner: "Well that one was a swing and a miss #{user.first_name}",
         open: "It's time for you to step back up to the plate, click below to try again 👇"
       },
