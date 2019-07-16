@@ -11,9 +11,11 @@ json.prizes slate.prizes.each do |prize|
   json.id prize.id
   json.slate_id prize.slate_id
   json.sku_id prize.sku_id
+  json.product_id prize.product_id
   json.name prize.product.name
   json.description prize.product.description
   json.quantity prize.quantity
+  json.date prize.date
 end
 json.data slate.data
 json.start_time slate.start_time
