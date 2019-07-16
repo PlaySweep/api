@@ -6,16 +6,12 @@ class SendLosingSlateMessageJob < BudweiserJob
     slate = Slate.find(slate_id)
 
     if slate.global?
-      message = "Bud Light Game of the Day (#{slate.score}). View your results inside ⚾️"
+      message = "#{slate.name} results inside ⚾️"
     else
       message = slate.result == "W" ? "The #{slate.team.abbreviation} won #{slate.score}! View your results inside ⚾️" : "The #{slate.team.abbreviation} lost #{slate.score}. View your results inside ⚾️"
     end
 
     messages = [
-      { 
-        banner: "Even the best hitters don’t bat 1000",
-        open: "You didn’t get all 3 right, but play again for another shot! Click below 👇"
-      },
       { 
         banner: "Well that one was a swing and a miss #{user.first_name}",
         open: "It's time for you to step back up to the plate, click below to try again 👇"
