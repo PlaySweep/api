@@ -38,6 +38,6 @@ class Admin::SlatesController < AdminController
   end
 
   def slate_params
-    params.require(:slate).permit(:name, :description, :start_time, :owner_id, :status, prizes_attributes: [:id, :product_id, :sku_id, :quantity, :date]).merge(data: data_params)
+    params.require(:slate).permit(:name, :description, :start_time, :owner_id, :status, prizes_attributes: [:id, :product_id, :sku_id, :quantity, :date, :slate_id]).merge(data: data_params)
   end
 end
