@@ -4,7 +4,7 @@ module FacebookMessaging
   class Carousel
     include Facebook::Messenger
 
-    def self.deliver_drizly user, url="https://drizly.com", quick_replies=nil
+    def self.deliver_drizly user, price, url="https://drizly.com", quick_replies=nil
       team = user.roles.find_by(resource_type: "Team").resource
       begin
         @template = {
@@ -18,9 +18,9 @@ module FacebookMessaging
                 template_type: 'generic',
                 elements: [
                 {
-                  title: "$10 Drizly Credit",
+                  title: "$#{price} Drizly Credit",
                   image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/bud_light_drizly_lockup.png",
-                  subtitle: "Redeem your $10 Drizly credit below 👇",
+                  subtitle: "Redeem your $#{price} Drizly credit below 👇",
                   buttons: [
                     {
                       type: :web_url,
