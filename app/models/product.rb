@@ -3,6 +3,7 @@ class Product < ApplicationRecord
   has_many :skus
   belongs_to :team, foreign_key: :owner_id
 
+  scope :active, -> { where(active: true) }
   scope :filtered, ->(owner_id) { where(owner_id: owner_id) }
   scope :for_category, ->(category) { where(category: category) }
 
