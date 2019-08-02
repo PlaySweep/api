@@ -8,6 +8,9 @@ Rails.application.routes.draw do
           resources :slates, only: [:index, :show]
           resources :entries, only: [:create]
           resources :roles, only: [:create]
+          member do
+            get "roles/change_teams"
+          end
         end
       end
       resources :statuses, only: [:index, :show], param: :facebook_uuid

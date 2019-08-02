@@ -2,8 +2,7 @@ class V1::Budweiser::SlatesController < BudweiserController
   respond_to :json
 
   def index
-    @slates = Slate.filtered(current_user.roles.map(&:resource_id)).ascending.pending
-    @slates = Slate.unfiltered.ascending.pending if params[:global]
+    @slates = Slate.filtered(current_user.roles.map(&:resource_id)).or(Slate.unfiltered).ascending.pending
     respond_with @slates
   end
 

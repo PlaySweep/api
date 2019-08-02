@@ -103,7 +103,7 @@ end
 #   request.host.split('.').first
 # }
 
-Apartment::Elevators::Subdomain.excluded_subdomains = ['api', 'api-beta', 'www', 'fc496c29']
+Apartment::Elevators::Subdomain.excluded_subdomains = ['api', 'api-beta', 'www', '681a5ad7']
 
 # Rails.application.config.middleware.use Apartment::Elevators::Domain
 Rails.application.config.middleware.use Apartment::Elevators::Subdomain
