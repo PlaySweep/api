@@ -1,1 +1,0 @@
-json.user @user, partial: 'v1/turner/users/user_for_member', as: :user

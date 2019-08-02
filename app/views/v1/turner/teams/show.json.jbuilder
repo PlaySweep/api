@@ -1,1 +1,0 @@
-json.team @team, partial: 'v1/turner/teams/team', as: :team
