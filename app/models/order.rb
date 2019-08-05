@@ -24,7 +24,7 @@ class Order < ApplicationRecord
   def trigger_ticket_notification
     if prize.product.category == "Tickets"
       text_message = "#{prize.product.name}\nDate: #{prize.date}\n\n#{user.full_name}\n#{user.email}\n#{user.line1} #{user.line2}\n#{user.city}, #{user.state} #{user.postal_code}"
-      Popcorn.notify("9566265619", text_message)
+      Popcorn.notify("2054137379", text_message)
     end
   end
 
