@@ -1,9 +1,11 @@
-class ConfirmAccountNotificationJob < BudweiserJob
+class ConfirmAccountNotificationJob < ApplicationJob
   @queue = :confirm_account_notification_job
 
   def perform user_id
     user = User.find(user_id)
-    FacebookMessaging::Standard.deliver(user, "Thanks, #{user.first_name}! You’ll never have to do that again...\n\nSo here's how it works: \n1. I’ll send you 3 questions for every time the #{Team.find(user.roles.where(resource_type: "Team").first.resource_id).name} are on the field 🙌\n2. Answer 3 questions right and earn a 'Sweep' 💥\n3. A Sweep enters you into a drawing every single day to win prizes 🎟\n4. Get notified when you win and when it's time to answer more questions 🎉", "SILENT_PUSH")
+    copy = user.account.copies.where(category: "Account Confirmation").sample.message
+    interpolated = copy % {first_name: user.first_name, team_abbreviation: "Cardinals"}
+    FacebookMessaging::Standard.deliver(user, interpolated, "SILENT_PUSH")
     FacebookMessaging::Carousel.deliver_team(user)
   end
 end

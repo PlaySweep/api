@@ -1,4 +1,4 @@
-class WelcomeBackJob < BudweiserJob
+class WelcomeBackJob < ApplicationJob
   @queue = :welcome_back_job
 
   def perform user_id

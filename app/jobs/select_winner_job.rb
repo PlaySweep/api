@@ -1,4 +1,4 @@
-class SelectWinnerJob < BudweiserJob
+class SelectWinnerJob < ApplicationJob
   @queue = :select_winner_job
 
   def perform slate_id

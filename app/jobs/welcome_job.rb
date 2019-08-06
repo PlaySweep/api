@@ -1,4 +1,4 @@
-class WelcomeJob < BudweiserJob
+class WelcomeJob < ApplicationJob
   @queue = :welcome_job
 
   def perform user_id
@@ -18,7 +18,7 @@ end
 
 
 
-# class WelcomeJob < BudweiserJob
+# class WelcomeJob < ApplicationJob
 #   @queue = :welcome_job
 
 #   def perform user_id

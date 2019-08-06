@@ -1,4 +1,4 @@
-class SendWinningSlateMessageJob < BudweiserJob
+class SendWinningSlateMessageJob < ApplicationJob
   @queue = :send_winning_slate_message_job
 
   def perform user_id, slate_id

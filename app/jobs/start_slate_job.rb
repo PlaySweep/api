@@ -1,4 +1,4 @@
-class StartSlateJob < BudweiserJob
+class StartSlateJob < ApplicationJob
   @queue = :start_slate_job
 
   def perform slate_id

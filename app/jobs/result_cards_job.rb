@@ -1,4 +1,4 @@
-class ResultCardsJob < BudweiserJob
+class ResultCardsJob < ApplicationJob
   @queue = :result_cards_job
 
   def perform slate_id

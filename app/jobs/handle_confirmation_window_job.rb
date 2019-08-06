@@ -1,4 +1,4 @@
-class HandleConfirmationWindowJob < BudweiserJob
+class HandleConfirmationWindowJob < ApplicationJob
   @queue = :handle_confirmation_window_job
 
   def perform slate_id
