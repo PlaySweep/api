@@ -25,7 +25,7 @@ Apartment.configure do |config|
   # - a hash which keys are tenant names, and values custom db config (must contain all key/values required in database.yml)
   #
   # config.tenant_names = lambda{ Account.pluck(:subdomain) }
-  config.tenant_names = ['budweiser']
+  config.tenant_names = ['budweiser', 'budlight']
   # config.tenant_names = {
   #   'tenant1' => {
   #     adapter: 'postgresql',

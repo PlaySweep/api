@@ -1,1 +1,0 @@
-json.event @event, partial: 'v1/turner/events/event', as: :event

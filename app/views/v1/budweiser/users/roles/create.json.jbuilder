@@ -1,1 +1,0 @@
-json.role @role, partial: 'v1/budweiser/users/roles/role', as: :role

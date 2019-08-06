@@ -29,7 +29,6 @@ class User < ApplicationRecord
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
 
-  before_create :associate_account
   after_create :insert_user_into_leaderboard
   
   def self.top_streak limit:
@@ -105,10 +104,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def associate_account
-    self.account_id = Account.find_by(name: "MLB").id
-  end
 
   def insert_user_into_leaderboard
     begin

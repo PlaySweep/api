@@ -1,36 +1,19 @@
 Rails.application.routes.draw do
   mount Resque::Server.new, at: '/resque'
   namespace :v1, defaults: { format: :json } do
-    namespace :budweiser do
-      resources :users, only: [:index, :show, :create, :update], param: :facebook_uuid do
-        scope module: :users do
-          resources :picks, only: [:index, :show, :create, :update]
-          resources :slates, only: [:index, :show]
-          resources :entries, only: [:create]
-          resources :roles, only: [:create]
-        end
+    resources :users, only: [:index, :show, :create, :update], param: :facebook_uuid do
+      scope module: :users do
+        resources :picks, only: [:index, :show, :create, :update]
+        resources :slates, only: [:index, :show]
+        resources :entries, only: [:create]
+        resources :roles, only: [:create]
       end
-      resources :statuses, only: [:index, :show], param: :facebook_uuid
-      resources :slates, only: [:index, :show, :update]
-      resources :cards, only: [:create]
-      resources :entries, only: [:create]
-      resources :orders, only: [:create]
-      resources :teams, only: [:index]
-      get 'fetch_card_for_slate', to: 'cards#fetch_card_for_slate'
     end
-
-    namespace :turner do
-        resources :users, only: [:index, :show, :create, :update], param: :facebook_uuid do
-          scope module: :users do
-            resources :picks, only: [:index, :show, :create, :update]
-            resources :slates, only: [:index, :show]
-          end
-      end
-      resources :slates, only: [:index, :show]
-      resources :cards, only: [:create]
-      resources :entries, only: [:create]
-      get 'fetch_card_for_slate', to: 'cards#fetch_card_for_slate'
-    end
+    resources :statuses, only: [:index, :show], param: :facebook_uuid
+    resources :slates, only: [:index, :show, :update]
+    resources :entries, only: [:create]
+    resources :orders, only: [:create]
+    resources :teams, only: [:index]
   end
   
   namespace :admin, defaults: { format: :json } do

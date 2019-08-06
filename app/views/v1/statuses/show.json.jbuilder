@@ -1,0 +1,1 @@
+json.user @user, partial: 'v1/users/user_for_status', as: :user
