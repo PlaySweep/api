@@ -11,7 +11,7 @@ class Card < ApplicationRecord
 
   around_save :catch_uniqueness_exception
   after_create :send_slate_notification
-  after_update :notify_results
+  after_update :notify_results, :update_sweep_streak
 
   private
 
@@ -25,25 +25,16 @@ class Card < ApplicationRecord
     SendSlateNotificationJob.perform_later(user_id, slate_id)
   end
 
-  def update_user_streaks
-    if slate.global
-      if saved_change_to_status?(from: 'pending', to: 'win')
-        streak = user.streaks.find_or_create_by(type: "SweepStreak")
-        streak.update_attributes(current: streak.current += 1)
-        if streak.highest < streak.current
-          streak.update_attributes(highest: streak.current)
-          update_user_stats_for_sweep_leaderboard
-        end
-      elsif saved_change_to_status?(from: 'pending', to: 'loss')
-        user.streaks.find_or_create_by(type: "SweepStreak").update_attributes(current: 0)
+  def update_sweep_streak
+    if saved_change_to_status?(from: 'pending', to: 'win')
+      streak = user.streaks.find_or_create_by(type: "SweepStreak")
+      streak.update_attributes(current: streak.current += 1)
+      if streak.highest < streak.current
+        streak.update_attributes(highest: streak.current)
       end
+    elsif saved_change_to_status?(from: 'pending', to: 'loss')
+      user.streaks.find_or_create_by(type: "SweepStreak").update_attributes(current: 0)
     end
-  end
-
-  def update_user_stats_for_sweep_leaderboard
-    board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
-    highest_streak = user.highest_sweep_streak
-    board.rank_member(user_id, highest_streak, { name: user.full_name }.to_json)
   end
 
   def notify_results
@@ -57,15 +48,10 @@ class Card < ApplicationRecord
   end
 
   def send_winning_message
-    if slate.global?
-      user.sweeps.create(slate_id: slate_id, pick_ids: user.picks.for_slate(slate_id).map(&:id))
-      SendWinningSlateMessageJob.perform_later(user_id, slate_id)
-    else
-      user.sweeps.create(slate_id: slate_id, pick_ids: user.picks.for_slate(slate_id).map(&:id))
-      user.entries.create(slate_id: slate_id)
-      user.entries.unused.each { |entry| entry.update_attributes(slate_id: slate_id) unless entry.slate_id? }
-      SendWinningSlateMessageJob.perform_later(user_id, slate_id)
-    end
+    user.sweeps.create(slate_id: slate_id, pick_ids: user.picks.for_slate(slate_id).map(&:id))
+    user.entries.create(slate_id: slate_id)
+    user.entries.unused.each { |entry| entry.update_attributes(slate_id: slate_id) unless entry.slate_id? }
+    SendWinningSlateMessageJob.perform_later(user_id, slate_id)
   end
 
   def send_losing_message

@@ -34,6 +34,7 @@ gem 'leaderboard'
 gem 'simple_service_object'
 
 gem 'possessive'
+gem 'honeybadger', '~> 4.0'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
