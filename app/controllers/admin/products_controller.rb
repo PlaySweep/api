@@ -1,4 +1,4 @@
-class Admin::ProductsController < AdminController
+class Admin::ProductsController < ApplicationController
   respond_to :json
 
   def index

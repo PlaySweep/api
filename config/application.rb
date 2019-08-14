@@ -41,7 +41,7 @@ module SweepApi
     config.enable_dependency_loading = true
     config.autoload_paths << Rails.root.join('jobs')
     config.autoload_paths << Rails.root.join('lib')
-    # config.autoload_paths << Rails.root.join('app/models/budweiser/*')
+    # config.autoload_paths << Rails.root.join('app/models/*')
     config.eager_load_paths << Rails.root.join('lib')
     config.eager_load_paths << Rails.root.join('lib/services/*.rb')
 

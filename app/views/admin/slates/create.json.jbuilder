@@ -1,1 +1,1 @@
-json.slate @slate, partial: 'v1/budweiser/slates/slate_for_admin', as: :slate
+json.slate @slate, partial: 'v1/slates/slate_for_admin', as: :slate

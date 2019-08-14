@@ -1,4 +1,4 @@
-class Admin::EventsController < AdminController
+class Admin::EventsController < ApplicationController
   respond_to :json
 
   def show

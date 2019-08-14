@@ -25,7 +25,7 @@ Apartment.configure do |config|
   # - a hash which keys are tenant names, and values custom db config (must contain all key/values required in database.yml)
   #
   # config.tenant_names = lambda{ Account.pluck(:subdomain) }
-  config.tenant_names = ['budweiser', 'budlight']
+  config.tenant_names = ['budweiser']
   # config.tenant_names = {
   #   'tenant1' => {
   #     adapter: 'postgresql',
@@ -103,7 +103,7 @@ end
 #   request.host.split('.').first
 # }
 
-Apartment::Elevators::Subdomain.excluded_subdomains = ['api', 'api-beta', 'www', '681a5ad7']
+Apartment::Elevators::Subdomain.excluded_subdomains = ['api', 'api-beta', 'www', 'f035474b']
 
 # Rails.application.config.middleware.use Apartment::Elevators::Domain
 Rails.application.config.middleware.use Apartment::Elevators::Subdomain

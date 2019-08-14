@@ -1,4 +1,4 @@
-class Admin::SlatesController < AdminController
+class Admin::SlatesController < ApplicationController
   respond_to :json
 
   def index

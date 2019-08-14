@@ -1,1 +1,1 @@
-json.team @team, partial: 'v1/budweiser/teams/team', as: :team
+json.team @team, partial: 'v1/teams/team', as: :team

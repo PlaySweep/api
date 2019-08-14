@@ -17,6 +17,7 @@ class V1::UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.account_id = current_account.id
+    @user.confirmed = true
     if @user.save
       increment_entries_for_referrer if params[:referrer_uuid]
       if params[:team]
