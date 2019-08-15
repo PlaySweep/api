@@ -8,3 +8,4 @@ json.handle user.handle
 json.confirmed user.confirmed
 json.shipping user.shipping
 json.locked user.locked
+json.slug user.slug

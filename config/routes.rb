@@ -2,7 +2,8 @@ Rails.application.routes.draw do
   mount Resque::Server.new, at: '/resque'
   namespace :v1, defaults: { format: :json } do
     
-    resources :users, only: [:index, :show, :create, :update], param: :facebook_uuid do
+    get 'fetch_by/:slug', to: 'users#slug'
+    resources :users, only: [:index, :show, :create, :update] do
       scope module: :users do
         resources :picks, only: [:index, :show, :create, :update]
         resources :slates, only: [:index, :show]
@@ -14,9 +15,14 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :statuses, only: [:index, :show], param: :facebook_uuid
+    scope :facebook do
+      scope module: :facebook do
+        resources :sessions, only: :show, param: :facebook_uuid
+      end
+    end
+
+    resources :statuses, only: [:index, :show]
     resources :slates, only: [:index, :show, :update]
-    resources :entries, only: [:create]
     resources :orders, only: [:create]
     resources :teams, only: [:index]
   end

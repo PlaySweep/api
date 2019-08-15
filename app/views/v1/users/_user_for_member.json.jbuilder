@@ -10,6 +10,7 @@ json.dob user.dob
 json.zipcode user.zipcode
 json.confirmed user.confirmed
 json.locked user.locked
+json.slug user.slug
 json.roles user.roles.where(resource_type: "Team").each do |role|
   json.id role.id
   json.owner_id role.resource_id

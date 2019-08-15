@@ -13,6 +13,8 @@ class User < ApplicationRecord
   has_many :orders, dependent: :destroy
   has_one :preference, foreign_key: :user_id
 
+  after_create :set_slug
+
   jsonb_accessor :data,
     referral: [:string, default: "landing_page"]
 
@@ -29,13 +31,15 @@ class User < ApplicationRecord
   scope :for_owner, ->(owner_id) { joins(:roles).where('roles.resource_id = ?', owner_id) }
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
-
-  after_create :insert_user_into_leaderboard
   
   def self.top_streak limit:
     board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
     ids = board.top(limit.to_i).map { |user| user[:member] }
     where(id: ids).sort_by(&:rank)
+  end
+
+  def filtered_ids
+    roles.map(&:resource_id)
   end
 
   def streak
@@ -106,12 +110,9 @@ class User < ApplicationRecord
 
   private
 
-  def insert_user_into_leaderboard
-    begin
-      Board.fetch(leaderboard: :allstar_sweep_leaderboard).rank_member(id, 0, { name: full_name }.to_json)
-    rescue Exception => e
-      puts "Error in Redis Leaderboard insert #{e}"
-    end
+  def set_slug
+    slug = "#{self.first_name[0]}#{self.last_name}#{SecureRandom.hex(3)}".downcase
+    self.update_attributes(slug: slug)
   end
 
 end

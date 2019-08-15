@@ -9,7 +9,7 @@ class V1::StatusesController < ApplicationController
   end
 
   def show
-    @user = User.find_by(facebook_uuid: params[:facebook_uuid])
+    @user = current_user
     respond_with  @user
   end
 end

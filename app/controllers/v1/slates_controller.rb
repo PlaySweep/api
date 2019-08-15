@@ -2,7 +2,7 @@ class V1::SlatesController < ApplicationController
   respond_to :json
 
   def index
-    @slates = Slate.filtered(current_user.roles.map(&:resource_id)).or(Slate.unfiltered).ascending.pending
+    @slates = Slate.filtered(current_user.filtered_ids).or(Slate.unfiltered).ascending.pending
     respond_with @slates
   end
 

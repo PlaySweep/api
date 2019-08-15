@@ -1,7 +1,7 @@
 class V1::UsersController < ApplicationController
   respond_to :json
 
-  skip_before_action :authenticate!, only: :create
+  skip_before_action :authenticate!, only: [:create]
 
   def index
     @users = User.all
@@ -9,8 +9,13 @@ class V1::UsersController < ApplicationController
   end
 
   def show
-    @user = current_user
+    @user = User.find_by(id: params[:id])
     WelcomeBackJob.perform_later(@user.id) if @user and params[:onboard]
+    respond_with @user
+  end
+
+  def slug
+    @user = User.find_by(slug: params[:slug])
     respond_with @user
   end
 
@@ -19,10 +24,10 @@ class V1::UsersController < ApplicationController
     @user.account_id = current_account.id
     @user.confirmed = true
     if @user.save
-      increment_entries_for_referrer if params[:referrer_uuid]
       if params[:team]
         team = Team.by_name(params[:team]).first
         add_role if team
+        # TODO UNCOMMENT THIS
         # subscribe_to(resource: team, user: @user)
       end
       WelcomeJob.perform_later(@user.id) if params[:onboard]
@@ -31,7 +36,7 @@ class V1::UsersController < ApplicationController
   end
 
   def update
-    @user = current_user
+    @user = User.find_by(id: params[:id])
     @user.update_attributes(user_params)
     handle_confirmation if params[:confirmation] and !@user.locked
     if params[:team]
@@ -49,10 +54,6 @@ class V1::UsersController < ApplicationController
   end
 
   private
-
-  def increment_entries_for_referrer
-    referrer = User.find_by(facebook_uuid: params[:referrer_uuid]).entries.create!
-  end
 
   def handle_confirmation
     if @user.roles.where(resource_type: "Team").blank?

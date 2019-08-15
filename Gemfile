@@ -32,6 +32,7 @@ gem 'haversine'
 gem 'leaderboard'
 
 gem 'simple_service_object'
+gem 'friendly_id', '~> 5.2.4'
 
 gem 'possessive'
 gem 'honeybadger', '~> 4.0'
