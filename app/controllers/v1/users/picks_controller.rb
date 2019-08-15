@@ -2,12 +2,14 @@ class V1::Users::PicksController < ApplicationController
   respond_to :json
 
   def index
-    @picks = current_user.picks.for_slate(params[:slate_id])
+    user = User.find_by(id: params[:user_id])
+    @picks = user.picks.for_slate(params[:slate_id])
     respond_with @picks
   end
 
   def show
-    @pick = current_user.picks.find_by(id: params[:id])
+    user = User.find_by(id: params[:user_id])
+    @pick = user.picks.find_by(id: params[:id])
     if @pick
       respond_with @pick
     else
@@ -16,7 +18,8 @@ class V1::Users::PicksController < ApplicationController
   end
 
   def create
-    @pick = current_user.picks.create(pick_params)
+    #TODO send user_id
+    @pick = Pick.create(pick_params)
     if @pick.save
       respond_with @pick
     else
@@ -25,7 +28,8 @@ class V1::Users::PicksController < ApplicationController
   end
 
   def update
-    @pick = current_user.picks.find(params[:id])
+    #TODO send user_id
+    @pick = Pick.find(params[:id])
     @pick.update_attributes(pick_params)
     if @pick.save
       respond_with @pick

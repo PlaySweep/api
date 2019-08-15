@@ -9,19 +9,11 @@ class ApplicationController < ActionController::API
     request.subdomain.split('.')[0]
   end
 
-  def authorized_domains
-    ["bot", "web"]
-  end
-
   def authenticate!
     Apartment::Tenant.switch('public') do
       tenants = Account.all.map(&:tenant)
-      if tenants.include?(subdomain) 
-        if authorized_domains.include?(request.env["HTTP_DOMAINS"])
-          true
-        else
-          render json: [] 
-        end
+      if tenants.include?(subdomain)
+        current_account
       else
         render json: {error: "Subdomain does not exist"}.to_json
       end

@@ -10,11 +10,10 @@ class V1::UsersController < ApplicationController
 
   def show
     @user = User.find_by(id: params[:id])
-    WelcomeBackJob.perform_later(@user.id) if @user and params[:onboard]
     respond_with @user
   end
 
-  def slug
+  def fetch_by_slug
     @user = User.find_by(slug: params[:slug])
     respond_with @user
   end

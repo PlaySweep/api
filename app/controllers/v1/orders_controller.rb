@@ -2,7 +2,8 @@ class V1::OrdersController < ApplicationController
   respond_to :json
 
   def create
-    @order = current_user.orders.create(order_params)
+    #TODO pass user_id from web
+    @order = Order.create(order_params)
     if @order.save
       respond_with @order
     else
@@ -13,6 +14,6 @@ class V1::OrdersController < ApplicationController
   private
 
   def order_params
-    params.require(:order).permit(:prize_id)
+    params.require(:order).permit(:prize_id, :user_id)
   end
 end

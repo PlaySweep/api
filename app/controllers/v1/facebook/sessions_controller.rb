@@ -5,12 +5,7 @@ class V1::Facebook::SessionsController < ApplicationController
 
   def show
     @user = User.find_by(facebook_uuid: params[:facebook_uuid])
-    WelcomeBackJob.perform_later(@user.id) if @user and params[:onboard]
-    respond_with @user
-  end
-
-  def slug
-    @user = User.find_by(facebook_uuid: params[:facebook_uuid])
+    WelcomeBackJob.perform_later(@user.id) if params[:onboard]
     respond_with @user
   end
 

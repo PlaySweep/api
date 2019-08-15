@@ -9,7 +9,7 @@ class V1::StatusesController < ApplicationController
   end
 
   def show
-    @user = current_user
+    @user = User.find_by(id: params[:user_id])
     respond_with  @user
   end
 end

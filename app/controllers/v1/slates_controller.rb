@@ -2,7 +2,8 @@ class V1::SlatesController < ApplicationController
   respond_to :json
 
   def index
-    @slates = Slate.filtered(current_user.filtered_ids).or(Slate.unfiltered).ascending.pending
+    user = User.find_by(id: params[:user_id])
+    @slates = Slate.filtered(user.filtered_ids).or(Slate.unfiltered).ascending.pending
     respond_with @slates
   end
 

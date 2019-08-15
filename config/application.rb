@@ -51,9 +51,9 @@ module SweepApi
         origins '*'
 
         resource '*',
-                 headers: :any,
-                 credentials: false,
-                 methods: [:get, :post, :options, :delete, :put, :patch]
+         headers: :any,
+         credentials: false,
+         methods: %i(get post put patch delete options head)
       end
     end
   end

@@ -2,12 +2,11 @@ Rails.application.routes.draw do
   mount Resque::Server.new, at: '/resque'
   namespace :v1, defaults: { format: :json } do
     
-    get 'fetch_by/:slug', to: 'users#slug'
+    get 'users/show', to: 'users#fetch_by_slug'
     resources :users, only: [:index, :show, :create, :update] do
       scope module: :users do
         resources :picks, only: [:index, :show, :create, :update]
         resources :slates, only: [:index, :show]
-        resources :entries, only: [:create]
         resources :roles, only: [:create]
         member do
           get "roles/change_teams"
