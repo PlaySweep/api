@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
   include ActionController::Caching
 
   before_action :authenticate!
-  helper_method :current_account
+  helper_method :current_user, :current_account
 
   def subdomain
     request.subdomain.split('.')[0]
@@ -23,6 +23,12 @@ class ApplicationController < ActionController::API
   def current_account
     Apartment::Tenant.switch(subdomain) do
       @current_account ||= Account.find_by(tenant: subdomain)
+    end
+  end
+
+  def current_user
+    Apartment::Tenant.switch(subdomain) do
+      @current_user ||= User.find_by(id: params[:user_id])
     end
   end
 end

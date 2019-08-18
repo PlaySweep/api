@@ -2,8 +2,8 @@ class V1::Users::PicksController < ApplicationController
   respond_to :json
 
   def index
-    user = User.find_by(id: params[:user_id])
-    @picks = user.picks.for_slate(params[:slate_id])
+    @user = User.find_by(id: params[:user_id])
+    @picks = @user.picks.for_slate(params[:slate_id])
     respond_with @picks
   end
 

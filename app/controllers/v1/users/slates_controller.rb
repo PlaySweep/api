@@ -2,14 +2,14 @@ class V1::Users::SlatesController < ApplicationController
   respond_to :json
 
   def index
-    user = User.find_by(id: params[:user_id])
-    @slates = user.slates.descending
+    @user = User.find_by(id: params[:user_id])
+    @slates = @user.slates.descending
     respond_with @slates
   end
 
   def show
-    user = User.find_by(id: params[:user_id])
-    @slate = user.slates.find_by(id: params[:id])
+    @user = User.find_by(id: params[:user_id])
+    @slate = @user.slates.find_by(id: params[:id])
     if @slate
       respond_with @slate
     else
