@@ -8,6 +8,10 @@ json.local slate.local
 json.global slate.global
 json.result slate.result
 json.score slate.score
+json.total_sweeps slate.cards.win.size
+json.total_entries slate.cards.size
+json.event_size slate.events.size
+json.number_of_correct_answers slate.number_of_correct_answers_for(current_user.id)
 json.winner slate.winner, partial: 'v1/users/user_for_member', as: :user
 json.previous_user_ids slate.previous_user_ids
 json.prizes slate.prizes.each do |prize|
@@ -25,6 +29,8 @@ end
 json.team do
   json.id slate.team.id
   json.image slate.team.image
+  json.abbreviation slate.team.abbreviation
+  json.initials slate.team.initials
   json.local_image slate.team.try(:local_image)
   json.entry_image slate.team.try(:entry_image)
   json.field slate.field

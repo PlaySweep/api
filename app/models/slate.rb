@@ -54,12 +54,10 @@ class Slate < ApplicationRecord
     team.slates.where("start_time < ?", start_time).last
   end
 
-  def progress current_user_id
-    if cards.find_by(user_id: current_user_id, slate_id: id)
-      :complete
-    else
-      :new
-    end
+  def number_of_correct_answers_for current_user_id
+    card = cards.find_by(user_id: current_user_id, slate_id: id)
+    picks = card.user.picks.where(event_id: card.slate.events.map(&:id))
+    picks.win.count
   end
 
   def events_are_completed?
