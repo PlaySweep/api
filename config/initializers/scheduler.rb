@@ -16,6 +16,7 @@ if Rails.env.production?
     DataMailer.analytics.deliver_now
     DataMailer.national_analytics.deliver_now
     DataMailer.orders_to(email: "ben@endemiclabs.co").deliver_now
+    DataMailer.orders_to(email: "budweisersweep@endemiclabs.co").deliver_now
     DataMailer.orders_to(email: "acdcrockergirl9@gmail.com").deliver_now
   end
 
