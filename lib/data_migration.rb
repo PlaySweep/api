@@ -124,4 +124,29 @@ class DataMigration
     end
   end
 
+  def self.upload_teams
+    Apartment::Tenant.switch!('budlight')
+    csv_text = File.read(Rails.root.join('lib', 'seeds', 'nfl_teams.csv'))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    count = 0
+    csv.each do |row|
+      t = Team.new
+      t.name = row['name']
+      t.account_id = row['account_id']
+      t.type = row['type']
+      t.initials = row['initials']
+      t.abbreviation = row['abbreviation']
+      t.image = row['image']
+      t.entry_image = row['entry_image']
+      t.local_image = row['local_image']
+      t.division = row['division']
+      t.lat = row['lat'].to_f
+      t.long = row['long'].to_f
+      t.sponsored = row['sponsored']
+      t.active = row['active']
+      t.save
+      puts "#{t.name} saved"
+    end
+  end
+
 end

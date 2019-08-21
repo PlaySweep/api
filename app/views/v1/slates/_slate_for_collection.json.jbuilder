@@ -40,6 +40,8 @@ end
 json.opponent do
   json.id slate.try(:opponent).try(:id)
   json.image slate.try(:opponent).try(:image)
+  json.abbreviation slate.try(:opponent).try(:abbreviation)
+  json.initials slate.try(:opponent).try(:initials)
   json.pitcher slate.try(:opponent_pitcher)
   json.standing slate.try(:opponent_standing)
 end if slate.opponent

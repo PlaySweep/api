@@ -1,35 +1,29 @@
+require 'csv'
+
 unless Rails.env.production?
-  Apartment::Tenant.switch!('budweiser')
+  Apartment::Tenant.switch!('budlight')
 
-  slate1 = Slate.create(name: "Orioles vs White Sox", global: true, start_time: DateTime.current + 2.days, team_id: 7, field: "away", opponent_id: 6)
-  slate2 = Slate.create(name: "Nationals @ Marlins", global: true, start_time: DateTime.current + 3.days, team_id: 9, field: "home", opponent_id: 8)
-
-
-  event1 = slate1.events.create(description: "Will a home run be hit?", order: 1)
-  event2 = slate1.events.create(description: "Will it go extra innings?", order: 2)
-  event3 = slate1.events.create(description: "Who will win?", order: 3)
-
-  event1.selections.create(description: "Yes", order: 1)
-  event1.selections.create(description: "No", order: 2)
-
-  event2.selections.create(description: "Yes", order: 1)
-  event2.selections.create(description: "No", order: 2)
-
-  event3.selections.create(description: "Orioles", order: 1)
-  event3.selections.create(description: "White Sox", order: 2)
-
-  event4 = slate2.events.create(description: "Will a home run be hit?", order: 1)
-  event5 = slate2.events.create(description: "Will it go extra innings?", order: 2)
-  event6 = slate2.events.create(description: "Who will win?", order: 3)
-
-  event4.selections.create(description: "Yes", order: 1)
-  event4.selections.create(description: "No", order: 2)
-
-  event5.selections.create(description: "Yes", order: 1)
-  event5.selections.create(description: "No", order: 2)
-
-  event6.selections.create(description: "Nationals", order: 1)
-  event6.selections.create(description: "Marlins", order: 2)
+  csv_text = File.read(Rails.root.join('lib', 'seeds', 'nfl_teams.csv'))
+  csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+  csv.each do |row|
+    team = {
+      name: row['name'],
+      account_id: row['account_id'],
+      type: row['type'],
+      initials: row['initials'],
+      abbreviation: row['abbreviation'],
+      image: row['image'],
+      entry_image: row['entry_image'],
+      local_image: row['local_image'],
+      division: row['division'],
+      lat: row['lat'].to_f,
+      long: row['long'].to_f,
+      sponsored: row['sponsored'],
+      active: row['active']
+    }
+    count += 1
+    puts "#{team[:name]} initialized with #{count}"
+  end
 
 end
 
