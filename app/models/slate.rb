@@ -60,6 +60,14 @@ class Slate < ApplicationRecord
     picks.win.count
   end
 
+  def has_winner?
+    winner.present?
+  end
+
+  def user_sweeped?(user_id)
+    cards.win.find_by(user_id: user_id).present?
+  end
+
   def events_are_completed?
     events.size == events.where(status: 1).size
   end

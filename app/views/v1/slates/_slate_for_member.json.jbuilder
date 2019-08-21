@@ -7,6 +7,7 @@ json.start_time slate.start_time
 json.local slate.local
 json.global slate.global
 json.winner slate.winner, partial: 'v1/users/user_for_member', as: :user
+json.has_winner slate.has_winner?
 json.previous_user_ids slate.previous_user_ids
 json.total_sweeps slate.cards.win.size
 json.total_entries slate.cards.size
@@ -14,6 +15,7 @@ json.event_size slate.events.size
 json.result slate.result
 json.score slate.score
 json.number_of_correct_answers slate.number_of_correct_answers_for(current_user.id)
+json.user_sweeped slate.user_sweeped?(current_user.id)
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
   json.slate_id prize.slate_id

@@ -13,6 +13,7 @@ json.total_entries slate.cards.size
 json.event_size slate.events.size
 json.number_of_correct_answers slate.number_of_correct_answers_for(current_user.id)
 json.winner slate.winner, partial: 'v1/users/user_for_member', as: :user
+json.has_winner slate.has_winner?
 json.previous_user_ids slate.previous_user_ids
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
