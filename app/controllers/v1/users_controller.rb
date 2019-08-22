@@ -26,8 +26,7 @@ class V1::UsersController < ApplicationController
       if params[:team]
         team = Team.by_name(params[:team]).first
         add_role if team
-        # TODO UNCOMMENT THIS
-        # subscribe_to(resource: team, user: @user)
+        subscribe_to(resource: team, user: @user)
       end
       WelcomeJob.perform_later(@user.id) if params[:onboard]
     end
