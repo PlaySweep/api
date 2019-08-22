@@ -24,10 +24,8 @@ class PromptTeamSelectionJob < ApplicationJob
           "payload":"#{team.name}_#{team.id}",
         }
       end
-      FacebookMessaging::TextButton.deliver(user, "More Teams", text, "SILENT_PUSH", url)
+      FacebookMessaging::TextButton.deliver(user, "More Teams", text, "SILENT_PUSH", url, quick_replies)
     end
-    url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/teams/initial_load"
-    text = "We found a few teams close by to choose from...\n\nIf you don't already see the team you want - you can view the rest below 👇"
-    FacebookMessaging::TextButton.deliver(user, "More Teams", text, "SILENT_PUSH", url)
+    
   end
 end
