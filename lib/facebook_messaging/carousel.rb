@@ -8,7 +8,7 @@ module FacebookMessaging
       team = user.roles.find_by(resource_type: "Team").try(:resource)
       begin
         if team
-          contest_copy = user.copies.find { |copy| copy.category == "Contest Subtitle" }
+          contest_copy = user.account.copies.find { |copy| copy.category == "Contest Subtitle" }
           interpolated_contest_copy = contest_copy % { team_abbreviation: team.abbreviation }
             @template = {
               recipient: {
