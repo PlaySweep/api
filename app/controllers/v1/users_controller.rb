@@ -21,7 +21,6 @@ class V1::UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.account_id = current_account.id
-    @user.confirmed = true
     if @user.save
       if params[:team]
         team = Team.by_name(params[:team]).first
