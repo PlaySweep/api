@@ -15,7 +15,7 @@ class PromptTeamSelectionJob < ApplicationJob
         end
         radius *= 3
       end
-      url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/teams/initial_load"
+      url="#{ENV["WEBVIEW_URL"]}/#{user.id}/teams/initial_load"
       text = "We found a few teams close by to choose from...\n\nIf you don't already see the team you want - you can view the rest below 👇"
       quick_replies = available_teams.map do |team|
         {

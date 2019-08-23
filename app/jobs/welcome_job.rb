@@ -15,8 +15,7 @@ class WelcomeJob < ApplicationJob
       FacebookMessaging::TextButton.deliver(user, "Let's go!", "Just tap below to get this party started 👇", "NO_PUSH", "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}")
     else
       national_onboarding_copy = user.account.copies.where(category: "Welcome National Onboarding").sample.message
-      national_onboarding_interpolated = national_onboarding_copy % { league_name: user.account.name }
-      FacebookMessaging::Standard.deliver(user, national_onboarding_interpolated)
+      FacebookMessaging::Standard.deliver(user, national_onboarding_copy)
       FacebookMessaging::TextButton.deliver(user, "Let's go!", "Just tap below to get this party started 👇", "NO_PUSH", "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}")
     end
   end
