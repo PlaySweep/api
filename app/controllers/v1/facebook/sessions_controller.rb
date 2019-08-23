@@ -5,8 +5,12 @@ class V1::Facebook::SessionsController < ApplicationController
 
   def show
     @user = User.find_by(facebook_uuid: params[:facebook_uuid])
-    WelcomeBackJob.perform_later(@user.id) if params[:onboard]
-    respond_with @user
+    if @user
+      WelcomeBackJob.perform_later(@user.id) if params[:onboard]
+      respond_with @user
+    else
+      render json: { user: {} }
+    end
   end
 
 end
