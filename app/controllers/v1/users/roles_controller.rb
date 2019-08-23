@@ -8,17 +8,18 @@ class V1::Users::RolesController < ApplicationController
   end
 
   def change_teams
-    previous_role = current_user.roles.find_by(resource_type: "Team")
+    user = User.find_by(id: params[:id])
+    previous_role = user.roles.find_by(resource_type: "Team")
     if previous_role.present?
-      # unsubscribe user: current_user
+      unsubscribe user: user
       symbolized_role = previous_role.resource.name.downcase.split(' ').join('_').to_sym
       previous_team = previous_role.resource
-      current_user.remove_role(symbolized_role, previous_team)
-      current_user.add_role(params[:team_name], Team.find(params[:team_id]))
-      # subscribe user: current_user
+      user.remove_role(symbolized_role, previous_team)
+      user.add_role(params[:team_name], Team.find(params[:team_id]))
+      subscribe user: user
     end
-    FacebookMessaging::Carousel.deliver_team(current_user)
-    @role = current_user.roles.find_by(resource_type: "Team")
+    FacebookMessaging::Carousel.deliver_team(user)
+    @role = user.roles.find_by(resource_type: "Team")
   end
 
   private

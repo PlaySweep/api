@@ -55,7 +55,7 @@ module FacebookMessaging
                   buttons: [
                     {
                       type: :web_url,
-                      url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/account",
+                      url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
                       title: "Confirm your account",
                       webview_height_ratio: 'full',
                       messenger_extensions: true

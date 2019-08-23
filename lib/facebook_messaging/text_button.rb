@@ -4,7 +4,7 @@ module FacebookMessaging
   class TextButton
     include Facebook::Messenger
 
-    def self.deliver user, title, message, notification_type="REGULAR", url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load", quick_replies=nil
+    def self.deliver user, title, message, notification_type="REGULAR", url="#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/1", quick_replies=nil
       begin
         @template = {
           recipient: {

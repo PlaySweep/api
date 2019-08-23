@@ -38,7 +38,7 @@ module FacebookMessaging
                 buttons: [
                   {
                     type: :web_url,
-                    url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=1",
+                    url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/1",
                     title: "Play now",
                     webview_height_ratio: 'full',
                     messenger_extensions: true
@@ -64,7 +64,7 @@ module FacebookMessaging
       end
     end
 
-    def self.deliver_team user, url="#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load", quick_replies=nil
+    def self.deliver_team user, url="#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/1", quick_replies=nil
       team = user.roles.find_by(resource_type: "Team").try(:resource)
       begin
         if team
@@ -85,7 +85,7 @@ module FacebookMessaging
               buttons: [
                 {
                   type: :web_url,
-                  url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=1",
+                  url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/1",
                   title: "Play now",
                   webview_height_ratio: 'full',
                   messenger_extensions: true
@@ -99,7 +99,7 @@ module FacebookMessaging
               buttons: [
                 {
                   type: :web_url,
-                  url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
+                  url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/2",
                   title: "Status",
                   webview_height_ratio: 'full',
                   messenger_extensions: true
@@ -125,13 +125,13 @@ module FacebookMessaging
                     template_type: 'generic',
                     elements: [
                 {
-                title: "Budweiser Game of the Day",
-                image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/budweiser_mlb_fb_lockup.png",
-                subtitle: "Make selections for the Budweiser Game of the Day and win awesome prizes!",
+                title: "#{user.account.friendly_name.capitalize} Game of the Day",
+                image_url: user.account.images.find_by(category: "Account Lockup").url,
+                subtitle: "Make selections for the #{user.account.friendly_name.capitalize} Game of the Day and win awesome prizes!",
                 buttons: [
                   {
                     type: :web_url,
-                    url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=1",
+                    url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/1",
                     title: "Play now",
                     webview_height_ratio: 'full',
                     messenger_extensions: true
@@ -145,7 +145,7 @@ module FacebookMessaging
               buttons: [
                 {
                   type: :web_url,
-                  url: "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/dashboard/initial_load?tab=3",
+                  url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/2",
                   title: "Status",
                   webview_height_ratio: 'full',
                   messenger_extensions: true

@@ -94,7 +94,7 @@ class User < ApplicationRecord
   end
 
   def default_image
-    "https://s3.amazonaws.com/budweiser-sweep-assets/bud_sweep_baseball_logo.png"
+    account.image
   end
 
   def won_slate? slate

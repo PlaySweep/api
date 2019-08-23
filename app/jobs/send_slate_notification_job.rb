@@ -4,12 +4,15 @@ class SendSlateNotificationJob < ApplicationJob
   def perform user_id, slate_id
     user = User.find(user_id)
     slate = Slate.find(slate_id)
+    pick_confirmation_copy = user.account.copies.where(category: "Pick Confirmation").sample.message
+    pick_confirmation_interpolated = pick_confirmation_copy % { first_name: user.first_name }
     if user.cards.size > 1
-      FacebookMessaging::Standard.deliver(user, "Nice job #{user.first_name}, your answers are in 👍", "NO_PUSH")
+      FacebookMessaging::Standard.deliver(user, pick_confirmation_interpolated, "NO_PUSH")
       FacebookMessaging::Carousel.deliver_team(user)
     else
-      FacebookMessaging::Standard.deliver(user, "Congratulations #{user.first_name}, you completed your first Bud Light Sweep Contest!\n\nWe’ll notify you of your results when the games are complete - and when you start getting thirsty, here's a $5 Drizly credit that you can redeem right now 🍺!", "NO_PUSH")
-      FacebookMessaging::Carousel.deliver_drizly(user, "5")
+      initial_pick_confirmation_copy = user.account.copies.where(category: "Initial Pick Confirmation").sample.message
+      initial_pick_confirmation_interpolated = initial_pick_confirmation_copy % { first_name: user.first_name }
+      FacebookMessaging::Standard.deliver(user, initial_pick_confirmation_interpolated, "NO_PUSH")
     end
   end
 end
