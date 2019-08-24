@@ -32,9 +32,9 @@ json.images user.account.images.each do |image|
   json.category image.category
   json.url image.url
 end
-json.links user.account.links.each do |image|
-  json.id image.id
-  json.category image.category
-  json.url image.url
+json.links user.account.links.each do |link|
+  json.id link.id
+  json.category link.category
+  json.url link.url
 end
 json.shipping user.shipping
