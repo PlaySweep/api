@@ -21,7 +21,7 @@ module FacebookMessaging
                     template_type: 'generic',
                     elements: [
               {
-              title: "#{team.abbreviation} Contests",
+              title: "#{team.abbreviation.possessive} Contests",
               image_url: team.entry_image,
               subtitle: interpolated_contest_copy,
               buttons: [

@@ -149,4 +149,19 @@ class DataMigration
     end
   end
 
+  def self.upload_products
+    Apartment::Tenant.switch!('budlight')
+    csv_text = File.read(Rails.root.join('lib', 'seeds', 'nfl_products.csv'))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    count = 0
+    csv.each do |row|
+      t = Product.new
+      t.name = row['name']
+      t.owner_id = Team.find_by(name: row['team']).id
+      t.category = row['category']
+      t.save
+      puts "#{t.name} saved"
+    end
+  end
+
 end
