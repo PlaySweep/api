@@ -15,8 +15,10 @@ class V1::Users::RolesController < ApplicationController
       symbolized_role = previous_role.resource.name.downcase.split(' ').join('_').to_sym
       previous_team = previous_role.resource
       user.remove_role(symbolized_role, previous_team)
-      user.add_role(params[:team_name], Team.find(params[:team_id]))
-      subscribe user: user
+      team = Team.find_by(id: params[:team_id]
+      team_symbol = params[:team_name].to_sym
+      user.add_role(team_symbol, team))
+      subscribe_to resource: team, user: user
     end
     FacebookMessaging::Carousel.deliver_team(user)
     @role = user.roles.find_by(resource_type: "Team")
