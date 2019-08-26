@@ -12,11 +12,11 @@ class SendWinningSlateMessageJob < ApplicationJob
       FacebookMessaging::Standard.deliver(user, interpolated_national_winning_slate_copy, "NO_PUSH")
       FacebookMessaging::Carousel.deliver_team(user)
     else
-      message = slate.result == "W" ? "The #{slate.team.abbreviation} won #{slate.score}! View your results inside" : "The #{slate.team.abbreviation} lost #{slate.score}. View your results inside"
+      message = slate.result == "W" ? "The #{slate.team.abbreviation} won #{slate.score} - view your results inside" : "The #{slate.team.abbreviation} lost #{slate.score} - view your results inside"
       FacebookMessaging::Standard.deliver(user, "#{message}", "REGULAR")
       local_winning_slate_copy = user.account.copies.where(category: "Local Winning Slate").sample.message
       interpolated_local_winning_slate_copy = local_winning_slate_copy % { first_name: user.first_name, event_size: slate.events.size, prize_name: slate.prizes.first.product.name }
-      FacebookMessaging::Standard.deliver(user, "#{context_message}", "NO_PUSH")
+      FacebookMessaging::Standard.deliver(user, interpolated_local_winning_slate_copy, "NO_PUSH")
       FacebookMessaging::Carousel.deliver_team(user)
     end
   end

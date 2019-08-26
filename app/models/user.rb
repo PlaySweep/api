@@ -32,6 +32,8 @@ class User < ApplicationRecord
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
   
+  validates :slug, uniqueness: true
+
   def self.top_streak limit:
     board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
     ids = board.top(limit.to_i).map { |user| user[:member] }
@@ -113,6 +115,11 @@ class User < ApplicationRecord
   def set_slug
     slug = "#{self.first_name[0]}#{self.last_name}#{SecureRandom.hex(3)}".downcase
     self.update_attributes(slug: slug)
+  end
+
+  def set_slug user:
+    slug = "#{user.first_name[0]}#{user.last_name}#{SecureRandom.hex(3)}".downcase
+    user.update_attributes(slug: slug)
   end
 
 end
