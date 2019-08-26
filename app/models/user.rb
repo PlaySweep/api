@@ -117,9 +117,4 @@ class User < ApplicationRecord
     self.update_attributes(slug: slug)
   end
 
-  def set_slug user:
-    slug = "#{user.first_name[0]}#{user.last_name}#{SecureRandom.hex(3)}".downcase
-    user.update_attributes(slug: slug)
-  end
-
 end
