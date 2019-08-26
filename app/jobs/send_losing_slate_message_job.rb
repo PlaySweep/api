@@ -15,6 +15,6 @@ class SendLosingSlateMessageJob < ApplicationJob
     interpolated_losing_slate_copy = losing_slate_copy % { first_name: user.first_name }
 
     FacebookMessaging::Standard.deliver(user, message, "REGULAR")
-    FacebookMessaging::TextButton.deliver(user, "More Contests", messages.sample, "NO_PUSH")
+    FacebookMessaging::TextButton.deliver(user, "More Contests", interpolated_losing_slate_copy, "NO_PUSH")
   end
 end
