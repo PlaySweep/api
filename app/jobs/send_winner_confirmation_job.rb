@@ -9,7 +9,7 @@ class SendWinnerConfirmationJob < ApplicationJob
 
     winner_confirmation_action_copy = user.account.copies.where(category: "Winner Confirmation Action").sample.message
     
-    FacebookMessaging::Standard.deliver(user, interpolated_winner_confirmation_copy, "REGULAR")
+    FacebookMessaging::Standard.deliver(user, interpolated_winner_confirmation_banner_copy, "REGULAR")
     url = "#{ENV["WEBVIEW_URL"]}/#{user.facebook_uuid}/slates/#{slate_id}/1/confirm_prize"
     FacebookMessaging::TextButton.deliver(user, "Confirm Now", winner_confirmation_action_copy, "NO_PUSH", url)
   end
