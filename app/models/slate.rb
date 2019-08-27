@@ -54,6 +54,10 @@ class Slate < ApplicationRecord
     team.slates.where("start_time < ?", start_time).last
   end
 
+  def played? current_user_id
+    cards.find_by(user_id: current_user_id, slate_id: id).present?
+  end
+
   def number_of_correct_answers_for current_user_id
     card = cards.find_by(user_id: current_user_id, slate_id: id)
     if card

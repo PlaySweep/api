@@ -15,6 +15,7 @@ json.event_size slate.events.size
 json.result slate.result
 json.score slate.score
 json.number_of_correct_answers slate.number_of_correct_answers_for(current_user.id)
+json.played slate.played?(current_user.id)
 json.user_sweeped slate.user_sweeped?(current_user.id)
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
