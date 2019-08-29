@@ -113,8 +113,13 @@ class User < ApplicationRecord
   private
 
   def set_slug
-    slug = "#{self.first_name[0]}#{self.last_name}#{SecureRandom.hex(3)}".downcase
-    self.update_attributes(slug: slug)
+    if first_name && last_name
+      slug = "#{self.first_name[0]}#{self.last_name}#{SecureRandom.hex(3)}".downcase
+      self.update_attributes(slug: slug)
+    else
+      slug = "#{SecureRandom.hex(3)}#{SecureRandom.hex(3)}#{SecureRandom.hex(3)}".downcase
+      self.update_attributes(slug: slug)
+    end
   end
 
 end
