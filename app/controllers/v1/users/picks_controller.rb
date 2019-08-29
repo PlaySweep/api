@@ -18,7 +18,6 @@ class V1::Users::PicksController < ApplicationController
   end
 
   def create
-    #TODO send user_id
     @pick = Pick.create(pick_params)
     if @pick.save
       respond_with @pick
@@ -28,7 +27,6 @@ class V1::Users::PicksController < ApplicationController
   end
 
   def update
-    #TODO send user_id
     @pick = Pick.find(params[:id])
     @pick.update_attributes(pick_params)
     if @pick.save

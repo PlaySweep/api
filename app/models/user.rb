@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+  include Redis::Objects
+
+  value :has_recently_won
+
   rolify
 
   belongs_to :account, optional: true
@@ -38,6 +42,10 @@ class User < ApplicationRecord
     board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
     ids = board.top(limit.to_i).map { |user| user[:member] }
     where(id: ids).sort_by(&:rank)
+  end
+
+  def has_recently_won?
+    has_recently_won == "1"
   end
 
   def filtered_ids
@@ -113,8 +121,13 @@ class User < ApplicationRecord
   private
 
   def set_slug
-    slug = "#{self.first_name[0]}#{self.last_name}#{SecureRandom.hex(3)}".downcase
-    self.update_attributes(slug: slug)
+    if first_name && last_name
+      slug = "#{self.first_name[0]}#{self.last_name}#{SecureRandom.hex(3)}".downcase
+      self.update_attributes(slug: slug)
+    else
+      slug = "#{SecureRandom.hex(3)}#{SecureRandom.hex(3)}#{SecureRandom.hex(3)}".downcase
+      self.update_attributes(slug: slug)
+    end
   end
 
 end
