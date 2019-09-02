@@ -4,7 +4,7 @@ class Team < Owner
   has_many :products, foreign_key: :owner_id
   has_many :slates, foreign_key: :owner_id
 
-  scope :by_name, ->(name) { where('owners.name ilike ?', "%#{name}%") }
+  scope :by_name, ->(team_abbreviation) { data_where(abbreviation: team_abbreviation.capitalize) }
   scope :ordered, -> { order(name: :asc) }
   scope :sponsored, -> { data_where(sponsored: true) }
   scope :by_division, ->(division) { data_where(division: division) }
