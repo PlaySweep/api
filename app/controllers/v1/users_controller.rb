@@ -50,6 +50,12 @@ class V1::UsersController < ApplicationController
     respond_with @user
   end
 
+  def reset
+    @user = User.find_by(id: params[:id])
+    @user.has_recently_won.set(nil)
+    respond_with @user
+  end
+
   private
 
   def handle_confirmation

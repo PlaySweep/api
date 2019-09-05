@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+  include Redis::Objects
+
+  value :has_recently_won
+
   rolify
 
   belongs_to :account, optional: true
@@ -38,6 +42,10 @@ class User < ApplicationRecord
     board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
     ids = board.top(limit.to_i).map { |user| user[:member] }
     where(id: ids).sort_by(&:rank)
+  end
+
+  def has_recently_won?
+    has_recently_won == "1"
   end
 
   def filtered_ids
