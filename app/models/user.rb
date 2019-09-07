@@ -14,6 +14,8 @@ class User < ApplicationRecord
   has_many :cards, dependent: :destroy
   has_many :slates, through: :cards
   has_many :entries, dependent: :destroy
+  has_many :leaderboard_results
+  has_many :leaderboards, through: :leaderboard_results, source: "leaderboard_history", dependent: :destroy
   has_many :orders, dependent: :destroy
   has_many :promotions, foreign_key: :used_by, dependent: :destroy
   has_one :location
