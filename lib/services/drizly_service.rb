@@ -16,8 +16,13 @@ class DrizlyService
     playing_rule = DrizlyRuleEvaluator.new(@user).playing_rule
     if playing_rule
       promotion = DrizlyPromotion.find_by(category: "Playing", used: false, level: playing_rule.level)
-      promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
-      SendSlateNotificationWithDrizlyJob.perform_later(@user.id, @slate.id)
+      if promotion
+        promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
+        DrizlyPlayMailer.notify(@user, promotion).deliver_later
+        SendSlateNotificationWithDrizlyJob.perform_later(@user.id, @slate.id)
+      else
+        puts "No more promotion codes"
+      end
     else
       SendSlateNotificationJob.perform_later(@user.id, @slate.id)
     end
@@ -27,8 +32,13 @@ class DrizlyService
     sweep_rule = DrizlyRuleEvaluator.new(@user).sweep_rule
     if sweep_rule
       promotion = DrizlyPromotion.find_by(category: "Sweep", used: false, level: sweep_rule.level)
-      promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
-      SendWinningSlateMessageWithDrizlyJob.perform_later(@user.id, @slate.id)
+      if promotion
+        promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
+        # DrizlySweepMailer.notify(@user, promotion).deliver_later
+        SendWinningSlateMessageWithDrizlyJob.perform_later(@user.id, @slate.id)
+      else
+        puts "No more promotion codes"
+      end
     else
       SendWinningSlateMessageJob.perform_later(@user.id, @slate.id)
     end

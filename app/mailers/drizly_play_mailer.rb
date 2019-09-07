@@ -1,12 +1,12 @@
 class DrizlyPlayMailer < ApplicationMailer
   default from: "hi@thebudlightsweeps.com"
 
-  def notify(user)
-    @user = user
+  def notify(user, promotion)
+    @user, @promotion = user, promotion
 
     mail(
       to: @user.email,
-      subject: "🍺 Here's your $10 Drizly, #{@user.first_name}."
+      subject: "🍺 Here's your #{promotion.price_in_format} Drizly, #{@user.first_name}."
     )
   end
 end

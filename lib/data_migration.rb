@@ -168,17 +168,21 @@ class DataMigration
     first_states = [["IN", "Indiana"], ["MA", "Massachusetts"], ["ME", "Maine"], ["MN", "Minnesota"], ["NC", "North Carolina"], ["NJ", "New Jersey"], ["VA", "Virginia"], ["WA", "Washington"]]
     second_states = [["AZ", "Arizona"], ["CO", "Colorado"], ["DC", "District of Columbia"], ["FL", "Florida"], ["IL", "Illinois"], ["KY", "Kentucky"], ["MD", "Maryland"], ["NY", "New York"], ["OR", "Oregon"], ["RI", "Rhode Island"], ["TN", "Tennessee"], ["WY", "Wyoming"]]
     first_states.each do |state|
-      DrizlyRule.create(name: state[1], abbreviation: state[0], category: "Playing", eligible: true, level: 1)
+      DrizlyRule.create(name: state[1], abbreviation: state[0], category: "Playing", eligible: false, level: 1)
     end
     second_states.each do |state|
-      DrizlyRule.create(name: state[1], abbreviation: state[0], category: "Playing", eligible: true, level: 2)
+      DrizlyRule.create(name: state[1], abbreviation: state[0], category: "Playing", eligible: false, level: 2)
     end
   end
 
   def self.create_sweep_rules
-    first_states = [["AZ", "Arizona"], ["CO", "Colorado"], ["DC", "District of Columbia"], ["FL", "Florida"], ["IL", "Illinois"], ["KY", "Kentucky"], ["MD", "Maryland"], ["NY", "New York"], ["OR", "Oregon"], ["RI", "Rhode Island"], ["TN", "Tennessee"], ["WY", "Wyoming"]]
+    first_states = [["IN", "Indiana"], ["MA", "Massachusetts"], ["ME", "Maine"], ["MN", "Minnesota"], ["NC", "North Carolina"], ["NJ", "New Jersey"], ["VA", "Virginia"], ["WA", "Washington"]]
+    second_states = [["AZ", "Arizona"], ["CO", "Colorado"], ["DC", "District of Columbia"], ["FL", "Florida"], ["IL", "Illinois"], ["KY", "Kentucky"], ["MD", "Maryland"], ["NY", "New York"], ["OR", "Oregon"], ["RI", "Rhode Island"], ["TN", "Tennessee"], ["WY", "Wyoming"]]
     first_states.each do |state|
-      DrizlyRule.create(name: state[1], abbreviation: state[0], category: "Sweep", eligible: true, level: 1)
+      DrizlyRule.create(name: state[1], abbreviation: state[0], category: "Sweep", eligible: false, level: 0)
+    end
+    second_states.each do |state|
+      DrizlyRule.create(name: state[1], abbreviation: state[0], category: "Sweep", eligible: false, level: 1)
     end
   end
 
@@ -193,6 +197,15 @@ class DataMigration
       t.value = value
       t.level = level
       t.save
+    end
+  end
+
+  def create_and_update_location tenant:
+    Apartment::Tenant.switch!(tenant)
+    users = User.where.not(zipcode: nil)
+    users.each do |user|
+      location = Geocoder.search(user.zipcode).select { |result| result.country_code == "us" }.first
+      Location.find_or_create_by(user_id: user.id).update_attributes(city: location.city, state: location.state, postcode: zipcode, country: location.country, country_code: location.country_code)
     end
   end
 
