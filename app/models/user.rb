@@ -15,9 +15,11 @@ class User < ApplicationRecord
   has_many :slates, through: :cards
   has_many :entries, dependent: :destroy
   has_many :orders, dependent: :destroy
-  has_one :preference, foreign_key: :user_id
+  has_many :promotions, foreign_key: :used_by, dependent: :destroy
+  has_one :location
 
   after_create :set_slug
+  after_update :create_or_update_location
 
   jsonb_accessor :data,
     referral: [:string, default: "landing_page"]
@@ -127,6 +129,13 @@ class User < ApplicationRecord
     else
       slug = "#{SecureRandom.hex(3)}#{SecureRandom.hex(3)}#{SecureRandom.hex(3)}".downcase
       self.update_attributes(slug: slug)
+    end
+  end
+
+  def create_or_update_location
+    if saved_change_to_zipcode?
+      location = Geocoder.search(zipcode).select { |result| result.country_code == "us" }.first
+      Location.find_or_create_by(user_id: id).update_attributes(city: location.city, state: location.state, postcode: zipcode, country: location.country, country_code: location.country_code)
     end
   end
 

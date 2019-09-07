@@ -1,0 +1,3 @@
+class DrizlyPromotion < Promotion
+
+end

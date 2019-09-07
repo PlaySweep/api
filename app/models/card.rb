@@ -11,7 +11,7 @@ class Card < ApplicationRecord
 
   around_save :catch_uniqueness_exception
   after_create :send_slate_notification
-  after_update :notify_results, :update_sweep_streak
+  after_update :run_results, :update_sweep_streak
 
   private
 
@@ -22,7 +22,7 @@ class Card < ApplicationRecord
   end
 
   def send_slate_notification
-    SendSlateNotificationJob.perform_later(user_id, slate_id)
+    DrizlyService.new(user, slate).run(type: :playing)
   end
 
   def update_sweep_streak
@@ -37,21 +37,20 @@ class Card < ApplicationRecord
     end
   end
 
-  def notify_results
+  def run_results
     if slate.global?
-      send_winning_message if saved_change_to_status?(from: 'pending', to: 'win')
+      handle_winners if saved_change_to_status?(from: 'pending', to: 'win')
       send_losing_message if saved_change_to_status?(from: 'pending', to: 'loss')
     else
-      send_winning_message if saved_change_to_status?(from: 'pending', to: 'win') and slate.resulted?
+      handle_winners if saved_change_to_status?(from: 'pending', to: 'win') and slate.resulted?
       send_losing_message if saved_change_to_status?(from: 'pending', to: 'loss') and slate.resulted?
     end
   end
 
-  def send_winning_message
+  def handle_winners
     user.sweeps.create(slate_id: slate_id, pick_ids: user.picks.for_slate(slate_id).map(&:id))
     user.entries.create(slate_id: slate_id)
     user.entries.unused.each { |entry| entry.update_attributes(slate_id: slate_id) unless entry.slate_id? }
-    SendWinningSlateMessageJob.perform_later(user_id, slate_id)
   end
 
   def send_losing_message

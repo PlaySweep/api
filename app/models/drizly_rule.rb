@@ -1,0 +1,3 @@
+class DrizlyRule < Rule
+  
+end

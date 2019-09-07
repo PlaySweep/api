@@ -8,7 +8,7 @@ class Sweep < ApplicationRecord
   jsonb_accessor :data,
     pick_ids: [:string, array: true, default: []]
 
-  after_create :set_data
+  after_create :set_data, :check_and_run_service
 
   def picks
     Pick.where(id: pick_ids)
@@ -26,6 +26,10 @@ class Sweep < ApplicationRecord
     rescue Redis::CannotConnectError => e
       puts e.inspect
     end
+  end
+
+  def check_and_run_service
+    DrizlyService.new(user, slate).run(type: :sweep)
   end
 
 end

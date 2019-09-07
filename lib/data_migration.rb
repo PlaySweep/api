@@ -164,4 +164,36 @@ class DataMigration
     end
   end
 
+  def self.create_playing_rules
+    first_states = [["IN", "Indiana"], ["MA", "Massachusetts"], ["ME", "Maine"], ["MN", "Minnesota"], ["NC", "North Carolina"], ["NJ", "New Jersey"], ["VA", "Virginia"], ["WA", "Washington"]]
+    second_states = [["AZ", "Arizona"], ["CO", "Colorado"], ["DC", "District of Columbia"], ["FL", "Florida"], ["IL", "Illinois"], ["KY", "Kentucky"], ["MD", "Maryland"], ["NY", "New York"], ["OR", "Oregon"], ["RI", "Rhode Island"], ["TN", "Tennessee"], ["WY", "Wyoming"]]
+    first_states.each do |state|
+      DrizlyRule.create(name: state[1], abbreviation: state[0], category: "Playing", eligible: true, level: 1)
+    end
+    second_states.each do |state|
+      DrizlyRule.create(name: state[1], abbreviation: state[0], category: "Playing", eligible: true, level: 2)
+    end
+  end
+
+  def self.create_sweep_rules
+    first_states = [["AZ", "Arizona"], ["CO", "Colorado"], ["DC", "District of Columbia"], ["FL", "Florida"], ["IL", "Illinois"], ["KY", "Kentucky"], ["MD", "Maryland"], ["NY", "New York"], ["OR", "Oregon"], ["RI", "Rhode Island"], ["TN", "Tennessee"], ["WY", "Wyoming"]]
+    first_states.each do |state|
+      DrizlyRule.create(name: state[1], abbreviation: state[0], category: "Sweep", eligible: true, level: 1)
+    end
+  end
+
+  def self.upload_drizly_promotions name:, category:, value:, level:
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{name}_promo.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    count = 0
+    csv.each do |row|
+      t = DrizlyPromotion.new
+      t.category = category
+      t.code = row["redemption_code"]
+      t.value = value
+      t.level = level
+      t.save
+    end
+  end
+
 end
