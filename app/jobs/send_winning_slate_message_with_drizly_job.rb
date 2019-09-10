@@ -10,6 +10,8 @@ class SendWinningSlateMessageWithDrizlyJob < ApplicationJob
       FacebookMessaging::Standard.deliver(user, "#{message}", "REGULAR")
       drizly_national_winning_slate_copy = user.account.copies.where(category: "Drizly National Winning Slate").sample.message
       interpolated_drizly_national_winning_slate_copy = drizly_national_winning_slate_copy % { first_name: user.first_name, event_size: slate.events.size, prize_name: slate.prizes.first.product.name, drizly_value: promotion.value_in_format }
+      image = user.account.medias.find_by(category: "Drizly Lockup")
+      FacebookMessaging::MediaAttachment.deliver(user, image.attachment_id)
       FacebookMessaging::Standard.deliver(user, interpolated_drizly_national_winning_slate_copy, "NO_PUSH")
       FacebookMessaging::Carousel.deliver_team(user)
     else
@@ -17,6 +19,8 @@ class SendWinningSlateMessageWithDrizlyJob < ApplicationJob
       FacebookMessaging::Standard.deliver(user, "#{message}", "REGULAR")
       drizly_local_winning_slate_copy = user.account.copies.where(category: "Drizly Local Winning Slate").sample.message
       interpolated_drizly_local_winning_slate_copy = drizly_local_winning_slate_copy % { first_name: user.first_name, event_size: slate.events.size, prize_name: slate.prizes.first.product.name, drizly_value: promotion.value_in_format }
+      image = user.account.medias.find_by(category: "Drizly Lockup")
+      FacebookMessaging::MediaAttachment.deliver(user, image.attachment_id)
       FacebookMessaging::Standard.deliver(user, interpolated_drizly_local_winning_slate_copy, "NO_PUSH")
       FacebookMessaging::Carousel.deliver_team(user)
     end

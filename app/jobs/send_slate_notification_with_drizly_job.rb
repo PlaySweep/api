@@ -7,6 +7,8 @@ class SendSlateNotificationWithDrizlyJob < ApplicationJob
     promotion = user.promotions.find_by(type: "DrizlyPromotion", category: "Playing", slate_id: slate.id)
     initial_drizly_pick_confirmation_copy = user.account.copies.where(category: "Drizly Initial Pick Confirmation").sample.message
     initial_drizly_pick_confirmation_interpolated = initial_drizly_pick_confirmation_copy % { first_name: user.first_name, drizly_value: promotion.value_in_format }
+    image = user.account.medias.find_by(category: "Drizly Lockup")
+    FacebookMessaging::MediaAttachment.deliver(user, image.attachment_id)
     FacebookMessaging::Standard.deliver(user, initial_drizly_pick_confirmation_interpolated, "NO_PUSH")
     FacebookMessaging::Carousel.deliver_team(user)
     
