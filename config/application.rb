@@ -42,9 +42,14 @@ module SweepApi
     config.autoload_paths << Rails.root.join('jobs')
     config.autoload_paths << Rails.root.join('lib')
     config.autoload_paths << Rails.root.join('lib/services/')
+    config.autoload_paths << Rails.root.join('lib/services/*.rb')
+    config.autoload_paths << Rails.root.join('app/mailers/')
     # config.autoload_paths << Rails.root.join('app/models/*')
     config.eager_load_paths << Rails.root.join('lib')
     config.eager_load_paths << Rails.root.join('lib/services/')
+    config.eager_load_paths << Rails.root.join('lib/services/*.rb')
+    config.eager_load_paths << Rails.root.join('app/mailers/')
+
 
     config.middleware.use ::Rack::MethodOverride
     config.middleware.insert_before 0, Rack::Cors, debug: true, logger: (-> { Rails.logger }) do

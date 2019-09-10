@@ -6,7 +6,8 @@ class DrizlyPlayMailer < ApplicationMailer
 
     mail(
       to: @user.email,
-      subject: "🍺 Here's your #{promotion.value_in_format} Drizly, #{@user.first_name}."
+      subject: "🍺 Here's your #{promotion.value_in_format} Drizly, #{@user.first_name}.",
+      content_type: "text/html"
     )
   end
 end
