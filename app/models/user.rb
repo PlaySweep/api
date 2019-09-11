@@ -137,7 +137,7 @@ class User < ApplicationRecord
   def create_or_update_location
     if saved_change_to_zipcode?
       location = Geocoder.search(zipcode).select { |result| result.country_code == "us" }.first
-      Location.find_or_create_by(user_id: id).update_attributes(city: location.city, state: location.state, postcode: zipcode, country: location.country, country_code: location.country_code)
+      Location.find_or_create_by(user_id: id).update_attributes(city: location.try(:city), state: location.state, postcode: zipcode, country: location.country, country_code: location.country_code)
     end
   end
 
