@@ -13,6 +13,8 @@ json.locked user.locked
 json.slug user.slug
 json.has_recently_won user.has_recently_won?
 json.has_never_played user.has_never_played?
+json.played_for_first_time user.played_for_first_time?
+json.eligible_for_drizly user.eligible_for_drizly?
 json.location user.location
 json.roles user.roles.where(resource_type: "Team").each do |role|
   json.id role.id
@@ -55,3 +57,4 @@ json.links user.account.links.each do |link|
   json.url link.url
 end
 json.shipping user.shipping
+json.promotions user.promotions

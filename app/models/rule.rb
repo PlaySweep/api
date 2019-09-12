@@ -1,3 +1,3 @@
 class Rule < ApplicationRecord
-
+  
 end

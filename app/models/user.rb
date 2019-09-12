@@ -48,8 +48,10 @@ class User < ApplicationRecord
     where(id: ids).sort_by(&:rank)
   end
 
-  def eligible?
+  def eligible_for_drizly?
+    reward = account.rewards.find_by(name: "Drizly", category: "Playing")
     rule = DrizlyRule.find_by(name: location.try(:state), category: "Playing", eligible: true)
+    reward.active && rule.present?
   end
 
   def coordinates
@@ -62,6 +64,10 @@ class User < ApplicationRecord
 
   def has_never_played?
     cards.size == 0
+  end
+
+  def played_for_first_time?
+    cards.size == 1
   end
 
   def filtered_ids

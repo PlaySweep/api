@@ -12,16 +12,21 @@ class DrizlyService
     end
   end
 
+  def playing_reward_active?
+    @user.account.rewards.find_by(name: "Drizly", category: "Playing", active: true).present?
+  end
+
+  def sweep_reward_active?
+    @user.account.rewards.find_by(name: "Drizly", category: "Sweep", active: true).present?
+  end
+
   def for_playing
     playing_rule = DrizlyRuleEvaluator.new(@user).playing_rule
-    if playing_rule
-      promotion = DrizlyPromotion.find_by(category: "Playing", used: false, level: playing_rule.level)
-      if promotion
+    if playing_rule && playing_reward_active?
+      if promotion = DrizlyPromotion.find_by(category: "Playing", used: false, level: playing_rule.level)
         promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
         DrizlyPlayMailer.notify(@user, promotion).deliver_later
         SendSlateNotificationWithDrizlyJob.perform_later(@user.id, @slate.id)
-      else
-        puts "No more promotion codes"
       end
     else
       SendSlateNotificationJob.perform_later(@user.id, @slate.id)
@@ -30,14 +35,11 @@ class DrizlyService
 
   def for_sweep
     sweep_rule = DrizlyRuleEvaluator.new(@user).sweep_rule
-    if sweep_rule
-      promotion = DrizlyPromotion.find_by(category: "Sweep", used: false, level: sweep_rule.level)
-      if promotion
+    if sweep_rule && sweep_reward_active?
+      if promotion = DrizlyPromotion.find_by(category: "Sweep", used: false, level: sweep_rule.level)
         promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
         # DrizlySweepMailer.notify(@user, promotion).deliver_later
         SendWinningSlateMessageWithDrizlyJob.perform_later(@user.id, @slate.id)
-      else
-        puts "No more promotion codes"
       end
     else
       SendWinningSlateMessageJob.perform_later(@user.id, @slate.id)
