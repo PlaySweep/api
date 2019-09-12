@@ -47,9 +47,16 @@ class User < ApplicationRecord
     ids = board.top(limit.to_i).map { |user| user[:member] }
     where(id: ids).sort_by(&:rank)
   end
+  def coordinates
+    [location.lat, location.long].map(&:to_f)
+  end
 
   def has_recently_won?
     has_recently_won == "1"
+  end
+
+  def has_never_played?
+    cards.size == 0
   end
 
   def filtered_ids
@@ -82,12 +89,6 @@ class User < ApplicationRecord
 
   def current_pick_streak
     streaks.find_by(type: "PickStreak").try(:current) || 0
-    # consecutive_picks = 0
-    # picks.unfiltered.completed.order(updated_at: :desc).each do |pick|
-    #   return consecutive_picks if pick.loss?
-    #   consecutive_picks += 1 if pick.win?
-    # end
-    # consecutive_picks
   end
 
   def self.by_name full_name
@@ -137,7 +138,7 @@ class User < ApplicationRecord
   def create_or_update_location
     if saved_change_to_zipcode?
       location = Geocoder.search(zipcode).select { |result| result.country_code == "us" }.first
-      Location.find_or_create_by(user_id: id).update_attributes(city: location.try(:city), state: location.state, postcode: zipcode, country: location.country, country_code: location.country_code)
+      Location.find_or_create_by(user_id: id).update_attributes(city: location.try(:city), state: location.state, postcode: zipcode, lat: location.coordinates.first, long: location.coordinates.last, country: location.country, country_code: location.country_code)
     end
   end
 

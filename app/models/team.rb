@@ -20,6 +20,10 @@ class Team < Owner
     long: [:float, default: nil],
     division: [:string, default: nil]
 
+  def coordinates
+    [lat, long]
+  end
+
   private
 
   def destroy_broadcast_label

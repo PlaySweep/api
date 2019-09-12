@@ -35,7 +35,6 @@ class V1::UsersController < ApplicationController
   def update
     @user = User.find_by(id: params[:id])
     @user.update_attributes(user_params)
-    handle_confirmation if params[:confirmation] and !@user.locked
     if params[:team]
       team = Team.by_name(params[:team]).first
       if team
@@ -57,14 +56,6 @@ class V1::UsersController < ApplicationController
   end
 
   private
-
-  def handle_confirmation
-    if @user.roles.where(resource_type: "Team").blank?
-      PromptTeamSelectionJob.perform_later(@user.id)
-    else
-      ConfirmAccountNotificationJob.perform_later(@user.id)
-    end
-  end
 
   def add_role
     team = Team.by_name(params[:team]).first

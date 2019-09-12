@@ -12,11 +12,14 @@ json.confirmed user.confirmed
 json.locked user.locked
 json.slug user.slug
 json.has_recently_won user.has_recently_won?
+json.has_never_played user.has_never_played?
+json.location user.location
 json.roles user.roles.where(resource_type: "Team").each do |role|
   json.id role.id
   json.owner_id role.resource_id
   json.name role.name
   json.team_name role.name.split('_').map(&:capitalize).join(' ')
+  json.team_image Team.find(role.resource_id).try(:image)
   json.team_entry_image Team.find(role.resource_id).try(:entry_image)
   json.local_image Team.find(role.resource_id).try(:local_image)
   json.type role.resource_type

@@ -215,7 +215,9 @@ class DataMigration
     board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
     board.all_members.each do |player|
       user = User.find_by(id: player[:member])
-      user.leaderboard_results.create(leaderboard_history_id: leaderboard_history.id, score: player[:score], rank: player[:rank])
+      if user
+        user.leaderboard_results.find_or_create_by(leaderboard_history_id: leaderboard_history.id, score: player[:score], rank: player[:rank])
+      end
     end
   end
 
