@@ -47,6 +47,11 @@ class User < ApplicationRecord
     ids = board.top(limit.to_i).map { |user| user[:member] }
     where(id: ids).sort_by(&:rank)
   end
+
+  def eligible?
+    rule = DrizlyRule.find_by(name: location.try(:state), category: "Playing", eligible: true)
+  end
+
   def coordinates
     [location.lat, location.long].map(&:to_f)
   end
