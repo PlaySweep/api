@@ -22,7 +22,7 @@ class DrizlyService
 
   def for_playing
     playing_rule = DrizlyRuleEvaluator.new(@user).playing_rule
-    if playing_rule && playing_reward_active?
+    if @user.played_for_first_time? && playing_rule && playing_reward_active?
       if promotion = DrizlyPromotion.find_by(category: "Playing", used: false, level: playing_rule.level)
         promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
         DrizlyPlayMailer.notify(@user, promotion).deliver_later
