@@ -48,6 +48,10 @@ class User < ApplicationRecord
     where(id: ids).sort_by(&:rank)
   end
 
+  def current_team
+    roles.find_by(resource_type: "Team").try(:resource)
+  end
+
   def eligible_for_drizly?
     reward = account.rewards.find_by(name: "Drizly", category: "Playing")
     rule = DrizlyRule.find_by(name: location.try(:state), category: "Playing", eligible: true)
@@ -149,7 +153,7 @@ class User < ApplicationRecord
   def create_or_update_location
     if saved_change_to_zipcode?
       location = Geocoder.search(zipcode).select { |result| result.country_code == "us" }.first
-      Location.find_or_create_by(user_id: id).update_attributes(city: location.try(:city), state: location.state, postcode: zipcode, lat: location.coordinates.first, long: location.coordinates.last, country: location.country, country_code: location.country_code)
+      Location.find_or_create_by(user_id: id).update_attributes(city: location.try(:city), state: location.try(:state), postcode: zipcode, lat: location.try(:coordinates).try(:first), long: location.try(:coordinates).try(:last), country: location.try(:country), country_code: location.try(:country_code))
     end
   end
 

@@ -11,6 +11,5 @@ class SendSlateNotificationWithDrizlyJob < ApplicationJob
     FacebookMessaging::MediaAttachment.deliver(user, image.attachment_id)
     FacebookMessaging::Standard.deliver(user, initial_drizly_pick_confirmation_interpolated, "NO_PUSH")
     FacebookMessaging::Carousel.deliver_team(user)
-    
   end
 end

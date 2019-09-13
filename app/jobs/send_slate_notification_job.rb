@@ -13,6 +13,10 @@ class SendSlateNotificationJob < ApplicationJob
       initial_pick_confirmation_copy = user.account.copies.where(category: "Initial Pick Confirmation").sample.message
       initial_pick_confirmation_interpolated = initial_pick_confirmation_copy % { first_name: user.first_name }
       FacebookMessaging::Standard.deliver(user, initial_pick_confirmation_interpolated, "NO_PUSH")
+      if user.current_team
+        attachment_id = user.current_team.medias.find_by(category: "Slate Notification").try(:attachment_id)
+        FacebookMessaging::MediaAttachment.deliver(user, attachment_id) if attachment_id
+      end
       FacebookMessaging::Carousel.deliver_team(user)
     end
   end
