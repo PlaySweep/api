@@ -1,4 +1,5 @@
 require 'facebook/messenger'
+Card.deliver(user: user, title: "Falcons' Contests", image_url: "https://budweiser-sweep-assets.s3.amazonaws.com/atlanta_falcons_fb_lockup.png", subtitle: "Play Falcons' Contests now!", quick_replies: quick_replies)
 
 module FacebookMessaging
   class TextButton

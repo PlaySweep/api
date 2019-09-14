@@ -4,18 +4,15 @@ module FacebookMessaging
   class Standard
     include Facebook::Messenger
 
-    def self.deliver user, message, notification_type="REGULAR"
+    def self.deliver user:, message:, notification_type: "REGULAR", quick_replies: nil
       begin
-        Bot.deliver({
-          recipient: {
-            id: user.facebook_uuid
-          },
-          message: {
-            text: message
-          },
-          message_type: "UPDATE",
+        template = StandardObject.new({
+          facebook_uuid: user.facebook_uuid,
+          message: message,
           notification_type: notification_type
-        }, access_token: ENV["ACCESS_TOKEN"])
+        }).payload
+        template[:message][:quick_replies] = quick_replies if quick_replies
+        Bot.deliver(template, access_token: ENV["ACCESS_TOKEN"])
       rescue Facebook::Messenger::FacebookError => e
         puts "Facebook Messenger Error message\n\t#{e.inspect}"
         puts "#{user.full_name} Not found (facebook_uuid: #{user.facebook_uuid})"     
