@@ -1,0 +1,10 @@
+json.id user.id
+json.facebook_uuid user.facebook_uuid
+json.first_name user.first_name
+json.last_name user.last_name
+json.current_sweep_streak user.current_sweep_streak
+json.current_pick_streak user.current_pick_streak
+json.highest_sweep_streak user.highest_sweep_streak
+json.highest_pick_streak user.highest_pick_streak
+json.available_entry_count user.entries.unused.size
+json.total_entry_count user.entries.size

@@ -6,6 +6,10 @@ Rails.application.routes.draw do
     get 'users/:id/reset', to: 'users#reset'
     resources :users, only: [:index, :show, :create, :update] do
       scope module: :users do
+        member do
+          get "status", to: "statuses#status"
+          get "slate_status", to: "statuses#slate_status"
+        end
         resources :picks, only: [:index, :show, :create, :update]
         resources :slates, only: [:index, :show]
         resources :roles, only: [:create]
@@ -21,7 +25,6 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :statuses, only: [:index, :show]
     resources :slates, only: [:index, :show, :update]
     resources :orders, only: [:create]
     resources :teams, only: [:index]

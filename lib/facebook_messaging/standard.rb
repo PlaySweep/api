@@ -6,7 +6,7 @@ module FacebookMessaging
 
     def self.deliver user:, message:, notification_type: "REGULAR", quick_replies: nil
       begin
-        template = StandardObject.new({
+        template = FacebookParser::StandardObject.new({
           facebook_uuid: user.facebook_uuid,
           message: message,
           notification_type: notification_type

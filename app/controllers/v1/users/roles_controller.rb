@@ -19,7 +19,7 @@ class V1::Users::RolesController < ApplicationController
       user.add_role(team_symbol, team)
       subscribe_to resource: team, user: user
     end
-    FacebookMessaging::Carousel.deliver_team(user)
+    FacebookMessaging::Generic::Contest.deliver(user: user)
     @role = user.roles.find_by(resource_type: "Team")
   end
 

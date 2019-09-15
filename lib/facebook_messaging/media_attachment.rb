@@ -4,9 +4,9 @@ module FacebookMessaging
   class MediaAttachment
     include Facebook::Messenger
 
-    def self.deliver user:, attachment_id:, buttons: nil, quick_replies: nil, notification_type: "NO_PUSH",
+    def self.deliver user:, attachment_id:, buttons: nil, quick_replies: nil, notification_type: "NO_PUSH"
       begin
-        template = Facebook::MediaObject.new({
+        template = FacebookParser::MediaObject.new({
           facebook_uuid: user.facebook_uuid,
           attachment_id: attachment_id,
           notification_type: notification_type

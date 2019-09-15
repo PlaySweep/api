@@ -98,6 +98,10 @@ class User < ApplicationRecord
     streaks.find_by(type: "SweepStreak").try(:highest) || 0
   end
 
+  def highest_pick_streak
+    streaks.find_by(type: "PickStreak").try(:highest) || 0
+  end
+
   def current_sweep_streak
     streaks.find_by(type: "SweepStreak").try(:current) || 0
   end

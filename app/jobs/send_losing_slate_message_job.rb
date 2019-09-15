@@ -14,7 +14,12 @@ class SendLosingSlateMessageJob < ApplicationJob
     losing_slate_copy = user.account.copies.where(category: "Losing Slate").sample.message
     interpolated_losing_slate_copy = losing_slate_copy % { first_name: user.first_name }
 
-    FacebookMessaging::Standard.deliver(user, message, "REGULAR")
-    FacebookMessaging::TextButton.deliver(user, "More Contests", interpolated_losing_slate_copy, "NO_PUSH")
+    FacebookMessaging::Standard.deliver(user: user, message: message, notification_type: "REGULAR")
+    FacebookMessaging::Button.deliver(
+      user: user,
+      title: "More Contests",
+      message: interpolated_losing_slate_copy,
+      notification_type: "NO_PUSH"
+    )
   end
 end

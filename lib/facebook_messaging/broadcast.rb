@@ -3,30 +3,6 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-def broadcast users:
-  users[5..-1].each_with_index do |user, index|
-    if user.confirmed && user.current_team.try(:id) == 12
-      content = "The Panthers head on the road for Week 3 - get your answers in early and win some prizes!"
-      FacebookMessaging::Standard.deliver(user, content)
-      FacebookMessaging::Carousel.deliver_team(user)
-    elsif !user.confirmed && user.current_team.try(:id) == 12
-      content = "The Panthers head on the road for Week 3 - type play now for more contests and prizes!"
-      FacebookMessaging::Standard.deliver(user, content)
-    elsif !user.confirmed
-      content = "Week 2 Kickoff is just around the corner! Type play now for more contests and prizes!"
-      FacebookMessaging::Standard.deliver(user, content)
-    elsif user.confirmed && user.current_team.nil?
-      content = "Week 2 Kickoff is just around the corner! Type play now for more contests and prizes!"
-      FacebookMessaging::Standard.deliver(user, content)
-    elsif user.confirmed && user.current_team.present?
-      content = "Week 2 Kickoff for the #{user.current_team.abbreviation} is just around the corner! Time to get your answers in and win some prizes!"
-      FacebookMessaging::Standard.deliver(user, content)
-      FacebookMessaging::Carousel.deliver_team(user)
-    end
-    sleep 15 if index % 200 == 0
-  end
-end
-
 module FacebookMessaging
   class Broadcast
     def self.deliver_for resource: 
