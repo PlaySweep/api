@@ -7,11 +7,13 @@ class User < ApplicationRecord
 
   belongs_to :account, optional: true
   belongs_to :league, foreign_key: :account_id, optional: true
+  belongs_to :referred_by, class_name: "User", optional: true
   has_many :sweeps, dependent: :destroy
   has_many :streaks, dependent: :destroy
   has_many :picks, dependent: :destroy
   has_many :events, through: :picks
   has_many :cards, dependent: :destroy
+  has_many :referred_users, class_name: "User", foreign_key: :referred_by_id
   has_many :slates, through: :cards
   has_many :entries, dependent: :destroy
   has_many :leaderboard_results
@@ -20,6 +22,7 @@ class User < ApplicationRecord
   has_many :promotions, foreign_key: :used_by, dependent: :destroy
   has_one :location, dependent: :destroy
 
+  before_create :set_referral_code
   after_create :set_slug
   after_update :create_or_update_location
 
@@ -149,8 +152,15 @@ class User < ApplicationRecord
       slug = "#{self.first_name[0]}#{self.last_name}#{SecureRandom.hex(3)}".downcase
       self.update_attributes(slug: slug)
     else
-      slug = "#{SecureRandom.hex(3)}#{SecureRandom.hex(3)}#{SecureRandom.hex(3)}".downcase
+      slug = SecureRandom.hex(9).downcase
       self.update_attributes(slug: slug)
+    end
+  end
+
+  def set_referral_code
+    loop do
+      self.referral_code = "rc#{SecureRandom.hex(6)}"
+      break unless self.class.exists?(referral_code: referral_code)
     end
   end
 

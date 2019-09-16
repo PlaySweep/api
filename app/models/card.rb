@@ -10,7 +10,7 @@ class Card < ApplicationRecord
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) } 
 
   around_save :catch_uniqueness_exception
-  after_create :send_slate_notification
+  after_create :send_slate_notification, :complete_referral!
   after_update :run_results, :update_sweep_streak
 
   private
@@ -49,8 +49,8 @@ class Card < ApplicationRecord
 
   def handle_winners
     user.sweeps.create(slate_id: slate_id, pick_ids: user.picks.for_slate(slate_id).map(&:id))
-    user.entries.create(slate_id: slate_id)
-    user.entries.unused.each { |entry| entry.update_attributes(slate_id: slate_id) unless entry.slate_id? }
+    user.entries.create(slate_id: slate_id, earned_by_id: user.id, reason: Entry::SWEEP)
+    user.entries.unused.each { |entry| entry.update_attributes(slate_id: slate_id, reason: Entry::SWEEP) unless entry.slate_id? }
   end
 
   def send_losing_message
@@ -59,6 +59,13 @@ class Card < ApplicationRecord
 
   def initialize_select_winner_process
     SelectWinnerJob.set(wait_until: 24.hours.from_now.to_datetime).perform_later(slate_id)
+  end
+
+  def complete_referral!
+    if user.referred_by_id? && user.played_for_first_time?
+      user.update_attributes(referral_completed_at: Time.zone.now)
+      user.referred_by.entries.create(earned_by_id: user.id, Entry::PLAYING)
+    end
   end
 
 end

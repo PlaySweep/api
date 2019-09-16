@@ -8,7 +8,7 @@ class Sweep < ApplicationRecord
   jsonb_accessor :data,
     pick_ids: [:string, array: true, default: []]
 
-  after_create :set_data, :check_and_run_service
+  after_create :set_data, :check_and_run_service, :add_entries!
 
   def picks
     Pick.where(id: pick_ids)
@@ -30,6 +30,10 @@ class Sweep < ApplicationRecord
 
   def check_and_run_service
     DrizlyService.new(user, slate).run(type: :sweep)
+  end
+
+  def add_entries!
+    2.times { user.referred_by.entries.create(earned_by_id: user.id, reason: Entry::SWEEP) } if user.referred_by_id?
   end
 
 end
