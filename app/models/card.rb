@@ -64,7 +64,7 @@ class Card < ApplicationRecord
   def complete_referral!
     if user.referred_by_id? && user.played_for_first_time?
       user.update_attributes(referral_completed_at: Time.zone.now)
-      user.referred_by.entries.create(earned_by_id: user.id, Entry::PLAYING)
+      user.referred_by.entries.create(earned_by_id: user.id, reason: Entry::PLAYING)
     end
   end
 
