@@ -19,7 +19,24 @@ class V1::Users::RolesController < ApplicationController
       user.add_role(team_symbol, team)
       subscribe_to resource: team, user: user
     end
-    FacebookMessaging::Generic::Contest.deliver(user: user)
+    quick_replies = FacebookParser::QuickReplyObject.new([
+      {
+        content_type: :text,
+        title: "Status",
+        payload: "STATUS"
+      },
+      {
+        content_type: :text,
+        title: "Share",
+        payload: "SHARE"
+      },
+      {
+        content_type: :text,
+        title: "Celebrate!",
+        payload: "CELEBRATE"
+      }
+    ]).objects
+    FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
     @role = user.roles.find_by(resource_type: "Team")
   end
 

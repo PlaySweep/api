@@ -7,6 +7,23 @@ class SendSlateNotificationJob < ApplicationJob
     pick_confirmation_copy = user.account.copies.where(category: "Pick Confirmation").sample.message
     pick_confirmation_interpolated = pick_confirmation_copy % { first_name: user.first_name }
     if user.cards.size > 1
+      quick_replies = FacebookParser::QuickReplyObject.new([
+        {
+          content_type: :text,
+          title: "Status",
+          payload: "STATUS"
+        },
+        {
+          content_type: :text,
+          title: "Share",
+          payload: "SHARE"
+        },
+        {
+          content_type: :text,
+          title: "Celebrate!",
+          payload: "CELEBRATE"
+        }
+      ]).objects
       FacebookMessaging::Standard.deliver(
         user: user,
         message: pick_confirmation_interpolated,
@@ -18,8 +35,25 @@ class SendSlateNotificationJob < ApplicationJob
           user: user, attachment_id: attachment_id
         ) if attachment_id
       end
-      FacebookMessaging::Generic::Contest.deliver(user: user)
+      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
     else
+      quick_replies = FacebookParser::QuickReplyObject.new([
+        {
+          content_type: :text,
+          title: "Status",
+          payload: "STATUS"
+        },
+        {
+          content_type: :text,
+          title: "Share",
+          payload: "SHARE"
+        },
+        {
+          content_type: :text,
+          title: "Celebrate!",
+          payload: "CELEBRATE"
+        }
+      ]).objects
       initial_pick_confirmation_copy = user.account.copies.where(category: "Initial Pick Confirmation").sample.message
       initial_pick_confirmation_interpolated = initial_pick_confirmation_copy % { first_name: user.first_name }
       FacebookMessaging::Standard.deliver(
@@ -33,7 +67,7 @@ class SendSlateNotificationJob < ApplicationJob
           user: user, attachment_id: attachment_id
         ) if attachment_id
       end
-      FacebookMessaging::Generic::Contest.deliver(user: user)
+      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
     end
   end
 end

@@ -58,3 +58,11 @@ json.links user.account.links.each do |link|
 end
 json.shipping user.shipping
 json.promotions user.promotions
+json.stats do
+  json.current_pick_streak user.current_pick_streak
+  json.current_sweep_streak user.current_sweep_streak
+  json.highest_pick_streak user.highest_pick_streak
+  json.highest_sweep_streak user.highest_sweep_streak
+  json.sweep_count user.sweeps.size
+  json.last_score 4
+end

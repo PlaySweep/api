@@ -3,8 +3,12 @@ class V1::SlatesController < ApplicationController
 
   def index
     user = User.find_by(id: params[:user_id])
-    @slates = Slate.filtered(user.filtered_ids).or(Slate.unfiltered).ascending.pending
-    respond_with @slates
+    if user
+      @slates = Slate.filtered(user.filtered_ids).or(Slate.unfiltered).ascending.pending
+      respond_with @slates
+    else
+      render json: { errors: [] }, status: :unprocessable_entity
+    end
   end
 
   def show

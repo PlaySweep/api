@@ -10,7 +10,7 @@ class Card < ApplicationRecord
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) } 
 
   around_save :catch_uniqueness_exception
-  after_create :send_slate_notification, :complete_referral!
+  after_create :send_slate_notification
   after_update :run_results, :update_sweep_streak
 
   private
@@ -65,6 +65,7 @@ class Card < ApplicationRecord
     if user.referred_by_id? && user.played_for_first_time?
       user.update_attributes(referral_completed_at: Time.zone.now)
       user.referred_by.entries.create(earned_by_id: user.id, reason: Entry::PLAYING)
+      NotifyReferrerJob.perform_later(user.referred_by_id, user.id, Entry::PLAYING)
     end
   end
 

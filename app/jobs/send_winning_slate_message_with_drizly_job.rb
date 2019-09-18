@@ -5,6 +5,23 @@ class SendWinningSlateMessageWithDrizlyJob < ApplicationJob
     user = User.find(user_id)
     slate = Slate.find(slate_id)
     promotion = user.promotions.find_by(type: "DrizlyPromotion", category: "Sweep", slate_id: slate.id)
+    quick_replies = FacebookParser::QuickReplyObject.new([
+      {
+        content_type: :text,
+        title: "Status",
+        payload: "STATUS"
+      },
+      {
+        content_type: :text,
+        title: "Share",
+        payload: "SHARE"
+      },
+      {
+        content_type: :text,
+        title: "Celebrate!",
+        payload: "CELEBRATE"
+      }
+    ]).objects
     if slate.global?
       result_message = "#{slate.name} results inside"
       FacebookMessaging::Standard.deliver(
@@ -21,7 +38,7 @@ class SendWinningSlateMessageWithDrizlyJob < ApplicationJob
         message: interpolated_drizly_national_winning_slate_copy,
         notification_type: "NO_PUSH"
       )
-      FacebookMessaging::Generic::GlobalContest.deliver(user: user)
+      FacebookMessaging::Generic::GlobalContest.deliver(user: user, quick_replies: quick_replies)
     else
       result_message = slate.result == "W" ? "The #{slate.team.abbreviation} won #{slate.score} - view your results inside" : slate.result == "L" ? "The #{slate.team.abbreviation} lost #{slate.score} - view your results inside" : "The #{slate.team.abbreviation} tied #{slate.score} - view your results inside"
       FacebookMessaging::Standard.deliver(
@@ -41,7 +58,7 @@ class SendWinningSlateMessageWithDrizlyJob < ApplicationJob
         message: interpolated_drizly_local_winning_slate_copy,
         notification_type: "NO_PUSH"
       )
-      FacebookMessaging::Generic::Contest.deliver(user: user)
+      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
     end
   end
 end

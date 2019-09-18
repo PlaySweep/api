@@ -8,7 +8,7 @@ class Sweep < ApplicationRecord
   jsonb_accessor :data,
     pick_ids: [:string, array: true, default: []]
 
-  after_create :set_data, :check_and_run_service, :add_entries!
+  after_create :set_data, :check_and_run_service
 
   def picks
     Pick.where(id: pick_ids)
@@ -33,7 +33,10 @@ class Sweep < ApplicationRecord
   end
 
   def add_entries!
-    2.times { user.referred_by.entries.create(earned_by_id: user.id, reason: Entry::SWEEP) } if user.referred_by_id?
+    if user.referred_by_id?
+      2.times { user.referred_by.entries.create(earned_by_id: user.id, reason: Entry::SWEEP) }
+      NotifyReferrerJob.perform_later(user.referred_by_id, user.id, Entry::SWEEP)
+    end
   end
 
 end

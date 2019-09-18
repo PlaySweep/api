@@ -2,6 +2,7 @@ class User < ApplicationRecord
   include Redis::Objects
 
   value :has_recently_won
+  hash_key :latest_stats
 
   rolify
 

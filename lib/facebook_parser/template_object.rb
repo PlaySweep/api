@@ -3,6 +3,7 @@ module FacebookParser
     attr_accessor :payload
 
     def initialize payload
+      buttons = payload[:buttons].map { |button| { type: :web_url, url: button[:url], title: button[:title], messenger_extensions: true, webview_height_ratio: :full } }
       @payload = {
         recipient: {
           id: payload[:facebook_uuid]
@@ -17,15 +18,7 @@ module FacebookParser
                   title: payload[:title],
                   image_url: payload[:image_url],
                   subtitle: payload[:subtitle],
-                  buttons: [
-                    {
-                      type: :web_url,
-                      url: payload[:url],
-                      title: payload[:button_title],
-                      messenger_extensions: true,
-                      webview_height_ratio: :full
-                    }              
-                  ]      
+                  buttons: buttons      
                 }
               ]
             }

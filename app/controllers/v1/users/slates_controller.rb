@@ -17,4 +17,5 @@ class V1::Users::SlatesController < ApplicationController
       render json: { errors: [] }, status: :unprocessable_entity
     end
   end
+
 end

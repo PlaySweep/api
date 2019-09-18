@@ -4,6 +4,23 @@ class SendWinningSlateMessageJob < ApplicationJob
   def perform user_id, slate_id
     user = User.find(user_id)
     slate = Slate.find(slate_id)
+    quick_replies = FacebookParser::QuickReplyObject.new([
+      {
+        content_type: :text,
+        title: "Status",
+        payload: "STATUS"
+      },
+      {
+        content_type: :text,
+        title: "Share",
+        payload: "SHARE"
+      },
+      {
+        content_type: :text,
+        title: "Celebrate!",
+        payload: "CELEBRATE"
+      }
+    ]).objects
     if slate.global?
       result_message = "#{slate.name} results inside"
       FacebookMessaging::Standard.deliver(
@@ -33,7 +50,7 @@ class SendWinningSlateMessageJob < ApplicationJob
         message: interpolated_local_winning_slate_copy,
         notification_type: "NO_PUSH"
       )
-      FacebookMessaging::Generic::Contest.deliver(user: user)
+      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
     end
   end
 end
