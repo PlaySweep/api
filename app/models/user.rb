@@ -2,7 +2,8 @@ class User < ApplicationRecord
   include Redis::Objects
 
   value :has_recently_won
-  hash_key :latest_stats
+  hash_key :stats_hash_key
+  list :latest_stats_list, maxlength: 3, marshal: true
 
   rolify
 
@@ -44,12 +45,20 @@ class User < ApplicationRecord
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
   
-  validates :slug, uniqueness: true
+  validates :slug, :referral_code, uniqueness: true
 
   def self.top_streak limit:
     board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
     ids = board.top(limit.to_i).map { |user| user[:member] }
     where(id: ids).sort_by(&:rank)
+  end
+
+  def stats
+    stats_hash_key.value.to_dot
+  end
+
+  def latest_stats
+    latest_stats_list.map(&:to_dot)
   end
 
   def current_team

@@ -22,6 +22,7 @@ class V1::UsersController < ApplicationController
     @user = User.new(user_params)
     @user.account_id = current_account.id
     if @user.save
+      IndicativeTrackEventNewUserJob.perform_later(@user.id)
       if params[:team]
         team = Team.by_name(params[:team]).first
         add_role if team

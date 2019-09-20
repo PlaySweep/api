@@ -27,11 +27,11 @@ class AnalyticsJob < ApplicationJob
 
   def fetch_engagement_data day:
     slate_ids = Slate.where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).pluck(:id)
-    CSV.open("#{Rails.root}/tmp/#{(DateTime.current).to_date}_engagement_data.csv", "wb") do |csv|
+    CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_engagement_data.csv", "wb") do |csv|
       csv << ["Date", "Contest", "Team", "Type", "Quantity of Entries", "Prize Category", "Prize Name", "Day of Week", "Contest Winners", "Ticket Date"]
       slate_ids.each do |slate_id|
         slate = Slate.find_by(id: slate_id)
-        csv << [(DateTime.current).to_date.strftime("%Y%m%d"), slate_id, slate.team.name, slate.local ? "Local" : "Vs", slate.cards.count, slate.prizes.first.product.category, slate.prizes.first.product.name, slate.start_time.strftime("%A").capitalize, slate.cards.map(&:status).reject { |status| status == 'loss' }.count, slate.prizes.first.date]
+        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), slate_id, slate.team.name, slate.local ? "Local" : "Vs", slate.cards.count, slate.prizes.first.product.category, slate.prizes.first.product.name, slate.start_time.strftime("%A").capitalize, slate.cards.map(&:status).reject { |status| status == 'loss' }.count, slate.prizes.first.date]
       end
     end
   end

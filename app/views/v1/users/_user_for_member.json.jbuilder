@@ -26,6 +26,12 @@ json.roles user.roles.where(resource_type: "Team").each do |role|
   json.local_image Team.find(role.resource_id).try(:local_image)
   json.type role.resource_type
   json.abbreviation Team.find(role.resource_id).try(:abbreviation)
+  json.images user.account.images.each do |image|
+    json.id image.id
+    json.description image.description
+    json.category image.category
+    json.url image.url
+  end
 end
 json.account do
   json.id user.account.id
@@ -58,4 +64,7 @@ json.links user.account.links.each do |link|
 end
 json.shipping user.shipping
 json.promotions user.promotions
+json.stats do
+  json.current_pick_streak user.current_pick_streak
+end
 json.latest_stats user.latest_stats
