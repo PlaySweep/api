@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   namespace :v1, defaults: { format: :json } do
     
     get 'users/show', to: 'users#fetch_by_slug'
+    get 'users/by_referral_code', to: 'users#by_referral_code'
     get 'users/:id/reset', to: 'users#reset'
     resources :users, only: [:index, :show, :create, :update] do
       scope module: :users do

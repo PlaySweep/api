@@ -11,6 +11,7 @@ json.zipcode user.zipcode
 json.confirmed user.confirmed
 json.locked user.locked
 json.slug user.slug
+json.referral_code user.referral_code
 json.has_recently_won user.has_recently_won?
 json.has_never_played user.has_never_played?
 json.played_for_first_time user.played_for_first_time?

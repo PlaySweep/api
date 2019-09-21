@@ -22,6 +22,7 @@ class Card < ApplicationRecord
   end
 
   def send_slate_notification
+    ContestService.new(user, slate: slate).run(type: :playing)
     DrizlyService.new(user, slate).run(type: :playing)
   end
 
@@ -49,8 +50,8 @@ class Card < ApplicationRecord
 
   def handle_winners
     user.sweeps.create(slate_id: slate_id, pick_ids: user.picks.for_slate(slate_id).map(&:id))
-    user.entries.create(slate_id: slate_id, earned_by_id: user.id, reason: Entry::SWEEP)
-    user.entries.unused.each { |entry| entry.update_attributes(slate_id: slate_id, reason: Entry::SWEEP) unless entry.slate_id? }
+    # user.entries.create(slate_id: slate_id, earned_by_id: user.id, reason: Entry::SWEEP)
+    # user.entries.unused.each { |entry| entry.update_attributes(slate_id: slate_id, reason: Entry::SWEEP) unless entry.slate_id? }
   end
 
   def send_losing_message
@@ -64,7 +65,8 @@ class Card < ApplicationRecord
   def complete_referral!
     if user.referred_by_id? && user.played_for_first_time?
       user.update_attributes(referral_completed_at: Time.zone.now)
-      user.referred_by.entries.create(earned_by_id: user.id, reason: Entry::PLAYING)
+      # user.referred_by.entries.create(earned_by_id: user.id, reason: Entry::PLAYING)
+      ContestService.new(user).run(type: :referral)
       NotifyReferrerJob.perform_later(user.referred_by_id, user.id, Entry::PLAYING)
     end
   end

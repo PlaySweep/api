@@ -7,13 +7,13 @@ class NotifyReferrerJob < ApplicationJob
     case reason
     when "playing"
       referrer_notification_copy = user.account.copies.where(category: "Notify Playing Referral").sample.message
-      referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.first_name, entry_count: user.entries.unused.count, entry_syntax: user.entries.unused.count == 1 ? "entry" : "entries" }
+      referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.first_name }
     when "sweep"
       referrer_notification_copy = user.account.copies.where(category: "Notify Sweep Referral").sample.message
-      referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.first_name, earned_entry_count: 2 }
+      referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.first_name }
     else
       referrer_notification_copy = user.account.copies.where(category: "Notify Referral").sample.message
-      referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.first_name, entry_count: user.entries.unused.count, earned_entry_count: 1 }
+      referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.first_name }
     end
     quick_replies = FacebookParser::QuickReplyObject.new([
       { content_type: :text,

@@ -29,12 +29,13 @@ class Sweep < ApplicationRecord
   end
 
   def check_and_run_service
+    ContestService.new(user, slate: slate).run(type: :sweep)
     DrizlyService.new(user, slate).run(type: :sweep)
   end
 
   def add_entries!
     if user.referred_by_id?
-      2.times { user.referred_by.entries.create(earned_by_id: user.id, reason: Entry::SWEEP) }
+      # 2.times { user.referred_by.entries.create(earned_by_id: user.id, reason: Entry::SWEEP) }
       NotifyReferrerJob.perform_later(user.referred_by_id, user.id, Entry::SWEEP)
     end
   end
