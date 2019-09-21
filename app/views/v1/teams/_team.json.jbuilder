@@ -8,3 +8,10 @@ json.lat team.lat
 json.long team.long
 json.coordinates team.coordinates
 json.division team.division
+json.promoted team.promoted
+json.images team.images.each do |image|
+  json.id image.id
+  json.description image.description
+  json.category image.category
+  json.url image.url
+end

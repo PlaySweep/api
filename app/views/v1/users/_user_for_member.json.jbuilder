@@ -16,23 +16,7 @@ json.has_never_played user.has_never_played?
 json.played_for_first_time user.played_for_first_time?
 json.eligible_for_drizly user.eligible_for_drizly?
 json.location user.location
-json.roles user.roles.where(resource_type: "Team").each do |role|
-  json.id role.id
-  json.owner_id role.resource_id
-  json.name role.name
-  json.team_name role.name.split('_').map(&:capitalize).join(' ')
-  json.team_image Team.find(role.resource_id).try(:image)
-  json.team_entry_image Team.find(role.resource_id).try(:entry_image)
-  json.local_image Team.find(role.resource_id).try(:local_image)
-  json.type role.resource_type
-  json.abbreviation Team.find(role.resource_id).try(:abbreviation)
-  json.images user.account.images.each do |image|
-    json.id image.id
-    json.description image.description
-    json.category image.category
-    json.url image.url
-  end
-end
+json.current_team user.current_team, partial: 'v1/teams/team', as: :team
 json.account do
   json.id user.account.id
   json.name user.account.name
