@@ -4,11 +4,11 @@ class DrizlyRuleEvaluator
   end
 
   def playing_rule
-    DrizlyRule.find_by(name: @user.location.try(:state), category: "Playing", eligible: true)
+    Rule.find_by(type: "DrizlyRule", name: @user.location.try(:state), category: "Playing", eligible: true)
   end
 
   def sweep_rule
-    DrizlyRule.find_by(name: @user.location.try(:state), category: "Sweep", eligible: true)
+    Rule.find_by(type: "DrizlyRule", name: @user.location.try(:state), category: "Sweep", eligible: true)
   end
 
 end

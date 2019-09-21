@@ -1,0 +1,3 @@
+class ContestRule < Rule
+
+end
