@@ -7,4 +7,20 @@ class Account < ApplicationRecord
   has_many :links
   has_many :rewards, as: :rewardable
   has_many :users
+
+  def active_leaderboard
+    active_reward = rewards.find_by(category: "Contest", active: true)
+    if active_reward.present?
+      Board.fetch(leaderboard: active_reward.name.downcase.gsub(" ", "_"))
+    end
+  end
+
+  def active_daily_leaderboard
+    active_reward = rewards.find_by(category: "Contest", active: true)
+    if active_reward.present?
+      day = DateTime.current.strftime("%m%d%y")
+      Board.fetch(leaderboard: "#{day}_#{active_reward.name.downcase.gsub(" ", "_").to_sym}")
+    end
+  end
+
 end

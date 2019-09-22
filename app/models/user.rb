@@ -47,9 +47,17 @@ class User < ApplicationRecord
   
   validates :slug, :referral_code, uniqueness: true
 
-  def self.top_streak limit:
-    board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
+  def self.top_contest limit:
+    board = Board.fetch(leaderboard: :race_to_the_world_series)
     ids = board.top(limit.to_i).map { |user| user[:member] }
+    where(id: ids).sort_by(&:rank)
+  end
+
+  def self.top_daily_contest limit:
+    day = DateTime.current.strftime("%m%d%y")
+    leaderboard = "race_to_the_world_series_#{day}".to_sym
+    board = Board.fetch(leaderboard: leaderboard)
+    ids = board.top(limit.to_i).map { |user| user[:member].split("_")[-1] }
     where(id: ids).sort_by(&:rank)
   end
 
@@ -91,12 +99,38 @@ class User < ApplicationRecord
     roles.map(&:resource_id)
   end
 
-  def streak
-    Board.fetch(leaderboard: :allstar_sweep_leaderboard).score_for(id) || 0
+  def score
+    if account.rewards.active.find_by(category: "Contest").present?
+      Board.fetch(leaderboard: :race_to_the_world_series).score_for(id) || 0
+    else
+      0
+    end
   end
 
   def rank
-    Board.fetch(leaderboard: :allstar_sweep_leaderboard).rank_for(id)
+    if account.rewards.active.find_by(category: "Contest").present?
+      Board.fetch(leaderboard: :race_to_the_world_series).rank_for(id)
+    else
+      0
+    end
+  end
+
+  def daily_score
+    if account.rewards.active.find_by(category: "Contest").present?
+      day = DateTime.current.strftime("%m%d%y")
+      Board.fetch(leaderboard: "race_to_the_world_series_#{day}".to_sym).score_for("#{day}_#{id}") || 0
+    else
+      0
+    end
+  end
+
+  def daily_rank
+    if account.rewards.active.find_by(category: "Contest").present?
+      day = DateTime.current.strftime("%m%d%y")
+      Board.fetch(leaderboard: "race_to_the_world_series_#{day}".to_sym).rank_for("#{day}_#{id}")
+    else
+      0
+    end
   end
 
   def ordinal_position
