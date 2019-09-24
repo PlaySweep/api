@@ -8,4 +8,9 @@ class DataQueries
       end
     end
   end
+
+  def promotions_earned_by_week weeks_back:
+    promotions = Promotion.joins(:slate).where('slates.start_time BETWEEN ? AND ?', (DateTime.current.beginning_of_week - weeks_back.week) + 3, (DateTime.current.end_of_week - weeks_back.week) + 1)
+    { five: promotions.where(level: [0, 1]).count, ten: promotions.where(level: [2]).count, total: promotions.count }
+  end
 end

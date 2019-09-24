@@ -12,17 +12,21 @@ class SelectWinnerJob < ApplicationJob
     loser_collection = slate.cards.loss - previous_user_ids
     found_a_winner = false
 
-    until found_a_winner
-      if winner_collection.any?
-        user_id = winner_collection.sample.user_id
-        previous_user_ids.push(user_id)
-        slate.update_attributes(winner_id: user_id, previous_user_ids: previous_user_ids)
-        found_a_winner = true
-      else
-        user_id = loser_collection.sample.user_id
-        previous_user_ids.push(user_id)
-        slate.update_attributes(winner_id: user_id, previous_user_ids: previous_user_ids)
-        found_a_winner = true
+    if previous_user_ids.size >= 2
+      slate.update_attributes(winner_id: 1)
+    else
+      until found_a_winner
+        if winner_collection.any?
+          user_id = winner_collection.sample.user_id
+          previous_user_ids.push(user_id)
+          slate.update_attributes(winner_id: user_id, previous_user_ids: previous_user_ids)
+          found_a_winner = true
+        else
+          user_id = loser_collection.sample.user_id
+          previous_user_ids.push(user_id)
+          slate.update_attributes(winner_id: user_id, previous_user_ids: previous_user_ids)
+          found_a_winner = true
+        end
       end
     end
     

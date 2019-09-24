@@ -58,10 +58,6 @@ class Card < ApplicationRecord
     SendLosingSlateMessageJob.perform_later(user_id, slate_id)
   end
 
-  def initialize_select_winner_process
-    SelectWinnerJob.set(wait_until: 24.hours.from_now.to_datetime).perform_later(slate_id)
-  end
-
   def complete_referral!
     if user.referred_by_id? && user.played_for_first_time?
       user.update_attributes(referral_completed_at: Time.zone.now)
