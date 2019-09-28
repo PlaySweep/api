@@ -18,11 +18,6 @@ class SendSlateNotificationWithDrizlyJob < ApplicationJob
         content_type: :text,
         title: "Share",
         payload: "SHARE"
-      },
-      {
-        content_type: :text,
-        title: "Celebrate!",
-        payload: "CELEBRATE"
       }
     ]).objects
     FacebookMessaging::MediaAttachment.deliver(user: user, attachment_id: image.attachment_id)

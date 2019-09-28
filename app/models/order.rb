@@ -9,6 +9,7 @@ class Order < ApplicationRecord
 
   scope :for_today, -> { where('created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day, DateTime.current.end_of_day) }
   scope :for_yesterday, -> { where('created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 1, DateTime.current.end_of_day - 1) }
+  scope :recent, -> { where('created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 14, DateTime.current.end_of_day) }
 
   around_save :catch_uniqueness_exception
   after_create :trigger_ticket_notification

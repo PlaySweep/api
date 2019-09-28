@@ -25,11 +25,6 @@ class NotifyReferrerJob < ApplicationJob
         content_type: :text,
         title: "Status",
         payload: "STATUS"
-      },
-      {
-        content_type: :text,
-        title: "More details",
-        payload: "ENTRY INFO"
       }
     ]).objects
     FacebookMessaging::Standard.deliver(

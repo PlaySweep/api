@@ -73,3 +73,4 @@ json.stats do
   json.current_pick_streak user.current_pick_streak
 end
 json.latest_stats user.latest_stats
+json.recent_orders user.orders.recent, partial: 'v1/orders/order', as: :order

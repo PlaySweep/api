@@ -17,6 +17,7 @@ class WelcomeBackJob < ApplicationJob
           user: user,
           title: "Play now",
           message: "There are more #{team.abbreviation} games to play!",
+          url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/1",
           notification_type: "NO_PUSH"
         )
       else

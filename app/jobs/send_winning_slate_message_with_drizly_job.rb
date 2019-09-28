@@ -15,11 +15,6 @@ class SendWinningSlateMessageWithDrizlyJob < ApplicationJob
         content_type: :text,
         title: "Share",
         payload: "SHARE"
-      },
-      {
-        content_type: :text,
-        title: "Celebrate!",
-        payload: "CELEBRATE"
       }
     ]).objects
     if slate.global?

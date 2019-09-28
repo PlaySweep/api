@@ -17,11 +17,6 @@ class SendSlateNotificationJob < ApplicationJob
           content_type: :text,
           title: "Share",
           payload: "SHARE"
-        },
-        {
-          content_type: :text,
-          title: "Celebrate!",
-          payload: "CELEBRATE"
         }
       ]).objects
       FacebookMessaging::Standard.deliver(
@@ -47,11 +42,6 @@ class SendSlateNotificationJob < ApplicationJob
           content_type: :text,
           title: "Share",
           payload: "SHARE"
-        },
-        {
-          content_type: :text,
-          title: "Celebrate!",
-          payload: "CELEBRATE"
         }
       ]).objects
       initial_pick_confirmation_copy = user.account.copies.where(category: "Initial Pick Confirmation").sample.message
