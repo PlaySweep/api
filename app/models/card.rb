@@ -11,7 +11,7 @@ class Card < ApplicationRecord
 
   around_save :catch_uniqueness_exception
   after_create :send_slate_notification
-  after_update :run_results, :update_sweep_streak
+  after_update :run_results, :update_sweep_streak, :update_latest_stats
 
   private
 
@@ -36,6 +36,10 @@ class Card < ApplicationRecord
     elsif saved_change_to_status?(from: 'pending', to: 'loss')
       user.streaks.find_or_create_by(type: "SweepStreak").update_attributes(current: 0)
     end
+  end
+
+  def update_latest_stats
+    user.update_latest_stats(slate: slate) if saved_change_to_status?
   end
 
   def run_results

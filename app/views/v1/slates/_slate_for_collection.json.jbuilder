@@ -28,17 +28,7 @@ json.prizes slate.prizes.each do |prize|
   json.category prize.product.category
   json.date prize.date
 end
-json.team do
-  json.id slate.team.id
-  json.image slate.team.image
-  json.abbreviation slate.team.abbreviation
-  json.initials slate.team.initials
-  json.local_image slate.team.try(:local_image)
-  json.entry_image slate.team.try(:entry_image)
-  json.field slate.field
-  json.pitcher slate.try(:pitcher)
-  json.standing slate.try(:standing)
-end
+json.team slate.team, partial: 'v1/teams/team', as: :team
 json.opponent do
   json.id slate.try(:opponent).try(:id)
   json.image slate.try(:opponent).try(:image)

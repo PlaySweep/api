@@ -61,6 +61,13 @@ class User < ApplicationRecord
     where(id: ids).sort_by(&:rank)
   end
 
+  def update_latest_stats slate:
+    event_ids = events.where(slate_id: slate.id).map(&:id)
+    wins = picks.joins(:selection).where(event_id: event_ids).where('selections.status = ?', Pick::WIN).size
+    losses = picks.joins(:selection).where(event_id: event_ids).where('selections.status = ?', Pick::LOSS).size
+    latest_stats_list << { slate_id: slate.id, wins: wins, losses: losses }
+  end
+
   def stats
     stats_hash_key.value.to_dot
   end
@@ -76,7 +83,7 @@ class User < ApplicationRecord
   def eligible_for_drizly?
     reward = account.rewards.find_by(name: "Drizly", category: "Playing")
     rule = DrizlyRule.find_by(name: location.try(:state), category: "Playing", eligible: true)
-    reward.active && rule.present?
+    reward && reward.active && rule.present?
   end
 
   def coordinates

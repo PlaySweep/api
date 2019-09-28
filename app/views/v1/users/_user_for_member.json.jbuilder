@@ -19,19 +19,23 @@ json.eligible_for_drizly user.eligible_for_drizly?
 json.location user.location
 json.current_team user.current_team, partial: 'v1/teams/team', as: :team
 json.leaderboard do
-  json.name user.account.active_leaderboard.leaderboard_name.split("_").map(&:capitalize).join(" ").to_s || "NA"
-  json.overall do
-    json.top_scorers user.account.active_leaderboard.top(3)
-    json.rank user.rank
-    json.score user.score
-    json.ordinal_position user.ordinal_position
-  end
-  json.daily do
-    json.top_scorers user.account.active_daily_leaderboard.top(3)
-    json.daily_rank user.daily_rank
-    json.daily_score user.daily_score
-    json.ordinal_position user.ordinal_position
-    json.date DateTime.current.strftime("%m-%d-%y")
+  if user.account.active_leaderboard
+    json.name user.account.active_leaderboard.leaderboard_name.split("_").map(&:capitalize).join(" ").to_s
+    json.overall do
+      json.top_scorers user.account.active_leaderboard.top(3)
+      json.rank user.rank
+      json.score user.score
+      json.ordinal_position user.ordinal_position
+    end
+    json.daily do
+      json.top_scorers user.account.active_daily_leaderboard.top(3)
+      json.daily_rank user.daily_rank
+      json.daily_score user.daily_score
+      json.ordinal_position user.ordinal_position
+      json.date DateTime.current.strftime("%m-%d-%y")
+    end
+  else
+    {}
   end
 end
 json.account do
