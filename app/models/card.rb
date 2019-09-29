@@ -65,9 +65,10 @@ class Card < ApplicationRecord
   def complete_referral!
     if user.referred_by_id? && user.played_for_first_time?
       user.update_attributes(referral_completed_at: Time.zone.now)
-      # user.referred_by.entries.create(earned_by_id: user.id, reason: Entry::PLAYING)
       ContestService.new(user).run(type: :referral)
-      NotifyReferrerJob.perform_later(user.referred_by_id, user.id, Entry::PLAYING)
+
+      # Send notification if promotion is active
+      NotifyReferrerJob.perform_later(user.referred_by_id, user.id, Entry::PLAYING) if user.account.rewards.find_by(category: "Contest", active: true).present?
     end
   end
 
