@@ -42,17 +42,20 @@ class V1::UsersController < ApplicationController
   def update
     @user = User.find_by(id: params[:id])
     @user.update_attributes(user_params)
-    if params[:team]
-      team = Team.by_name(params[:team]).first
-      if team
-        unsubscribe(user: @user)
-        remove_role
+    if @user.save
+      IndicativeTrackEventConfirmedAccountJob.perform_later(@user.id) if params[:confirmation]
+      if params[:team]
+        team = Team.by_name(params[:team]).first
+        if team
+          unsubscribe(user: @user)
+          remove_role
 
-        add_role
-        subscribe_to(resource: team, user: @user)
+          add_role
+          subscribe_to(resource: team, user: @user)
+        end
       end
+      unsubscribe(user: @user) if params[:unsubscribe]
     end
-    unsubscribe(user: @user) if params[:unsubscribe]
     respond_with @user
   end
 
