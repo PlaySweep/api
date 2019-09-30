@@ -34,6 +34,13 @@ class WelcomeBackJob < ApplicationJob
           notification_type: "NO_PUSH"
         )
       else
+        quick_replies = FacebookParser::QuickReplyObject.new([
+          {
+            content_type: :text,
+            title: "Play without a team",
+            payload: "PLAY"
+          }
+        ]).objects
         FacebookMessaging::Standard.deliver(
           user: user,
           message: "#{welcome_back_interpolated}\n\nYou still haven't selected a team to play with yet.",
@@ -44,6 +51,7 @@ class WelcomeBackJob < ApplicationJob
           title: "Select a team",
           message: "Tap below to see a full list of available teams to choose from.",
           url: "#{ENV["WEBVIEW_URL"]}/#{user.id}/teams/initial_load",
+          quick_replies: quick_replies,
           notification_type: "NO_PUSH"
         )
       end

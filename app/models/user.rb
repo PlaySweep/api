@@ -77,7 +77,7 @@ class User < ApplicationRecord
   end
 
   def current_team
-    roles.find_by(resource_type: "Team").try(:resource)
+    roles.find_by(resource_type: "Team").try(:resource) || Team.find_by(name: account.app_name)
   end
 
   def eligible_for_drizly?
