@@ -37,7 +37,10 @@ class V1::UsersController < ApplicationController
       WelcomeJob.perform_later(@user.id) if params[:onboard]
       respond_with @user
     else
-      render json: { errors: @user.errors }, status: :unprocessable_entity
+      puts "ERROR" * 15
+      puts @user.errors.inspect
+      puts "ERROR" * 15
+      render json: { errors: @user.errors }
     end
   end
 
