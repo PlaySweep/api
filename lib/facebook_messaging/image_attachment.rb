@@ -6,7 +6,7 @@ module FacebookMessaging
 
     def self.deliver user:, image_url:, quick_replies: nil, notification_type: "NO_PUSH"
       begin
-        template = FacebookParser::TemplateObject.new({
+        template = FacebookParser::ImageObject.new({
           facebook_uuid: user.facebook_uuid,
           image_url: image_url,
           notification_type: notification_type

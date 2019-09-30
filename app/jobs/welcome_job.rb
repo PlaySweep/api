@@ -11,8 +11,8 @@ class WelcomeJob < ApplicationJob
       message: welcome_interpolated,
       notification_type: "SILENT_PUSH"
     )
-    if user.roles.find_by(resource_type: "Team")
-      team = user.roles.find_by(resource_type: "Team").resource
+    if user.current_team
+      team = user.current_team
       FacebookMessaging::ImageAttachment.deliver(user: user, image_url: team.entry_image)
       team_onboarding_copy = user.account.copies.where(category: "Welcome Team Onboarding").sample.message
       team_onboarding_interpolated = team_onboarding_copy % { team_abbreviation: team.abbreviation }
