@@ -24,7 +24,7 @@ class User < ApplicationRecord
   has_many :promotions, foreign_key: :used_by, dependent: :destroy
   has_one :location, dependent: :destroy
 
-  # before_create :set_referral_code
+  before_create :set_referral_code
   after_create :set_slug
   after_update :create_or_update_location
 
@@ -45,7 +45,7 @@ class User < ApplicationRecord
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
   
-  validates :slug, :referral_code, uniqueness: true
+  # validates :slug, :referral_code, uniqueness: true
 
   def self.top_contest limit:
     board = Board.fetch(leaderboard: :race_to_the_world_series)
