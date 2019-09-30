@@ -5,18 +5,18 @@ class AnalyticsJob < ApplicationJob
     fetch_user_acquisition_data(day: 1)
     fetch_engagement_data(day: 1)
     fetch_orders_for(day: 1)
-    DataMailer.analytics_for(day: 1, email: "ryan@endemiclabs.co").deliver_later
-    DataMailer.orders_for(day: 1, email: "ryan@endemiclabs.co").deliver_later
+    DataMailer.analytics_for(day: 1, email: "ben@endemiclabs.co").deliver_now
+    DataMailer.orders_for(day: 1, email: "budweisersweep@endemiclabs.co").deliver_later
   end
 
   def fetch_user_acquisition_data day:
     teams = Team.active
     CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_acquisition_data.csv", "wb") do |csv|
-      csv << ["Date", "Team", "Attempted Sign Ups", "Confirmed Users", "Facebook", "Instagram Post", "Instagram Story", "Twitter", "Organic"]
+      csv << ["Date", "Team", "Attempted Sign Ups", "Confirmed Users", "Facebook", "Instagram Post", "Instagram Story", "Twitter", "Team LP", "Organic"]
       teams.each do |team|
         team_query = User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).joins(:roles).where("roles.resource_id = ?", team.id).uniq
         confirmed_team_query = User.where(confirmed: true).where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).joins(:roles).where("roles.resource_id = ?", team.id).uniq
-        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), team.name, team_query.count, confirmed_team_query.count, for_referral(day: day, resource: team, source: "facebook").count, for_referral(day: day, resource: team, source: "instagrampost").count, for_referral(day: day, resource: team, source: "instagramstory").count, for_referral(day: day, resource: team, source: "twitter").count, for_referral(day: day, resource: team, source: "landing_page").count]
+        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), team.name, team_query.count, confirmed_team_query.count, for_referral(day: day, resource: team, source: "facebook").count, for_referral(day: day, resource: team, source: "instagrampost").count, for_referral(day: day, resource: team, source: "instagramstory").count, for_referral(day: day, resource: team, source: "twitter").count, for_referral(day: day, resource: team, source: "#{team.abbreviation.downcase}_lp").count, for_referral(day: day, resource: team, source: "landing_page").count]
       end
     end
   end

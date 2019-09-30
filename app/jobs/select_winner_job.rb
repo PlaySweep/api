@@ -3,7 +3,7 @@ class SelectWinnerJob < ApplicationJob
 
   def perform slate_id
     slate = Slate.find_by(id: slate_id)
-    find_winner(slate)
+    find_winner(slate) unless slate.done?
   end
 
   def find_winner slate
