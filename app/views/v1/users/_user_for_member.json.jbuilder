@@ -34,7 +34,7 @@ json.leaderboard do
       json.score user.daily_score
       json.ordinal_position user.daily_ordinal_position
       json.tied user.daily_tied?
-      json.date DateTime.current.strftime("%m-%d-%y")
+      json.date DateTime.current.strftime("%m-%d")
     end
   else
     {}

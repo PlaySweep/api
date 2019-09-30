@@ -8,6 +8,18 @@ class WelcomeBackJob < ApplicationJob
     if user.confirmed
       team = user.roles.find_by(resource_type: "Team").try(:resource)
       if team
+        quick_replies = FacebookParser::QuickReplyObject.new([
+          {
+            content_type: :text,
+            title: "Status",
+            payload: "STATUS"
+          },
+          {
+            content_type: :text,
+            title: "Share",
+            payload: "SHARE"
+          }
+        ]).objects
         FacebookMessaging::Standard.deliver(
           user: user,
           message: "#{welcome_back_interpolated}\n\nYou're currently playing for the #{team.abbreviation} - but you can change by typing 'switch'.",
@@ -18,6 +30,7 @@ class WelcomeBackJob < ApplicationJob
           title: "Play now",
           message: "There are more #{team.abbreviation} games to play!",
           url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/1",
+          quick_replies: quick_replies,
           notification_type: "NO_PUSH"
         )
       else
