@@ -26,7 +26,7 @@ class V1::UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.account_id = current_account.id
-    @user.referred_by_id = User.find_by(referral_code: params[:referral_code]).id if params[:referral_code]
+    # @user.referred_by_id = User.find_by(referral_code: params[:referral_code]).id if params[:referral_code]
     if @user.save
       # IndicativeTrackEventNewUserJob.perform_later(@user.id)
       if params[:team]
