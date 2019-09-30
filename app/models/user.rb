@@ -122,6 +122,16 @@ class User < ApplicationRecord
     end
   end
 
+  def ordinal_position
+    rank.ordinalize.last(2)
+  end
+
+  def tied?
+    if account.rewards.active.find_by(category: "Contest").present?
+      Board.fetch(leaderboard: :race_to_the_world_series).total_members_in_score_range(score, score) > 1.0
+    end
+  end
+
   def daily_score
     if account.rewards.active.find_by(category: "Contest").present?
       day = DateTime.current.strftime("%m%d%y")
@@ -140,12 +150,15 @@ class User < ApplicationRecord
     end
   end
 
-  def ordinal_position
-    rank.ordinalize.last(2)
+  def daily_ordinal_position
+    daily_rank.ordinalize.last(2)
   end
 
-  def tied?
-    Board.fetch(leaderboard: :allstar_sweep_leaderboard).total_members_in_score_range(streak, streak) > 1.0
+  def daily_tied?
+    if account.rewards.active.find_by(category: "Contest").present?
+      day = DateTime.current.strftime("%m%d%y")
+      Board.fetch(leaderboard: "race_to_the_world_series_#{day}".to_sym).total_members_in_score_range(score, score) > 1.0
+    end
   end
 
   def highest_sweep_streak

@@ -26,12 +26,14 @@ json.leaderboard do
       json.rank user.rank
       json.score user.score
       json.ordinal_position user.ordinal_position
+      json.tied user.tied?
     end
     json.daily do
       json.top_scorers user.account.active_daily_leaderboard.top(3)
-      json.daily_rank user.daily_rank
-      json.daily_score user.daily_score
-      json.ordinal_position user.ordinal_position
+      json.rank user.daily_rank
+      json.score user.daily_score
+      json.ordinal_position user.daily_ordinal_position
+      json.tied user.daily_tied?
       json.date DateTime.current.strftime("%m-%d-%y")
     end
   else
