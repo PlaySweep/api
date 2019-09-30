@@ -35,8 +35,10 @@ class V1::UsersController < ApplicationController
         subscribe_to(resource: team, user: @user)
       end
       WelcomeJob.perform_later(@user.id) if params[:onboard]
+      respond_with @user
+    else
+      render json: { errors: @user.errors }, status: :unprocessable_entity
     end
-    respond_with @user
   end
 
   def update
