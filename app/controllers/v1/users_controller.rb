@@ -28,7 +28,7 @@ class V1::UsersController < ApplicationController
     @user.account_id = current_account.id
     @user.referred_by_id = User.find_by(referral_code: params[:referral_code]).id if params[:referral_code]
     if @user.save
-      IndicativeTrackEventNewUserJob.perform_later(@user.id)
+      # IndicativeTrackEventNewUserJob.perform_later(@user.id)
       if params[:team]
         team = Team.by_name(params[:team]).first
         add_role if team
@@ -43,7 +43,7 @@ class V1::UsersController < ApplicationController
     @user = User.find_by(id: params[:id])
     @user.update_attributes(user_params)
     if @user.save
-      IndicativeTrackEventConfirmedAccountJob.perform_later(@user.id) if params[:confirmation]
+      # IndicativeTrackEventConfirmedAccountJob.perform_later(@user.id) if params[:confirmation]
       if params[:team]
         team = Team.by_name(params[:team]).first
         if team

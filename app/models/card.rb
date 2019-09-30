@@ -24,7 +24,7 @@ class Card < ApplicationRecord
   def send_slate_notification
     ContestService.new(user, slate: slate).run(type: :playing)
     DrizlyService.new(user, slate).run(type: :playing)
-    IndicativeTrackEventPlayedContestJob.perform_later(user.id)
+    # IndicativeTrackEventPlayedContestJob.perform_later(user.id)
   end
 
   def update_sweep_streak
@@ -67,7 +67,7 @@ class Card < ApplicationRecord
     if user.referred_by_id? && user.played_for_first_time?
       user.update_attributes(referral_completed_at: Time.zone.now)
       ContestService.new(user).run(type: :referral)
-      IndicativeTrackEventReferredFriendJob.perform_later(user.id)
+      # IndicativeTrackEventReferredFriendJob.perform_later(user.id)
 
       # Send notification if promotion is active
       NotifyReferrerJob.perform_later(user.referred_by_id, user.id, Entry::PLAYING) if user.account.rewards.find_by(category: "Contest", active: true).present?
