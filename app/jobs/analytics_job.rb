@@ -4,9 +4,9 @@ class AnalyticsJob < ApplicationJob
   def perform
     fetch_user_acquisition_data(day: 1)
     fetch_engagement_data(day: 1)
-    fetch_orders_for(day: 1)
+    fetch_orders
     DataMailer.analytics_for(day: 1, email: "ben@endemiclabs.co").deliver_now
-    DataMailer.orders_for(day: 1, email: "budweisersweep@endemiclabs.co").deliver_later
+    DataMailer.orders_to(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
   def fetch_user_acquisition_data day:
@@ -36,10 +36,10 @@ class AnalyticsJob < ApplicationJob
     end
   end
 
-  def fetch_orders_for day:
-    CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_orders.csv", "wb") do |csv|
+  def fetch_orders
+    CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_orders.csv", "wb") do |csv|
       csv << ["Order Number", "Order Date", "Recipient Name", "Email", "Phone", "Street Line 1", "Street Line 2", "City", "State/Province", "Zip/Postal Code", "Country", "Item Title", "SKU", "Order Weight", "Order Unit"]
-      Order.where('orders.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).each do |order|
+      Order.where('orders.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 14, DateTime.current.end_of_day).each do |order|
         csv << [order.id, order.created_at.strftime("%m/%d/%Y"), order.user.full_name, order.user.email, order.user.phone_number, order.user.shipping["line1"], order.user.shipping["line2"], order.user.shipping["city"], order.user.shipping["state"], order.user.shipping["postal_code"], order.user.shipping["country"], order.prize.product.name, order.prize.sku.code, order.prize.sku.weight, order.prize.sku.unit]
       end
     end
