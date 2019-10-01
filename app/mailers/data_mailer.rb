@@ -90,4 +90,15 @@ class DataMailer < ApplicationMailer
       body: "Attached below."
     )
   end
+
+  def winners_to email:
+    account = Account.first
+    winners_csv = File.read("#{Rails.root}/tmp/#{DateTime.current.to_date}_winners.csv")
+    attachments["#{Rails.root}/tmp/#{DateTime.current.to_date}_winners.csv"] = { mime_type: 'text/csv', content: winners_csv }
+    mail(
+      to: email,
+      subject: "#{account.friendly_name} #{account.name} Winners CSV #{DateTime.current.to_date}",
+      body: "Attached below."
+    )
+  end
 end
