@@ -24,8 +24,7 @@ class User < ApplicationRecord
   has_many :promotions, foreign_key: :used_by, dependent: :destroy
   has_one :location, dependent: :destroy
 
-  before_create :set_referral_code
-  after_create :set_slug
+  before_create :set_slug, :set_referral_code
   after_update :create_or_update_location
 
   jsonb_accessor :data,
@@ -45,7 +44,7 @@ class User < ApplicationRecord
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
   
-  # validates :slug, :referral_code, uniqueness: true
+  validates :slug, :referral_code, uniqueness: true
 
   def self.top_contest limit:
     board = Board.fetch(leaderboard: :race_to_the_world_series)
@@ -212,18 +211,23 @@ class User < ApplicationRecord
   private
 
   def set_slug
-    if first_name && last_name
-      slug = "#{self.first_name[0]}#{self.last_name}#{SecureRandom.hex(3)}".downcase
-      self.update_attributes(slug: slug)
-    else
-      slug = SecureRandom.hex(9).downcase
-      self.update_attributes(slug: slug)
+    loop do
+      if first_name && last_name
+        slug = "#{self.first_name[0]}#{self.last_name}#{SecureRandom.hex(3)}".downcase
+        self.slug = slug
+        break unless self.class.exists?(slug: slug)
+      else
+        slug = SecureRandom.hex(9).downcase
+        self.slug = slug
+        break unless self.class.exists?(slug: slug)
+      end
     end
   end
 
   def set_referral_code
     loop do
-      self.referral_code = "rc#{SecureRandom.hex(6)}"
+      referral_code = "rc#{SecureRandom.hex(6)}"
+      self.referral_code = referral_code
       break unless self.class.exists?(referral_code: referral_code)
     end
   end

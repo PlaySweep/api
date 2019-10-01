@@ -26,7 +26,10 @@ class V1::UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.account_id = current_account.id
-    # @user.referred_by_id = User.find_by(referral_code: params[:referral_code]).id if params[:referral_code]
+    if params[:referral_code]
+      referred_by_id = User.find_by(referral_code: params[:referral_code]).id
+      @user.referred_by_id = referred_by_id
+    end
     if @user.save
       # IndicativeTrackEventNewUserJob.perform_later(@user.id)
       if params[:team]
@@ -37,10 +40,7 @@ class V1::UsersController < ApplicationController
       WelcomeJob.perform_later(@user.id) if params[:onboard]
       respond_with @user
     else
-      puts "ERROR" * 15
-      puts @user.errors.inspect
-      puts "ERROR" * 15
-      render json: { errors: @user.errors }
+      render json: { errors: @user.errors }, status: :unprocessable_entity
     end
   end
 
