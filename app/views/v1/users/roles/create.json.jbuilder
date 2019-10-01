@@ -1,1 +1,1 @@
-json.role @role, partial: 'v1/users/roles/role', as: :role
+json.role @role.resource, partial: 'v1/teams/team', as: :team
