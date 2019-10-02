@@ -91,7 +91,11 @@ class User < ApplicationRecord
   end
 
   def coordinates
-    [location.lat, location.long].map(&:to_f)
+    if location.lat && location.long
+      [location.lat, location.long].map(&:to_f)
+    else
+      [30.3368251, -97.7545452]
+    end
   end
 
   def has_recently_won?
