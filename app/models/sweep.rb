@@ -31,11 +31,6 @@ class Sweep < ApplicationRecord
   def check_and_run_service
     ContestService.new(user, slate: slate).run(type: :sweep)
     DrizlyService.new(user, slate).run(type: :sweep)
-
-    # Send notification if user was referred and promotion is active
-    if user.referred_by_id? && user.account.rewards.find_by(category: "Contest", active: true).present?
-      NotifyReferrerJob.perform_later(user.referred_by_id, user.id, Entry::SWEEP)
-    end
   end
 
 end
