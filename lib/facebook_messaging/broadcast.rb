@@ -32,7 +32,7 @@ module FacebookMessaging
      end
     end
 
-    def self.create_message resource:, content:, notification_type: "regular", schedule_time: DateTime.current, buttons: ["Play now"]
+    def self.create_message resource:, content:, notification_type: "regular", schedule_time: DateTime.current, buttons: ["Play"]
       begin
         conn = Faraday.new(:url => "https://graph.facebook.com/v2.11/me/")
         body = buttons ? [{text: content, quick_replies: buttons.map { |title| { content_type: "text", title: title, payload: "#{title.upcase}" } }}].to_json : [{text: content}].to_json
