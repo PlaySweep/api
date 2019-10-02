@@ -79,31 +79,13 @@ class ContestService
       leaderboard = Board.fetch(
         leaderboard: @reward.name.downcase.gsub(" ", "_").to_sym
       )
-      if @user.referred_by_id?
-        # Add points to referred by
-        referred_member = "#{day}_#{@user.referred_by_id}"
-        member = "#{day}_#{@user.id}"
+      # Add points to user for sweep
+      member = "#{day}_#{@user.id}"
+      current_daily_score = daily_leaderboard.score_for(member) || 0
+      daily_leaderboard.rank_member(member, current_daily_score += sweep_rule.level)
 
-        current_referred_by_daily_score = daily_leaderboard.score_for(referred_member) || 0
-        daily_leaderboard.rank_member(referred_member, current_referred_by_daily_score += sweep_rule.level)
-
-        current_referred_by_score = leaderboard.score_for(@user.referred_by_id) || 0
-        leaderboard.rank_member(@user.referred_by_id, current_referred_by_score += sweep_rule.level)
-        # Add points to user for sweep
-        current_daily_score = daily_leaderboard.score_for(@user.id) || 0
-        daily_leaderboard.rank_member(@user.id, current_daily_score += sweep_rule.level)
-
-        current_score = leaderboard.score_for(@user.id) || 0
-        leaderboard.rank_member(@user.id, current_score += sweep_rule.level)
-      else
-        # Add points to user for sweep
-        member = "#{day}_#{@user.id}"
-        current_daily_score = daily_leaderboard.score_for(member) || 0
-        daily_leaderboard.rank_member(member, current_daily_score += sweep_rule.level)
-
-        current_score = leaderboard.score_for(@user.id) || 0
-        leaderboard.rank_member(@user.id, current_score += sweep_rule.level)
-      end
+      current_score = leaderboard.score_for(@user.id) || 0
+      leaderboard.rank_member(@user.id, current_score += sweep_rule.level)
     end
   end
 
