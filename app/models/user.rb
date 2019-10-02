@@ -91,7 +91,7 @@ class User < ApplicationRecord
   end
 
   def coordinates
-    if location.lat && location.long
+    if location
       [location.lat, location.long].map(&:to_f)
     else
       [30.3368251, -97.7545452]
