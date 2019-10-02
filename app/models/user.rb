@@ -79,6 +79,11 @@ class User < ApplicationRecord
     roles.find_by(resource_type: "Team").try(:resource) || Team.find_by(name: account.app_name)
   end
 
+  def current_team_is_default?
+    default_team_id = Team.find_by(name: account.app_name).id
+    current_team.id == default_team_id
+  end
+
   def eligible_for_drizly?
     reward = account.rewards.find_by(name: "Drizly", category: "Playing")
     rule = DrizlyRule.find_by(name: location.try(:state), category: "Playing", eligible: true)

@@ -18,6 +18,7 @@ json.played_for_first_time user.played_for_first_time?
 json.eligible_for_drizly user.eligible_for_drizly?
 json.location user.location
 json.current_team user.current_team, partial: 'v1/teams/team', as: :team
+json.current_team_is_default user.current_team_is_default?
 json.leaderboard do
   if user.account.active_leaderboard
     json.name user.account.active_leaderboard.leaderboard_name.split("_").map(&:capitalize).join(" ").to_s
