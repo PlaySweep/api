@@ -24,7 +24,7 @@ class SendWinningSlateMessageJob < ApplicationJob
         notification_type: "REGULAR"
       )
       national_winning_slate_copy = user.account.copies.where(category: "National Winning Slate").sample.message
-      interpolated_national_winning_slate_copy = national_winning_slate_copy % { first_name: user.first_name, event_size: slate.events.size, prize_name: slate.prizes.first.product.name }
+      interpolated_national_winning_slate_copy = national_winning_slate_copy % { first_name: user.first_name, event_size: slate.events.size, rank: "#{user.rank}#{user.ordinal_position}", score: user.score.to_i, tagline: user.rank > 5 ? "Share with your friends to keep moving up the board!" : "Hold that top spot by sharing with your friends!" }
       FacebookMessaging::Standard.deliver(
         user: user,
         message: interpolated_national_winning_slate_copy,
