@@ -28,6 +28,8 @@ class DrizlyService
         DrizlyPlayMailer.notify(@user, promotion).deliver_later
         SendSlateNotificationWithDrizlyJob.perform_later(@user.id, @slate.id)
       end
+    else
+      SendSlateNotificationJob.perform_later(@user.id, @slate.id)
     end
   end
 
