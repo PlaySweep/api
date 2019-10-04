@@ -1,5 +1,5 @@
 class IndicativeTrackEventNewUserJob < ApplicationJob
-  @queue = :indicative_track_event_new_user_job
+  queue_as :low
 
   def perform user_id
     user = User.find(user_id)

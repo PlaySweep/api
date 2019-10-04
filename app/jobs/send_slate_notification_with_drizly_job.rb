@@ -1,5 +1,5 @@
 class SendSlateNotificationWithDrizlyJob < ApplicationJob
-  @queue = :send_slate_notification_with_drizly_job
+  queue_as :high
 
   def perform user_id, slate_id
     user = User.find(user_id)

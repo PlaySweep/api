@@ -1,5 +1,5 @@
 class SendWinnerConfirmationJob < ApplicationJob
-  @queue = :send_winner_confirmation_job
+  queue_as :high
 
   def perform slate_id, user_id
     slate = Slate.find_by(id: slate_id)

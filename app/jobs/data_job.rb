@@ -1,5 +1,5 @@
 class DataJob < ApplicationJob
-  @queue = :data_job
+  queue_as :low
 
   def perform
     users = User.joins(:location).where('users.zipcode is not null and locations.user_id is null')

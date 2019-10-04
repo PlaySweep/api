@@ -1,5 +1,5 @@
 class StartSlateJob < ApplicationJob
-  @queue = :start_slate_job
+  queue_as :critical
 
   def perform slate_id
     slate = Slate.find_by(id: slate_id)

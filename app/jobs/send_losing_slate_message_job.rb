@@ -1,5 +1,5 @@
 class SendLosingSlateMessageJob < ApplicationJob
-  @queue = :send_losing_slate_message_job
+  queue_as :high
 
   def perform user_id, slate_id
     user = User.find(user_id)

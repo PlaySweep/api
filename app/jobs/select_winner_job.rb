@@ -1,5 +1,5 @@
 class SelectWinnerJob < ApplicationJob
-  @queue = :select_winner_job
+  queue_as :high
 
   def perform slate_id
     slate = Slate.find_by(id: slate_id)

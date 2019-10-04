@@ -1,5 +1,5 @@
 class AnalyticsJob < ApplicationJob
-  @queue = :analytics_job
+  queue_as :low
 
   def perform
     fetch_user_acquisition_data(day: 1)

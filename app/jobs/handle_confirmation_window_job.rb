@@ -1,5 +1,5 @@
 class HandleConfirmationWindowJob < ApplicationJob
-  @queue = :handle_confirmation_window_job
+  queue_as :high
 
   def perform slate_id
     slate = Slate.find_by(id: slate_id)

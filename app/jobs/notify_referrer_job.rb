@@ -1,5 +1,5 @@
 class NotifyReferrerJob < ApplicationJob
-  @queue = :notify_referrer_job
+  queue_as :low
 
   def perform user_id, referred_id, reason
     user = User.find(user_id)

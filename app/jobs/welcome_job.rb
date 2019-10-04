@@ -1,5 +1,5 @@
 class WelcomeJob < ApplicationJob
-  @queue = :welcome_job
+  queue_as :critical
 
   def perform user_id
     user = User.find(user_id)
