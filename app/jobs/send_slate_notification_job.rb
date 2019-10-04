@@ -1,5 +1,5 @@
 class SendSlateNotificationJob < ApplicationJob
-  queue_as :low
+  queue_as :high
 
   def perform user_id, slate_id
     user = User.find(user_id)

@@ -1,5 +1,5 @@
 class SendWinningSlateMessageWithDrizlyJob < ApplicationJob
-  queue_as :high
+  queue_as :low
 
   def perform user_id, slate_id
     user = User.find(user_id)
