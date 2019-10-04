@@ -27,7 +27,7 @@ class V1::UsersController < ApplicationController
     @user = User.new(user_params)
     @user.account_id = current_account.id
     if params[:referral_code]
-      referred_by_id = User.find_by(referral_code: params[:referral_code]).id
+      referred_by_id = User.find_by(referral_code: params[:referral_code]).try(:id)
       @user.referred_by_id = referred_by_id
     end
     if @user.save
