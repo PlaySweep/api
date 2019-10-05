@@ -10,6 +10,12 @@ class SendWinningSlateMessageJob < ApplicationJob
         title: "Status",
         payload: "STATUS"
       },
+      { 
+        content_type: :text,
+        title: "Play again",
+        payload: "PLAY",
+        image_url: user.current_team.image
+      },
       {
         content_type: :text,
         title: "Share",
