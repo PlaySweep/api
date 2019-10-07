@@ -30,6 +30,9 @@ json.prizes slate.prizes.each do |prize|
   json.date prize.date
 end
 json.team slate.team, partial: 'v1/teams/team', as: :team
+json.field slate.field
+json.standing slate.standing
+json.pitcher
 json.opponent do
   json.id slate.try(:opponent).try(:id)
   json.image slate.try(:opponent).try(:image)
