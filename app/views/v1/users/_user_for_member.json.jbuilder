@@ -24,6 +24,7 @@ json.leaderboard do
     json.name user.account.active_leaderboard.leaderboard_name.split("_").map(&:capitalize).join(" ").to_s
     json.overall do
       json.top_scorers user.account.active_leaderboard.top(3)
+      json.around_me user.around_me
       json.rank user.rank
       json.score user.score
       json.ordinal_position user.ordinal_position

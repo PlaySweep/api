@@ -140,6 +140,14 @@ class User < ApplicationRecord
     end
   end
 
+  def around_me
+    if account.rewards.active.find_by(category: "Contest").present?
+      Board.fetch(leaderboard: :race_to_the_world_series).around_me(id, page_size: 1000)
+    else
+      []
+    end
+  end
+
   def daily_score
     if account.rewards.active.find_by(category: "Contest").present?
       day = DateTime.current.strftime("%m%d%y")
