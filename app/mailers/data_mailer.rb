@@ -3,7 +3,7 @@ class DataMailer < ApplicationMailer
 
   def analytics_for day:, email:
     account = Account.first
-    acquistion_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_acquisition_data.csv")
+    acquistion_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_final_acquisition.csv")
     engagement_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_engagement_data.csv")
     attachments["#{(DateTime.current - day).to_date}_acquisition_data.csv"] = { mime_type: 'text/csv', content: acquistion_csv }
     attachments["#{(DateTime.current - day).to_date}_engagement_data.csv"] = { mime_type: 'text/csv', content: engagement_csv }

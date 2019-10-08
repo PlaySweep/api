@@ -2,7 +2,7 @@ class AnalyticsJob < ApplicationJob
   queue_as :low
 
   def perform
-    fetch_engagement_data(day: 1)
+    fetch_all_acquisitions_by(day: 1)
     fetch_orders
     fetch_winners(day: 1)
     DataMailer.analytics_for(day: 1, email: "ben@endemiclabs.co").deliver_later
@@ -11,7 +11,7 @@ class AnalyticsJob < ApplicationJob
   end
 
   def merge_acquisition day:
-    CSV.open("#{Rails.root}/tmp/final_acquisition.csv", "wb", write_headers: true, headers: ["Date", "Team", "Count", "Source"]) do |csv|
+    CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_final_acquisition.csv", "wb", write_headers: true, headers: ["Date", "Team", "Count", "Source"]) do |csv|
       Dir["tmp/#{(DateTime.current - day).to_date}_acquisition_data_for_*.csv"].each do |path|  # for each of your csv files
         CSV.foreach(path, headers: true, return_headers: false) do |row| # don't output the headers in the rows
           csv << row # append to the final file
@@ -29,6 +29,7 @@ class AnalyticsJob < ApplicationJob
       create_team_acquisition_sheet_by(day: day, team: team, source: "#{team.abbreviation.downcase}_lp")
       create_team_acquisition_sheet_by(day: day, team: team, source: "#{team.abbreviation.downcase}_lp_2")
     end
+    merge_acquisition(day: day)
   end
 
   def create_team_acquisition_sheet_by day:, team:, source:
