@@ -28,7 +28,7 @@ class User < ApplicationRecord
   after_update :create_or_update_location
 
   jsonb_accessor :data,
-    referral: [:string, default: "landing_page"]
+    referral: [:string]
 
   jsonb_accessor :shipping,
     line1: [:string, default: nil],

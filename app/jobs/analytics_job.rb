@@ -2,7 +2,6 @@ class AnalyticsJob < ApplicationJob
   queue_as :low
 
   def perform
-    fetch_user_acquisition_data(day: 1)
     fetch_engagement_data(day: 1)
     fetch_orders
     fetch_winners(day: 1)
@@ -11,29 +10,45 @@ class AnalyticsJob < ApplicationJob
     DataMailer.winners_to(email: "budweisersweep@endemiclabs.co").deliver_later
   end
 
-  def fetch_user_acquisition_data day:
-    teams = Team.active
-    CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_acquisition_data.csv", "wb") do |csv|
-      csv << ["Date", "Team", "Attempted Sign Ups", "Confirmed Users", "Facebook", "Instagram Post", "Instagram Story", "Twitter", "Team LP", "Organic"]
-      teams.each do |team|
-        team_query = User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).joins(:roles).where("roles.resource_id = ?", team.id).uniq
-        confirmed_team_query = User.where(confirmed: true).where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).joins(:roles).where("roles.resource_id = ?", team.id).uniq
-        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), team.name, team_query.count, confirmed_team_query.count, for_referral(day: day, resource: team, source: "facebook").count, for_referral(day: day, resource: team, source: "instagrampost").count, for_referral(day: day, resource: team, source: "instagramstory").count, for_referral(day: day, resource: team, source: "twitter").count, for_referral(day: day, resource: team, source: "#{team.abbreviation.downcase}_lp").count, for_referral(day: day, resource: team, source: "landing_page").count]
+  def merge_acquisition day:
+    CSV.open("#{Rails.root}/tmp/final_acquisition.csv", "wb", write_headers: true, headers: ["Date", "Team", "Count", "Source"]) do |csv|
+      Dir["tmp/#{(DateTime.current - day).to_date}_acquisition_data_for_*.csv"].each do |path|  # for each of your csv files
+        CSV.foreach(path, headers: true, return_headers: false) do |row| # don't output the headers in the rows
+          csv << row # append to the final file
+        end
       end
     end
   end
 
-  def for_referral day:, resource:, source:
-    User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).joins(:roles).where("roles.resource_id = ?", resource.id).where("users.data->>'referral' = :referral", referral: source)
+  def fetch_all_acquisitions_by day:
+    teams = Team.active
+    teams.each do |team|
+      create_team_acquisition_sheet_by(day: day, team: team, source: "facebook")
+      create_team_acquisition_sheet_by(day: day, team: team, source: "twitter")
+      create_team_acquisition_sheet_by(day: day, team: team, source: nil)
+      create_team_acquisition_sheet_by(day: day, team: team, source: "#{team.abbreviation.downcase}_lp")
+      create_team_acquisition_sheet_by(day: day, team: team, source: "#{team.abbreviation.downcase}_lp_2")
+    end
+  end
+
+  def create_team_acquisition_sheet_by day:, team:, source:
+    CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_acquisition_data_for_#{team.abbreviation.downcase}_#{source}.csv", "wb") do |csv|
+      csv << ["Date", "Team", "Count", "Source"]
+      csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), team.abbreviation, for_referral(day: day, source: source).size, source.nil? ? "other" : source]
+    end
+  end
+
+  def for_referral day:, source:
+    User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).where("users.data->>'referral' = :referral", referral: source)
   end
 
   def fetch_engagement_data day:
     slate_ids = Slate.where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).pluck(:id)
     CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_engagement_data.csv", "wb") do |csv|
-      csv << ["Date", "Contest", "Team", "Type", "Quantity of Entries", "Prize Category", "Prize Name", "Day of Week", "Contest Winners", "Ticket Date"]
+      csv << ["Date", "Contest Number", "Team", "Type", "Quantity of Entries", "Prize Category", "Prize Name", "Day of Week", "Contest Winners", "Ticket Date"]
       slate_ids.each do |slate_id|
         slate = Slate.find_by(id: slate_id)
-        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), slate_id, slate.team.name, slate.local ? "Local" : "Vs", slate.cards.count, slate.prizes.first.product.category, slate.prizes.first.product.name, slate.start_time.strftime("%A").capitalize, slate.cards.map(&:status).reject { |status| status == 'loss' }.count, slate.prizes.first.date]
+        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), Slate.finished_contest_count_for(slate.owner_id).size, slate.team.abbreviation, slate.cards.count, slate.prizes.first.product.category, slate.prizes.first.product.name, slate.start_time.strftime("%A").capitalize, slate.cards.map(&:status).reject { |status| status == 'loss' }.count, slate.prizes.first.date]
       end
     end
   end

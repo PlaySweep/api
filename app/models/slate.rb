@@ -24,6 +24,7 @@ class Slate < ApplicationRecord
   scope :for_the_month, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day + 7) }
   scope :filtered, ->(role_ids) { where(owner_id: role_ids) } 
   scope :unfiltered, -> { data_where(global: true) } 
+  scope :finished_contest_count_for, ->(owner_id) { finished.where(owner_id: owner_id) } 
   scope :total_entry_count, -> { joins(:cards).count }
   scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
   
