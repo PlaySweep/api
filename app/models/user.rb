@@ -142,7 +142,7 @@ class User < ApplicationRecord
 
   def around_me
     if account.rewards.active.find_by(category: "Contest").present?
-      Board.fetch(leaderboard: :race_to_the_world_series).around_me(id, page_size: 1000)
+      Board.fetch(leaderboard: :race_to_the_world_series).around_me(id, page_size: 500).first(5)
     else
       []
     end
