@@ -43,6 +43,25 @@ class AnalyticsJob < ApplicationJob
     User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).where("users.data->>'referral' = :referral", referral: source)
   end
 
+  def drizly_winners users:
+    CSV.open("#{Rails.root}/tmp/drizly_winners.csv", "wb") do |csv|
+      csv << ["Name", "Email", "Zipcode"]
+      users.each do |user|
+        csv << [user.full_name, user.email, user.zipcode]
+      end
+    end
+  end
+
+  def users_for team:
+    users = User.joins(:roles).where('roles.resource_id = ?', team.id)
+    CSV.open("#{Rails.root}/tmp/#{team.abbreviation.downcase}_players.csv", "wb") do |csv|
+      csv << ["Name", "Email", "Zipcode"]
+      users.each do |user|
+        csv << [user.full_name, user.email, user.zipcode]
+      end
+    end
+  end
+
   def fetch_engagement_data day:
     slate_ids = Slate.where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).pluck(:id)
     CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_engagement_data.csv", "wb") do |csv|
