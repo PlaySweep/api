@@ -91,6 +91,17 @@ class DataMailer < ApplicationMailer
     )
   end
 
+  def slates email:
+    account = Account.first
+    slates_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_slates.csv")
+    attachments["#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_slates.csv"] = { mime_type: 'text/csv', content: slates_csv }
+    mail(
+      to: email,
+      subject: "#{account.friendly_name} #{account.name} Slates CSV #{(DateTime.current - day).to_date}",
+      body: "Attached below."
+    )
+  end
+
   def all_orders_to email:
     account = Account.first
     orders_csv = File.read("#{Rails.root}/tmp/orders.csv")
@@ -120,6 +131,17 @@ class DataMailer < ApplicationMailer
     mail(
       to: email,
       subject: "#{account.friendly_name} #{account.name} Winners CSV #{DateTime.current.to_date}",
+      body: "Attached below."
+    )
+  end
+
+  def losers_to email:
+    account = Account.first
+    losers_csv = File.read("#{Rails.root}/tmp/#{DateTime.current.to_date}_losers.csv")
+    attachments["#{Rails.root}/tmp/#{DateTime.current.to_date}_losers.csv"] = { mime_type: 'text/csv', content: losers_csv }
+    mail(
+      to: email,
+      subject: "#{account.friendly_name} #{account.name} Losers CSV #{DateTime.current.to_date}",
       body: "Attached below."
     )
   end

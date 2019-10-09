@@ -73,6 +73,15 @@ class AnalyticsJob < ApplicationJob
     end
   end
 
+  def fetch_slates day:
+    CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_slates.csv", "wb") do |csv|
+      csv << ["Start Time", "Team", "Contest", "Prize"]
+      Slate.where('slates.start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).each do |order|
+        csv << [slate.start_time.strftime("%m/%d/%Y"), slate.team.abbreviation, slate.name, slate.prizes.first ? slate.prizes.first.product.name : "NA"]
+      end
+    end
+  end
+
   def fetch_orders
     CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_orders.csv", "wb") do |csv|
       csv << ["Order Number", "Order Date", "Recipient Name", "Email", "Phone", "Street Line 1", "Street Line 2", "City", "State/Province", "Zip/Postal Code", "Country", "Item Title", "SKU", "Order Weight", "Order Unit"]
@@ -87,6 +96,16 @@ class AnalyticsJob < ApplicationJob
       csv << ["User ID", "Name", "Email", "Zipcode", "Prize Won", "Contest", "Contest Date"]
       Sweep.where('sweeps.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day).each do |sweep|
         csv << [sweep.user_id, sweep.user.full_name, sweep.user.email, sweep.user.zipcode, sweep.slate.prizes.first.product.name, sweep.slate.name, sweep.slate.start_time.strftime("%m/%d/%Y")]
+      end
+    end
+  end
+
+  def fetch_losers day:
+    CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_losers.csv", "wb") do |csv|
+      csv << ["User ID", "Name", "Email", "Zipcode", "Prize Won", "Contest", "Contest Date"]
+      cards = Card.joins(:slate).where('slates.start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day)
+      cards.loss.each do |card|
+        csv << [card.user_id, card.user.full_name, card.user.email, card.user.zipcode, card.slate.prizes.first ? card.slate.prizes.first.product.name : "NA", card.slate.name, card.slate.start_time.strftime("%m/%d/%Y")]
       end
     end
   end
