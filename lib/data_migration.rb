@@ -200,6 +200,10 @@ class DataMigration
     end
   end
 
+  def upload_drizly_sweep_promotions
+    2500.times { DrizlyPromotion.create(type: "DrizlyPromotion", category: "Sweep", used: false, value: 20.0, code: "BUDLIGHTSWEEP-#{SecureRandom.hex(2)}", level: 0) }
+  end
+
   def create_and_update_location tenant:
     Apartment::Tenant.switch!(tenant)
     users = User.where.not(zipcode: nil)

@@ -24,7 +24,6 @@ class Card < ApplicationRecord
   def send_slate_notification
     ContestService.new(user, slate: slate).run(type: :playing)
     DrizlyService.new(user, slate).run(type: :playing)
-    SendSlateNotificationJob.perform_later(user_id, slate_id) if user.played_for_first_time?
     IndicativeTrackEventPlayedContestJob.perform_later(user.id)
   end
 
