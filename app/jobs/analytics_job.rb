@@ -3,6 +3,7 @@ class AnalyticsJob < ApplicationJob
 
   def perform
     fetch_all_acquisitions_by(day: 1)
+    fetch_engagement_data(day: 1)
     fetch_orders
     fetch_winners(day: 1)
     DataMailer.analytics_for(day: 1, email: "ben@endemiclabs.co").deliver_later
@@ -25,6 +26,7 @@ class AnalyticsJob < ApplicationJob
     teams.each do |team|
       create_team_acquisition_sheet_by(day: day, team: team, source: "facebook")
       create_team_acquisition_sheet_by(day: day, team: team, source: "twitter")
+      create_team_acquisition_sheet_by(day: day, team: team, source: "referred")
       create_team_acquisition_sheet_by(day: day, team: team, source: nil)
       create_team_acquisition_sheet_by(day: day, team: team, source: "#{team.abbreviation.downcase}_lp")
       create_team_acquisition_sheet_by(day: day, team: team, source: "#{team.abbreviation.downcase}_lp_2")
@@ -35,12 +37,12 @@ class AnalyticsJob < ApplicationJob
   def create_team_acquisition_sheet_by day:, team:, source:
     CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_acquisition_data_for_#{team.abbreviation.downcase}_#{source}.csv", "wb") do |csv|
       csv << ["Date", "Team", "Count", "Source"]
-      csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), team.abbreviation, for_referral(day: day, source: source).size, source.nil? ? "other" : source]
+      csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), team.abbreviation, for_referral(day: day, team: team, source: source).size, source.nil? ? "other" : source]
     end
   end
 
-  def for_referral day:, source:
-    User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).where("users.data->>'referral' = :referral", referral: source)
+  def for_referral day:, team:, source:
+    User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).data_where(referral: source).joins(:roles).where("roles.resource_id = ?", team.id)
   end
 
   def drizly_winners users:
@@ -68,7 +70,7 @@ class AnalyticsJob < ApplicationJob
       csv << ["Date", "Contest Number", "Team", "Type", "Quantity of Entries", "Prize Category", "Prize Name", "Day of Week", "Contest Winners", "Ticket Date"]
       slate_ids.each do |slate_id|
         slate = Slate.find_by(id: slate_id)
-        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), Slate.finished_contest_count_for(slate.owner_id).size, slate.team.abbreviation, slate.cards.count, slate.prizes.first.product.category, slate.prizes.first.product.name, slate.start_time.strftime("%A").capitalize, slate.cards.map(&:status).reject { |status| status == 'loss' }.count, slate.prizes.first.date]
+        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), Slate.finished_contest_count_for(slate.owner_id).size, slate.team.abbreviation, slate.cards.count, slate.prizes.first.try(:product).try(:category), slate.prizes.first.try(:product).try(:name), slate.start_time.strftime("%A").capitalize, slate.cards.map(&:status).reject { |status| status == 'loss' }.count, slate.prizes.first.try(:date)]
       end
     end
   end
@@ -77,7 +79,7 @@ class AnalyticsJob < ApplicationJob
     CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_slates.csv", "wb") do |csv|
       csv << ["Start Time", "Team", "Contest", "Prize"]
       Slate.where('slates.start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).each do |order|
-        csv << [slate.start_time.strftime("%m/%d/%Y"), slate.team.abbreviation, slate.name, slate.prizes.first ? slate.prizes.first.product.name : "NA"]
+        csv << [slate.start_time.strftime("%m/%d/%Y"), slate.team.abbreviation, slate.name, slate.prizes.first ? slate.prizes.first.try(:product).try(:name) : "NA"]
       end
     end
   end
@@ -86,7 +88,7 @@ class AnalyticsJob < ApplicationJob
     CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_orders.csv", "wb") do |csv|
       csv << ["Order Number", "Order Date", "Recipient Name", "Email", "Phone", "Street Line 1", "Street Line 2", "City", "State/Province", "Zip/Postal Code", "Country", "Item Title", "SKU", "Order Weight", "Order Unit"]
       Order.where('orders.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 14, DateTime.current.end_of_day).each do |order|
-        csv << [order.id, order.created_at.strftime("%m/%d/%Y"), order.user.full_name, order.user.email, order.user.phone_number, order.user.shipping["line1"], order.user.shipping["line2"], order.user.shipping["city"], order.user.shipping["state"], order.user.shipping["postal_code"], order.user.shipping["country"], order.prize.product.name, order.prize.sku.code, order.prize.sku.weight, order.prize.sku.unit]
+        csv << [order.id, order.created_at.strftime("%m/%d/%Y"), order.user.full_name, order.user.email, order.user.phone_number, order.user.shipping["line1"], order.user.shipping["line2"], order.user.shipping["city"], order.user.shipping["state"], order.user.shipping["postal_code"], order.user.shipping["country"], order.prize.try(:product).try(:name), order.prize.sku.code, order.prize.sku.weight, order.prize.sku.unit]
       end
     end
   end
@@ -95,7 +97,7 @@ class AnalyticsJob < ApplicationJob
     CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_winners.csv", "wb") do |csv|
       csv << ["User ID", "Name", "Email", "Zipcode", "Prize Won", "Contest", "Contest Date"]
       Sweep.where('sweeps.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day).each do |sweep|
-        csv << [sweep.user_id, sweep.user.full_name, sweep.user.email, sweep.user.zipcode, sweep.slate.prizes.first.product.name, sweep.slate.name, sweep.slate.start_time.strftime("%m/%d/%Y")]
+        csv << [sweep.user_id, sweep.user.full_name, sweep.user.email, sweep.user.zipcode, sweep.slate.prizes.first.try(:product).try(:name), sweep.slate.name, sweep.slate.start_time.strftime("%m/%d/%Y")]
       end
     end
   end
@@ -105,7 +107,7 @@ class AnalyticsJob < ApplicationJob
       csv << ["User ID", "Name", "Email", "Zipcode", "Prize Won", "Contest", "Contest Date"]
       cards = Card.joins(:slate).where('slates.start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day)
       cards.loss.each do |card|
-        csv << [card.user_id, card.user.full_name, card.user.email, card.user.zipcode, card.slate.prizes.first ? card.slate.prizes.first.product.name : "NA", card.slate.name, card.slate.start_time.strftime("%m/%d/%Y")]
+        csv << [card.user_id, card.user.full_name, card.user.email, card.user.zipcode, card.slate.prizes.first ? card.slate.prizes.first.try(:product).try(:name) : "NA", card.slate.name, card.slate.start_time.strftime("%m/%d/%Y")]
       end
     end
   end
