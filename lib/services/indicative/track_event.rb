@@ -53,22 +53,5 @@ module Indicative
       )
     end
 
-    def self.referred_friend user:
-      body = {
-          apiKey: ENV["INDICATIVE_API_KEY"],
-          eventName: "Referred friend",
-          eventUniqueId: user.id,
-          properties: {
-              ref: user.referral,
-          }
-      }.to_json
-      
-      response = HTTParty.post(
-        "#{@api}/event",
-        :headers => { "Content-Type" => "application/json" },
-        :body => body
-      )
-    end
-
   end
 end
