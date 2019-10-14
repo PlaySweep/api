@@ -29,7 +29,7 @@ class DrizlyService
         SendSlateNotificationWithDrizlyJob.perform_later(@user.id, @slate.id)
       end
     else
-      SendSlateNotificationJob.perform_later(@user.id, @slate.id)
+      SendSlateNotificationJob.perform_later(@user.id, @slate.id) unless @user.played_for_first_time?
     end
   end
 

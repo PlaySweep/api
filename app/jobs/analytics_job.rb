@@ -49,9 +49,9 @@ class AnalyticsJob < ApplicationJob
 
   def drizly_winners users:
     CSV.open("#{Rails.root}/tmp/drizly_winners.csv", "wb") do |csv|
-      csv << ["Name", "Email", "Zipcode"]
+      csv << ["ID", "Name", "Email", "Zipcode"]
       users.each do |user|
-        csv << [user.full_name, user.email, user.zipcode]
+        csv << [user.id, user.full_name, user.email, user.zipcode]
       end
     end
   end
