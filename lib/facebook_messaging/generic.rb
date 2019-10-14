@@ -56,8 +56,8 @@ module FacebookMessaging
             facebook_uuid: user.facebook_uuid,
             title: "$20 Drizly Credit",
             image_url: user.account.images.find_by(category: "Drizly Lockup").url,
-            subtitle: "It's not easy hitting 3 in a row - celebrate with a #{user.account.friendly_name} 🍺 on us!",
-            buttons: [{title: "Claim now", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/1"}],
+            subtitle: "🍺 Celebrate your victory with a #{user.account.friendly_name}!",
+            buttons: [{title: "Claim now", url: "https://budlightsweeps.typeform.com/to/r6SOAJ"}],
             notification_type: notification_type
           }).payload
           template[:message][:quick_replies] = quick_replies if quick_replies

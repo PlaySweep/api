@@ -35,7 +35,7 @@ class SendLosingSlateMessageJob < ApplicationJob
       FacebookMessaging::Standard.deliver(
         user: user, 
         message: national_interpolated_losing_slate_copy, 
-        notification_type: "SILENT_PUSH"
+        notification_type: "NO_PUSH"
       )
       FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
     else
@@ -51,7 +51,7 @@ class SendLosingSlateMessageJob < ApplicationJob
       FacebookMessaging::Standard.deliver(
         user: user, 
         message: interpolated_losing_slate_copy, 
-        notification_type: "SILENT_PUSH"
+        notification_type: "NO_PUSH"
       )
       FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
     end

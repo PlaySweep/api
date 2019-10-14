@@ -90,6 +90,11 @@ class User < ApplicationRecord
     reward && reward.active && rule.present?
   end
 
+  def eligible_for_prize? slate:
+    distance = Haversine.distance(slate.team.coordinates, coordinates).to_miles
+    distance <= 75
+  end
+
   def coordinates
     if location
       [location.lat, location.long].map(&:to_f)

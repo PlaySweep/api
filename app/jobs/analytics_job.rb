@@ -6,9 +6,11 @@ class AnalyticsJob < ApplicationJob
     fetch_engagement_data(day: 1)
     fetch_orders
     fetch_winners(day: 1)
+    fetch_losers(day: 1)
     DataMailer.analytics_for(day: 1, email: "ben@endemiclabs.co").deliver_later
     DataMailer.orders_to(email: "budweisersweep@endemiclabs.co").deliver_later
     DataMailer.winners_to(email: "budweisersweep@endemiclabs.co").deliver_later
+    DataMailer.losers_to(email: "budweisersweep@endemiclabs.co").deliver_later
   end
 
   def merge_acquisition day:
@@ -42,7 +44,7 @@ class AnalyticsJob < ApplicationJob
   end
 
   def for_referral day:, team:, source:
-    User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).data_where(referral: source).joins(:roles).where("roles.resource_id = ?", team.id)
+    User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).where(confirmed: true).data_where(referral: source).joins(:roles).where("roles.resource_id = ?", team.id)
   end
 
   def drizly_winners users:

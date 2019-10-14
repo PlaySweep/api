@@ -97,6 +97,10 @@ class Slate < ApplicationRecord
     Team.find_by(id: team_id)
   end
 
+  def ticket_prizing?
+    prizes.joins(:product).where("products.category = ?", "Tickets").any?
+  end
+
   private
 
   def result_card
