@@ -8,8 +8,8 @@ module Indicative
           eventName: "New user",
           eventUniqueId: user.id,
           properties: {
-              account: account.tenant,
-              league: account.name,
+              account: user.account.tenant,
+              league: user.account.name,
               ref: user.referral,
           }
       }.to_json
@@ -27,8 +27,8 @@ module Indicative
           eventName: "Confirmed account",
           eventUniqueId: user.id,
           properties: {
-              account: account.tenant,
-              league: account.name,
+              account: user.account.tenant,
+              league: user.account.name,
               ref: user.referral,
           }
       }.to_json
@@ -46,8 +46,8 @@ module Indicative
           eventName: "Played contest",
           eventUniqueId: user.id,
           properties: {
-              account: account.tenant,
-              league: account.name,
+              account: user.account.tenant,
+              league: user.account.name,
               ref: user.referral,
           }
       }.to_json
