@@ -1,0 +1,3 @@
+class AccountRule < Rule
+    
+end

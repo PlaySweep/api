@@ -22,6 +22,7 @@ class Card < ApplicationRecord
   end
 
   def send_slate_notification
+    AccountService.new(user, slate: slate).run(type: :playing)
     ContestService.new(user, slate: slate).run(type: :playing)
     DrizlyService.new(user, slate).run(type: :playing)
     IndicativeTrackEventPlayedContestJob.perform_later(user.id)

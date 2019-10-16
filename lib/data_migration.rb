@@ -213,14 +213,12 @@ class DataMigration
     end
   end
 
-  def create_leaderboard_results
-    Apartment::Tenant.switch!('budweiser')
-    leaderboard_history = LeaderboardHistory.create(name: "All-Star", description: "First to 6 Sweeps in a row (or highest rank at the end of promo duration", account_id: 1)
-    board = Board.fetch(leaderboard: :allstar_sweep_leaderboard)
+  def seed_leaderboard_results leaderboard:, history:
+    board = Board.fetch(leaderboard: leaderboard)
     board.all_members.each do |player|
       user = User.find_by(id: player[:member])
       if user
-        user.leaderboard_results.find_or_create_by(leaderboard_history_id: leaderboard_history.id, score: player[:score], rank: player[:rank])
+        user.leaderboard_results.find_or_create_by(leaderboard_history_id: history.id, score: player[:score], rank: player[:rank])
       end
     end
   end
