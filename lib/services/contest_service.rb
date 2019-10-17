@@ -8,7 +8,7 @@ class ContestService
   end
 
   def reward_active?
-    @reward = @user.account.rewards.find_by(category: "Contest", active: true)
+    @reward = @user.account.rewards.active.find_by(category: "Contest")
     @reward.present?
   end
 

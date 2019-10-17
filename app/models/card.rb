@@ -10,8 +10,8 @@ class Card < ApplicationRecord
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) } 
 
   around_save :catch_uniqueness_exception
-  after_create :send_slate_notification, :complete_referral!
-  after_update :run_results, :update_sweep_streak, :update_latest_stats
+  after_create :run_services, :complete_referral!
+  after_update :handle_results
 
   private
 
@@ -21,11 +21,11 @@ class Card < ApplicationRecord
     self.errors.add(:slate, :taken)
   end
 
-  def send_slate_notification
+  def run_services
     AccountService.new(user, slate: slate).run(type: :playing)
     ContestService.new(user, slate: slate).run(type: :playing)
     DrizlyService.new(user, slate).run(type: :playing)
-    IndicativeTrackEventPlayedContestJob.perform_later(user.id)
+    IndicativeTrackEventPlayedContestJob.perform_later(user_id)
   end
 
   def update_sweep_streak
@@ -44,33 +44,32 @@ class Card < ApplicationRecord
     user.update_latest_stats(slate: slate) if saved_change_to_status?
   end
 
-  def run_results
-    if slate.global?
-      handle_winners if saved_change_to_status?(from: 'pending', to: 'win')
-      send_losing_message if saved_change_to_status?(from: 'pending', to: 'loss')
-    else
-      handle_winners if saved_change_to_status?(from: 'pending', to: 'win') and slate.resulted?
-      send_losing_message if saved_change_to_status?(from: 'pending', to: 'loss') and slate.resulted?
+  def handle_results
+    update_sweep_streak
+    if saved_change_to_status?(from: 'pending', to: 'win')
+      create_sweep_records
+    elsif saved_change_to_status?(from: 'pending', to: 'loss')
+      handle_losers
     end
+    update_latest_stats
   end
 
-  def handle_winners
+  def create_sweep_records
     user.sweeps.create(slate_id: slate_id, pick_ids: user.picks.for_slate(slate_id).map(&:id))
-    # user.entries.create(slate_id: slate_id, earned_by_id: user.id, reason: Entry::SWEEP)
-    # user.entries.unused.each { |entry| entry.update_attributes(slate_id: slate_id, reason: Entry::SWEEP) unless entry.slate_id? }
   end
 
-  def send_losing_message
+  def handle_losers
     SendLosingSlateMessageJob.perform_later(user_id, slate_id)
   end
 
   def complete_referral!
     if user.referred_by_id? && user.played_for_first_time?
       user.update_attributes(referral_completed_at: Time.zone.now)
+      AccountService.new(user.referred_by).run(type: :referral)
       ContestService.new(user.referred_by).run(type: :referral)
 
       # Send notification if promotion is active
-      NotifyReferrerJob.perform_later(user.referred_by_id, user.id, Entry::PLAYING) if user.account.rewards.find_by(category: "Contest", active: true).present?
+      NotifyReferrerJob.perform_later(user.referred_by_id, user.id, User::PLAYING) if user.account.rewards.active.find_by(category: "Contest").present?
     end
   end
 

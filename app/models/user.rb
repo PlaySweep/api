@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  PLAYING, SWEEP = 0, 1
+
   include Redis::Objects
 
   value :has_recently_won
@@ -85,9 +87,9 @@ class User < ApplicationRecord
   end
 
   def eligible_for_drizly?
-    reward = account.rewards.find_by(name: "Drizly", category: "Playing")
+    reward = account.rewards.active.find_by(name: "Drizly", category: "Playing")
     rule = DrizlyRule.find_by(name: location.try(:state), category: "Playing", eligible: true)
-    reward && reward.active && rule.present?
+    reward && rule.present?
   end
 
   def eligible_for_prize? slate:

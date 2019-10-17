@@ -13,11 +13,11 @@ class DrizlyService
   end
 
   def playing_reward_active?
-    @user.account.rewards.find_by(name: "Drizly", category: "Playing", active: true).present?
+    @user.account.rewards.active.find_by(name: "Drizly", category: "Playing").present?
   end
 
   def sweep_reward_active?
-    @user.account.rewards.find_by(name: "Drizly", category: "Sweep", active: true).present?
+    @user.account.rewards.active.find_by(name: "Drizly", category: "Sweep").present?
   end
 
   def for_playing

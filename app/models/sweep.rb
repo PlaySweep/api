@@ -8,7 +8,7 @@ class Sweep < ApplicationRecord
   jsonb_accessor :data,
     pick_ids: [:string, array: true, default: []]
 
-  after_create :set_data, :check_and_run_service
+  after_create :set_data, :run_services
 
   def picks
     Pick.where(id: pick_ids)
@@ -28,7 +28,8 @@ class Sweep < ApplicationRecord
     end
   end
 
-  def check_and_run_service
+  def run_services
+    AccountService.new(user, slate: slate).run(type: :sweep)
     ContestService.new(user, slate: slate).run(type: :sweep)
     DrizlyService.new(user, slate).run(type: :sweep)
   end
