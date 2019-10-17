@@ -67,9 +67,6 @@ class Card < ApplicationRecord
       user.update_attributes(referral_completed_at: Time.zone.now)
       AccountService.new(user.referred_by).run(type: :referral)
       ContestService.new(user.referred_by).run(type: :referral)
-
-      # Send notification if promotion is active
-      NotifyReferrerJob.perform_later(user.referred_by_id, user.id, User::PLAYING) if user.account.rewards.active.find_by(category: "Contest").present?
     end
   end
 
