@@ -15,9 +15,8 @@ class AccountService
     def playing_reward
       playing_rule = AccountRuleEvaluator.new(@user).playing_rule
       if reward_active? && playing_rule
-        date = @slate.start_time.to_datetime
-        member = "week_#{date.cweek}_day_#{date.cwday}_user_#{@user.id}"
-        leaderboard_name = "week_#{date.cweek}_day_#{date.cwday}".to_sym
+        member = "week_#{@slate.current_week}_day_#{@slate.current_day}_user_#{@user.id}"
+        leaderboard_name = "week_#{@slate.current_week}_day_#{@slate.current_day}".to_sym
         leaderboard = Board.fetch(
           leaderboard: leaderboard_name
         )
@@ -29,9 +28,8 @@ class AccountService
     def referral_reward
       referral_rule = AccountRuleEvaluator.new(@user).referral_rule
       if reward_active? && referral_rule
-        date = DateTime.current.to_datetime
-        member = "week_#{date.cweek}_day_#{date.cwday}_user_#{@user.id}"
-        leaderboard_name = "week_#{date.cweek}_day_#{date.cwday}".to_sym
+        member = "week_#{@reward.current_week}_day_#{@reward.current_day}_user_#{@user.id}"
+        leaderboard_name = "week_#{@reward.current_week}_day_#{@reward.current_day}".to_sym
         leaderboard = Board.fetch(
           leaderboard: leaderboard_name
         )
@@ -43,9 +41,8 @@ class AccountService
     def pick_reward
       pick_rule = AccountRuleEvaluator.new(@user).pick_rule
       if reward_active? && pick_rule
-        date = @slate.start_time.to_datetime
-        member = "week_#{date.cweek}_day_#{date.cwday}_user_#{@user.id}"
-        leaderboard_name = "week_#{date.cweek}_day_#{date.cwday}".to_sym
+        member = "week_#{@slate.current_week}_day_#{@slate.current_day}_user_#{@user.id}"
+        leaderboard_name = "week_#{@slate.current_week}_day_#{@slate.current_day}".to_sym
         leaderboard = Board.fetch(
           leaderboard: leaderboard_name
         )
@@ -64,9 +61,8 @@ class AccountService
     def user_sweep
       sweep_rule = AccountRuleEvaluator.new(@user).sweep_rule
       if reward_active? && sweep_rule
-        date = @slate.start_time.to_datetime
-        member = "week_#{date.cweek}_day_#{date.cwday}_user_#{@user.id}"
-        leaderboard_name = "week_#{date.cweek}_day_#{date.cwday}".to_sym
+        member = "week_#{@slate.current_week}_day_#{@slate.current_day}_user_#{@user.id}"
+        leaderboard_name = "week_#{@slate.current_week}_day_#{@slate.current_day}".to_sym
         leaderboard = Board.fetch(
           leaderboard: leaderboard_name
         )
@@ -78,9 +74,8 @@ class AccountService
     def referral_sweep
       sweep_rule = AccountRuleEvaluator.new(@user.referred_by).referral_sweep_rule
       if reward_active? && sweep_rule && @user.referred_by_id?
-        date = @slate.start_time.to_datetime
-        member = "week_#{date.cweek}_day_#{date.cwday}_user_#{@user.referred_by_id}"
-        leaderboard_name = "week_#{date.cweek}_day_#{date.cwday}".to_sym
+        member = "week_#{@slate.current_week}_day_#{@slate.current_day}_user_#{@user.id}"
+        leaderboard_name = "week_#{@slate.current_week}_day_#{@slate.current_day}".to_sym
         leaderboard = Board.fetch(
           leaderboard: leaderboard_name
         )

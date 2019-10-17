@@ -23,4 +23,19 @@ class Account < ApplicationRecord
     end
   end
 
+  def has_abnormal_weekly_calendar?
+    name.eql?("NFL")
+  end
+
+  def current_week
+    date = DateTime.current.beginning_of_day
+    return date.last_week.cweek if date.monday? && has_abnormal_weekly_calendar?
+    date.cweek
+  end
+
+  def current_day
+    date = DateTime.current.beginning_of_day
+    date.cwday
+  end
+
 end

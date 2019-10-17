@@ -3,7 +3,6 @@ class Slate < ApplicationRecord
 
   resourcify
 
-  belongs_to :owner, optional: true
   belongs_to :winner, foreign_key: :winner_id, class_name: "User", optional: true
 
   has_many :events, dependent: :destroy
@@ -28,7 +27,7 @@ class Slate < ApplicationRecord
   scope :total_entry_count, -> { joins(:cards).count }
   scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
   
-  after_update :change_status, :result_card, :settle_entries, :start_winner_confirmation_window
+  after_update :change_status, :run_results, :start_winner_confirmation_window
 
   accepts_nested_attributes_for :prizes
 
@@ -92,6 +91,11 @@ class Slate < ApplicationRecord
     (result && score).present?
   end
 
+  def owner
+    return Owner.find_by(id: owner_id) unless global?
+    Owner.find_by(id: team_id)
+  end
+
   def team
     return Team.find_by(id: owner_id) unless global?
     Team.find_by(id: team_id)
@@ -101,22 +105,26 @@ class Slate < ApplicationRecord
     prizes.joins(:product).where("products.category = ?", "Tickets").any?
   end
 
+  def current_week
+    date = start_time.to_datetime
+    return date.last_week.cweek if date.monday? && owner.account.has_abnormal_weekly_calendar?
+    date.cweek
+  end
+
+  def current_day
+    date = start_time.to_datetime
+    date.cwday
+  end
+
   private
 
-  def result_card
-    if global?
-      ResultCardsJob.perform_later(id) if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
-    else
-      ResultCardsJob.perform_later(id) and initialize_select_winner_process if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
-    end
+  def run_results
+    ResultCardsJob.perform_later(id) if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
+    initialize_select_winner_process unless global?
   end
 
   def change_status
     StartSlateJob.set(wait_until: start_time.to_datetime).perform_later(id) if saved_change_to_status?(from: 'inactive', to: 'pending')
-  end
-
-  def settle_entries
-    entries.each { |entry| entry.update_attributes(used: true) } if saved_change_to_status?(to: 'done')
   end
 
   def initialize_select_winner_process
@@ -124,7 +132,10 @@ class Slate < ApplicationRecord
   end
 
   def start_winner_confirmation_window
-    SendWinnerConfirmationJob.perform_later(id, winner_id) and HandleConfirmationWindowJob.set(wait_until: 24.hours.from_now.to_datetime).perform_later(id) if winner_id? and saved_change_to_winner_id?
+    if saved_change_to_winner_id? and complete?
+      SendWinnerConfirmationJob.perform_later(id, winner_id) if winner_id?
+      HandleConfirmationWindowJob.set(wait_until: 24.hours.from_now.to_datetime).perform_later(id)
+    end
   end
 
 end
