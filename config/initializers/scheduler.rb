@@ -5,7 +5,7 @@ scheduler = Rufus::Scheduler::singleton
 if Rails.env.development?
   @accounts = Account.all
 
-  scheduler.every '0 1 * * *' do
+  scheduler.cron '0 1 * * *' do
     @accounts.each { |account| store_leaderboard(account: account) }
   end
 
@@ -38,7 +38,7 @@ end
 if Rails.env.production?
   @accounts = Account.all
 
-  # scheduler.every '0 1 * * *' do
+  # scheduler.cron '0 1 * * *' do
   #   @accounts.each { |account| store_leaderboard(account: account) }
   # end
 

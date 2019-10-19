@@ -65,8 +65,8 @@ class Card < ApplicationRecord
   def complete_referral!
     if user.referred_by_id? && user.played_for_first_time?
       user.update_attributes(referral_completed_at: Time.zone.now)
-      AccountService.new(user.referred_by).run(type: :referral)
-      ContestService.new(user.referred_by).run(type: :referral)
+      AccountService.new(user).run(type: :referral)
+      ContestService.new(user).run(type: :referral)
     end
   end
 
