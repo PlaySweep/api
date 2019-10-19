@@ -1,15 +1,17 @@
-server 'bud_beta', roles: %w{app db web resque_worker resque_scheduler }
-set :deploy_to, "/var/www/#{fetch :application}"
-after "deploy:restart", "resque:restart"
+# config/deploy/beta.rb
+server 'sweep_beta1', user: 'ubuntu', roles: %w{ app db web }
+set :deploy_to, "/var/www/sweep_api"
 set :tmp_dir, '/home/deploy/tmp'
 
-set :branch, 'release-20190403'
+set :branch, 'release-20191003'
 set :rails_env, 'beta'
 
-set :linked_files, %w{config/application.yml config/database.yml config/master.key}
+set :linked_files, %w{config/application.yml config/database.yml config/master.key config/locales/en.yml}
 
-role :resque_worker, "bud_beta"
-role :resque_scheduler, "bud_beta"
+set :pty, false
+set :sidekiq_processes, 2
+set :sidekiq_options_per_process, ["--queue critical", "--queue high", "--queue default --queue low"]
 
-set :resque_environment_task, true
-set :workers, { "*" => 4 }
+after 'deploy:starting', 'sidekiq:quiet'
+after 'deploy:reverted', 'sidekiq:restart'
+after 'deploy:published', 'sidekiq:restart'

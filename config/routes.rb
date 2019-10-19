@@ -1,5 +1,7 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
-  mount Resque::Server.new, at: '/resque'
+  mount Sidekiq::Web => '/sidekiq'
   namespace :v1, defaults: { format: :json } do
     
     get 'users/show', to: 'users#fetch_by_slug'

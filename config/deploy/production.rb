@@ -1,8 +1,7 @@
 # config/deploy/production.rb
 
-server 'sweep_prod2', user: 'ubuntu', roles: %w{app db web resque_worker resque_scheduler }
+server 'sweep_prod1', user: 'ubuntu', roles: %w{ app db web }
 set :deploy_to, "/var/www/sweep_api"
-after "deploy:restart", "resque:restart", "resque:scheduler:restart"
 set :tmp_dir, '/home/deploy/tmp'
 
 set :branch, 'master'
@@ -10,8 +9,10 @@ set :rails_env, 'production'
 
 set :linked_files, %w{config/application.yml config/database.yml config/master.key config/locales/en.yml}
 
-role :resque_worker, ["sweep_prod2"]
-role :resque_scheduler, ["sweep_prod2"]
+set :pty, false
+set :sidekiq_processes, 2
+set :sidekiq_options_per_process, ["--queue critical", "--queue high", "--queue default --queue low"]
 
-set :resque_environment_task, true
-set :workers, { "*" => 4 }
+after 'deploy:starting', 'sidekiq:quiet'
+after 'deploy:reverted', 'sidekiq:restart'
+after 'deploy:published', 'sidekiq:restart'

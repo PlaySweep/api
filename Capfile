@@ -41,7 +41,7 @@ require "capistrano/rails/migrations"
 require "capistrano/passenger"
 require 'capistrano/rails/console'
 require 'capistrano-nc/nc'
-require "capistrano-resque"
+require 'capistrano/sidekiq'
 require 'capistrano/rake'
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined

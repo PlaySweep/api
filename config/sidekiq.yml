@@ -1,0 +1,9 @@
+---
+:concurrency: 25
+:pidfile: ./tmp/pids/sidekiq.pid
+:logfile: ./log/sidekiq.log
+:queues:
+  - [critical, 5]
+  - [high, 5]
+  - [default, 2]
+  - [low, 2]

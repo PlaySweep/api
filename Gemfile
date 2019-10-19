@@ -16,8 +16,7 @@ gem 'redis', '~> 4.0'
 gem 'redis-objects'
 gem 'redis-rails', '~> 5'
 gem 'connection_pool'
-gem 'resque', require: 'resque/server'
-gem 'resque-scheduler'
+gem 'sidekiq'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 gem 'popcorn_notify'
@@ -83,8 +82,8 @@ group :development do
   gem 'capistrano-passenger'
   gem 'capistrano-nc', '~> 0.2'
   gem 'capistrano-rails-console', require: false
-  gem "capistrano-resque", "~> 0.2.2", require: false
   gem 'capistrano-rake', require: false
+  gem 'capistrano-sidekiq'
 end
 
 
