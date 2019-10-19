@@ -2,26 +2,68 @@ require 'rufus-scheduler'
 
 scheduler = Rufus::Scheduler::singleton
 
-if Rails.env.production?
+if Rails.env.development?
+  @accounts = Account.all
+
+  scheduler.every '0 1 * * *' do
+    @accounts.each { |account| store_leaderboard(account: account) }
+  end
 
   scheduler.cron '0 12 * * *' do
-    AnalyticsJob.perform_later
+    @accounts.each { |account| fetch_analytics(account: account) }
   end
 
-  scheduler.every '0 10 * * *' do
-    puts "Leaderboard cleanup"
-    # date = DateTime.current.beginning_of_day
-    # account = Account.find_by(name: "NFL")
-    # if date.tuesday?
-    #   week = account.current_week - 1
-    #   leaderboard_name = "week_#{week}"
-    #   leaderboard = Board.fetch(leaderboard: leaderboard_name)
-    #   # store leaderboard results into appropriate tables
-    #   history = LeaderboardHistory.new(name: "Week #{week}", description: "Most points earned during a weekly period.")
-    #   DataMigration.seed_leaderboard_results(leaderboard: leaderboard_name, history: history)
-    #   # delete the old weeks leaderboard in redis
-    #   leaderboard.delete_leaderboard
-    # end
+  def fetch_analytics account:
+    Apartment::Tenant.switch(account.tenant) do
+      AnalyticsJob.perform_later
+    end
   end
 
+  def store_leaderboard account:
+    Apartment::Tenant.switch(account.tenant) do
+      date = DateTime.current.beginning_of_day
+      if date.tuesday?
+        leaderboard_name = "week_#{account.current_week - 1}"
+        leaderboard = Board.fetch(leaderboard: leaderboard_name)
+        # store leaderboard results into appropriate tables
+        history = LeaderboardHistory.new(name: "Week #{week}", description: "Most points earned during a weekly period.")
+        DataMigration.seed_leaderboard_results(leaderboard: leaderboard_name, history: history)
+        # delete the old weeks leaderboard in redis
+        leaderboard.delete_leaderboard
+      end
+    end
+  end
+end
+
+if Rails.env.production?
+  @accounts = Account.all
+
+  # scheduler.every '0 1 * * *' do
+  #   @accounts.each { |account| store_leaderboard(account: account) }
+  # end
+
+  scheduler.cron '0 12 * * *' do
+    @accounts.each { |account| fetch_analytics(account: account) }
+  end
+
+  def fetch_analytics account:
+    Apartment::Tenant.switch(account.tenant) do
+      AnalyticsJob.perform_later
+    end
+  end
+
+  def store_and_cleanup_leaderboard account:
+    Apartment::Tenant.switch(account.tenant) do
+      date = DateTime.current.beginning_of_day
+      if date.tuesday?
+        leaderboard_name = "week_#{account.current_week - 1}"
+        leaderboard = Board.fetch(leaderboard: leaderboard_name)
+        # store leaderboard results into appropriate tables
+        history = LeaderboardHistory.new(name: "Week #{week}", description: "Most points earned during a weekly period.")
+        DataMigration.seed_leaderboard_results(leaderboard: leaderboard_name, history: history)
+        # delete the old weeks leaderboard in redis
+        leaderboard.delete_leaderboard
+      end
+    end
+  end
 end
