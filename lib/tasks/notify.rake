@@ -20,7 +20,7 @@ def notify users:
   users.each_with_index do |user, index|
     begin
       if user.confirmed && user.current_team.present?
-        content = "Week 7 kicks off tonight at Mile High! Get your answers in for your chance at a Broncos autographed football!"
+        content = "We're only a few hours away from #{user.current_team.abbreviation} Week 7 kickoff! Answer 6 questions today and win!"
         FacebookMessaging::Standard.deliver(
           user: user, 
           message: content, 
@@ -40,7 +40,7 @@ def notify users:
         ]).objects
         FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
       elsif !user.confirmed
-        content = "Week 7 kicks off at Mile High with tonight's contest!"
+        content = "We're only a few hours away from Week 7 kickoff! Answer 6 questions today and win!"
         FacebookMessaging::Standard.deliver(
           user: user, 
           message: content, 
@@ -49,7 +49,7 @@ def notify users:
         FacebookMessaging::Button.deliver(
             user: user,
             title: "Confirm account",
-            message: "You're a few steps away at a chance at winning a Broncos autographed football!",
+            message: "You're a few steps away from winning #{user.account.app_name} prizes!",
             url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
             notification_type: "NO_PUSH"
           )
