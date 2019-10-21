@@ -38,10 +38,10 @@ class DrizlyService
     if sweep_rule && sweep_reward_active?
       if promotion = DrizlyPromotion.find_by(category: "Sweep", used: false, level: sweep_rule.level)
         promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
-        SendWinningSlateMessageWithDrizlyJob.perform_later(@user.id, @slate.id)
+        SendWinningSlateMessageWithDrizlyJob.set(wait_until: @slate.start_time.tomorrow.beginning_of_day + 10.hours).perform_later(@user.id, @slate.id)
       end
     else
-      SendWinningSlateMessageJob.perform_later(@user.id, @slate.id)
+      SendWinningSlateMessageJob.set(wait_until: @slate.start_time.tomorrow.beginning_of_day + 10.hours).perform_later(@user.id, @slate.id)
     end
   end
 end

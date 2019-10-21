@@ -119,8 +119,7 @@ class Slate < ApplicationRecord
   private
 
   def run_results
-    ResultCardsJob.perform_later(id) if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
-    initialize_select_winner_process unless global?
+    ResultCardsJob.perform_now(id) and initialize_select_winner_process if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
   end
 
   def change_status
