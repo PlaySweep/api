@@ -23,9 +23,9 @@ class SendLosingSlateMessageJob < ApplicationJob
       }
     ]).objects
     if slate.global?
-      message = "#{slate.name} results inside"
+      message = "#{slate.name} results inside: #{slate.score}"
       national_losing_slate_copy = user.account.copies.where(category: "National Losing Slate").sample.message
-      national_interpolated_losing_slate_copy = national_losing_slate_copy % { first_name: user.first_name, rank: "#{user.rank}#{user.ordinal_position}", score: user.score.to_i }
+      national_interpolated_losing_slate_copy = national_losing_slate_copy % { first_name: user.first_name }
 
       FacebookMessaging::Standard.deliver(
         user: user, 
