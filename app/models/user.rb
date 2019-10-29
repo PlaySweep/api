@@ -50,20 +50,6 @@ class User < ApplicationRecord
   
   validates :slug, :referral_code, uniqueness: true
 
-  def self.top_contest limit:
-    board = Board.fetch(leaderboard: :race_to_the_world_series)
-    ids = board.top(limit.to_i).map { |user| user[:member] }
-    where(id: ids).sort_by(&:rank)
-  end
-
-  def self.top_daily_contest limit:
-    day = DateTime.current.strftime("%m%d%y")
-    leaderboard = "race_to_the_world_series_#{day}".to_sym
-    board = Board.fetch(leaderboard: leaderboard)
-    ids = board.top(limit.to_i).map { |user| user[:member].split("_")[-1] }
-    where(id: ids).sort_by(&:rank)
-  end
-
   def update_latest_stats slate:
     event_ids = events.where(slate_id: slate.id).map(&:id)
     wins = picks.joins(:selection).where(event_id: event_ids).where('selections.status = ?', Pick::WIN).size
@@ -89,7 +75,7 @@ class User < ApplicationRecord
   end
 
   def eligible_for_drizly?
-    reward = account.rewards.active.find_by(name: "Drizly", category: "Playing")
+    reward = current_team.rewards.active.find_by(name: "Drizly", category: "Playing")
     rule = DrizlyRule.find_by(name: location.try(:state), category: "Playing", eligible: true)
     reward && rule.present?
   end
@@ -119,21 +105,29 @@ class User < ApplicationRecord
     cards.size == 1
   end
 
+  def won_for_first_time?
+    sweeps.size == 1
+  end
+
   def filtered_ids
     roles.map(&:resource_id)
   end
 
+  def member
+    "week_#{current_team.account.current_week}_user_#{id}"
+  end
+
   def score
-    if account.rewards.active.find_by(category: "Contest").present?
-      Board.fetch(leaderboard: :race_to_the_world_series).score_for(id) || 0
+    if current_team.rewards.active.find_by(category: "Weekly Points").present?
+      current_team.active_leaderboard.score_for(member).to_i
     else
       0
     end
   end
 
   def rank
-    if account.rewards.active.find_by(category: "Contest").present?
-      Board.fetch(leaderboard: :race_to_the_world_series).rank_for(id)
+    if current_team.rewards.active.find_by(category: "Weekly Points").present?
+      current_team.active_leaderboard.rank_for(member).to_i
     else
       0
     end
@@ -144,45 +138,16 @@ class User < ApplicationRecord
   end
 
   def tied?
-    if account.rewards.active.find_by(category: "Contest").present?
-      Board.fetch(leaderboard: :race_to_the_world_series).total_members_in_score_range(score, score) > 1.0
+    if current_team.rewards.active.find_by(category: "Weekly Points").present?
+      current_team.active_leaderboard.total_members_in_score_range(score, score) > 1.0
     end
   end
 
   def around_me
-    if account.rewards.active.find_by(category: "Contest").present?
-      Board.fetch(leaderboard: :race_to_the_world_series).around_me(id, page_size: 500).first(5)
+    if current_team.rewards.active.find_by(category: "Weekly Points").present?
+      current_team.active_leaderboard.around_me(member, page_size: 500).first(5)
     else
       []
-    end
-  end
-
-  def daily_score
-    if account.rewards.active.find_by(category: "Contest").present?
-      day = DateTime.current.strftime("%m%d%y")
-      Board.fetch(leaderboard: "race_to_the_world_series_#{day}".to_sym).score_for("#{day}_#{id}") || 0
-    else
-      0
-    end
-  end
-
-  def daily_rank
-    if account.rewards.active.find_by(category: "Contest").present?
-      day = DateTime.current.strftime("%m%d%y")
-      Board.fetch(leaderboard: "race_to_the_world_series_#{day}".to_sym).rank_for("#{day}_#{id}")
-    else
-      0
-    end
-  end
-
-  def daily_ordinal_position
-    daily_rank.ordinalize.last(2)
-  end
-
-  def daily_tied?
-    if account.rewards.active.find_by(category: "Contest").present?
-      day = DateTime.current.strftime("%m%d%y")
-      Board.fetch(leaderboard: "race_to_the_world_series_#{day}".to_sym).total_members_in_score_range(score, score) > 1.0
     end
   end
 

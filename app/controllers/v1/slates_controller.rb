@@ -5,6 +5,7 @@ class V1::SlatesController < ApplicationController
     user = User.find_by(id: params[:user_id])
     if user
       @slates = Slate.filtered(user.filtered_ids).or(Slate.unfiltered).ascending.pending
+      @slates = Slate.filtered(user.filtered_ids).or(Slate.unfiltered).ascending.inactive if params[:inactive]
       respond_with @slates
     else
       render json: { errors: [] }, status: :unprocessable_entity

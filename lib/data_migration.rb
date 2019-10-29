@@ -200,6 +200,28 @@ class DataMigration
     end
   end
 
+  def fetch_fulfilled_drizly_winners
+    date = Date.current.strftime("%Y-%m-%d").split('-').join('_')
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{date}_fulfilled_drizly.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    ids = []
+    csv.each do |row|
+      ids << row[0]
+    end
+    ids
+  end
+
+  def fetch_engagement_drizly_winners
+    date = Date.current.strftime("%Y-%m-%d").split('-').join('_')
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{date}_engage_drizly.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    ids = []
+    csv.each do |row|
+      ids << row[0]
+    end
+    ids
+  end
+
   def upload_drizly_sweep_promotions
     2500.times { DrizlyPromotion.create(type: "DrizlyPromotion", category: "Sweep", used: false, value: 20.0, code: "BUDLIGHTSWEEP-#{SecureRandom.hex(2)}", level: 0) }
   end

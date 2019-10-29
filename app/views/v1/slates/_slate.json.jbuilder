@@ -3,6 +3,7 @@ json.name slate.name
 json.description slate.description
 json.status slate.status
 json.start_time slate.start_time
+json.prize slate.prize
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
   json.slate_id prize.slate_id

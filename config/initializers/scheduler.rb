@@ -39,7 +39,7 @@ if Rails.env.production?
   @accounts = Account.all
 
   # scheduler.cron '0 1 * * *' do
-  #   @accounts.each { |account| store_leaderboard(account: account) }
+  #   @accounts.each { |account| store_and_cleanup_leaderboard(account: account) }
   # end
 
   scheduler.cron '0 12 * * *' do

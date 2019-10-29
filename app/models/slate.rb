@@ -46,6 +46,10 @@ class Slate < ApplicationRecord
     global: [:boolean, default: false],
     team_id: [:integer, default: nil]
 
+  def prize
+    return prizes.first.product if prizes.any?
+  end
+
   def next
     team.slates.where("start_time > ?", start_time).last
   end
@@ -119,7 +123,7 @@ class Slate < ApplicationRecord
   private
 
   def run_results
-    ResultCardsJob.perform_now(id) and initialize_select_winner_process if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
+    ResultCardsJob.perform_later(id) and initialize_select_winner_process if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
   end
 
   def change_status

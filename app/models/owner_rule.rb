@@ -1,0 +1,3 @@
+class OwnerRule < Rule
+    
+end
