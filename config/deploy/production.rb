@@ -13,6 +13,6 @@ set :pty, false
 set :sidekiq_processes, 2
 set :sidekiq_options_per_process, ["--queue critical", "--queue high", "--queue default --queue low"]
 
-after 'deploy:starting', 'sidekiq:quiet'
-after 'deploy:reverted', 'sidekiq:restart'
-after 'deploy:published', 'sidekiq:restart'
+# after 'deploy:starting', 'sidekiq:quiet'
+# after 'deploy:reverted', 'sidekiq:restart'
+# after 'deploy:published', 'sidekiq:restart'
