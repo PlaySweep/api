@@ -67,15 +67,17 @@ end
 json.shipping user.shipping
 json.promotions user.promotions
 json.stats do
-  json.top_scorers user.current_team.active_leaderboard.top(5)
-  json.wins user.stats["wins"].to_i
-  json.losses user.stats["losses"].to_i
-  json.score user.score
-  json.rank user.rank
-  json.ordinal_position user.ordinal_position
-  json.tied user.tied?
-  json.current_pick_streak user.current_pick_streak
-  json.highest_pick_streak user.highest_pick_streak
-end if user.current_team.active_leaderboard
+  if user.current_team.active_leaderboard
+    json.top_scorers user.current_team.active_leaderboard.top(5)
+    json.wins user.stats["wins"].to_i
+    json.losses user.stats["losses"].to_i
+    json.score user.score
+    json.rank user.rank
+    json.ordinal_position user.ordinal_position
+    json.tied user.tied?
+    json.current_pick_streak user.current_pick_streak
+    json.highest_pick_streak user.highest_pick_streak
+  end
+end
 json.latest_stats user.latest_stats
 json.recent_orders user.orders.recent, partial: 'v1/orders/order', as: :order
