@@ -31,4 +31,20 @@ class Account < ApplicationRecord
     date.cwday
   end
 
+  def display_week
+    weeks_list = { 
+      week_44: "Week 9",
+      week_45: "Week 10",
+      week_46: "Week 11",
+      week_47: "Week 12",
+      week_48: "Week 13",
+      week_49: "Week 14",
+      week_50: "Week 15",
+      week_51: "Week 16",
+      week_52: "Week 17"
+    }
+    week = "week_#{current_week}".to_sym
+    weeks_list[week]
+  end
+
 end

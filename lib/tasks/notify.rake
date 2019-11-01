@@ -76,7 +76,7 @@ def notify users:, week:
   users.each_with_index do |user, index|
     begin
       if user.confirmed && user.current_team.present?
-        content = "We're only a few hours away from #{user.current_team.abbreviation} #{week} kickoff! Answer 6 questions tonight and win!"
+        content = "We're less than a couple hours away from #{user.current_team.abbreviation} #{week} kickoff! Answer 6 questions tonight and win!"
         FacebookMessaging::Standard.deliver(
           user: user, 
           message: content, 
@@ -96,7 +96,7 @@ def notify users:, week:
         ]).objects
         FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
       elsif !user.confirmed
-        content = "We're only a few hours away from #{week} kickoff! Answer 6 questions tonight and win!"
+        content = "We're less than a couple hours away from #{week} kickoff! Answer 6 questions tonight and win!"
         FacebookMessaging::Standard.deliver(
           user: user, 
           message: content, 
