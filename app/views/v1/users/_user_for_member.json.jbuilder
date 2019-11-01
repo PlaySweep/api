@@ -77,6 +77,8 @@ json.stats do
     json.tied user.tied?
     json.current_pick_streak user.current_pick_streak
     json.highest_pick_streak user.highest_pick_streak
+  else
+    json.current_pick_streak user.current_pick_streak
   end
 end
 json.latest_stats user.latest_stats
