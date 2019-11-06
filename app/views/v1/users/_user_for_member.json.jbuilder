@@ -42,6 +42,7 @@ json.account do
   json.friendly_name user.account.friendly_name
   json.app_name user.account.app_name
   json.tenant user.account.tenant
+  json.active user.account.active
   json.images user.account.images.each do |image|
     json.id image.id
     json.description image.description
