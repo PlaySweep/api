@@ -78,8 +78,8 @@ json.stats do
   end
   json.current_pick_streak user.current_pick_streak
   json.highest_pick_streak user.highest_pick_streak
-  json.wins user.stats["wins"].to_i
-  json.losses user.stats["losses"].to_i
+  json.wins user.picks.win.size
+  json.losses user.picks.loss.size
 end
 json.latest_stats user.latest_stats
 json.recent_orders user.orders.recent, partial: 'v1/orders/order', as: :order
