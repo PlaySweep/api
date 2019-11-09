@@ -13,7 +13,7 @@ module FacebookMessaging
             title: "#{user.current_team.abbreviation.possessive} Contests",
             image_url: user.current_team.entry_image,
             subtitle: interpolated_contest_copy,
-            buttons: [{title: "More contests", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}"}, {title: "See results", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/2"}],
+            buttons: [{title: "More contests", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}"}],
             notification_type: notification_type
           }).payload
           template[:message][:quick_replies] = quick_replies if quick_replies
