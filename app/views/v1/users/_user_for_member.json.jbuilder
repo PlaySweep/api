@@ -49,6 +49,7 @@ json.account do
     json.category image.category
     json.url image.url
   end
+  json.display_week user.account.display_week
 end
 json.copies user.account.copies.each do |copy|
   json.id copy.id

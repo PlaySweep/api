@@ -4,7 +4,7 @@ class V1::Users::SlatesController < ApplicationController
   def index
     @user = User.find_by(id: params[:user_id])
     @slates = @user.slates.started.descending if params[:started]
-    @slates = @user.slates.finished.since_last_week.descending if params[:finished]
+    @slates = @user.slates.finished.for_the_month.descending if params[:finished]
     respond_with @slates
   end
 
