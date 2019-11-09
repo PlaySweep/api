@@ -47,7 +47,7 @@ class Slate < ApplicationRecord
     team_id: [:integer, default: nil]
 
   def prize
-    return prizes.first if prizes.any?
+    return prizes.first.product if prizes.any?
   end
 
   def next
