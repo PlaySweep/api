@@ -29,7 +29,7 @@ class WelcomeBackJob < ApplicationJob
           user: user,
           title: "Play now",
           message: "There are more #{team.abbreviation} games to play!",
-          url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/1",
+          url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}",
           quick_replies: quick_replies,
           notification_type: "NO_PUSH"
         )

@@ -4,7 +4,7 @@ module FacebookMessaging
   class Button
     include Facebook::Messenger
 
-    def self.deliver user:, title:, message:, url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/1", quick_replies: nil, notification_type: "NO_PUSH"
+    def self.deliver user:, title:, message:, url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}", quick_replies: nil, notification_type: "NO_PUSH"
       begin
         template = FacebookParser::ButtonObject.new({
           facebook_uuid: user.facebook_uuid,
