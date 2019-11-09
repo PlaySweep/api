@@ -20,7 +20,7 @@ json.user_sweeped slate.user_sweeped?(current_user.id)
 json.prize do
   json.id slate.prize.id
   json.name slate.prize.name
-  json.category slate.prize.product.category
+  json.category slate.prize.category
   json.date slate.prize.date
 end
 json.prizes slate.prizes.each do |prize|
