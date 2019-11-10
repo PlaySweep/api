@@ -61,7 +61,9 @@ gem 'facebook-messenger'
 gem 'apartment'
 gem 'apartment-activejob'
 
-gem 'mixpanel-ruby'
+gem 'staccato'
+
+gem 'rails-erd', group: :development
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

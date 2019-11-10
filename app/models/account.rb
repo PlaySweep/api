@@ -8,6 +8,8 @@ class Account < ApplicationRecord
   has_many :rewards, as: :rewardable
   has_many :users
 
+  scope :active, -> { where(active: true) }
+
   def active_leaderboard
     active_reward = rewards.active.find_by(category: "Account") # TODO: Do not commit the change to category: "Account" until RTWS is over for MLB
     if active_reward.present?

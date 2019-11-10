@@ -77,7 +77,7 @@ module FacebookMessaging
             facebook_uuid: user.facebook_uuid,
             title: "Order your #{user.account.friendly_name}!",
             image_url: user.account.images.find_by(category: "Drizly Lockup").url,
-            buttons: [{title: "🍺 Order now", url: "https://drizly.com/beer/lager/pale-lager/american-style-lager/light-lager/bud-light/p2252"}],
+            buttons: [{title: "🍺 Order now", url: "https://drizly.com/beer-brands/bud-light/b1019?utm_medium=partner&utm_source=email&utm_campaign=budlight+sports+sweep+winner+email"}],
             notification_type: notification_type
           }).payload
           template[:message][:quick_replies] = quick_replies if quick_replies

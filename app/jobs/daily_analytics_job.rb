@@ -1,4 +1,4 @@
-class AnalyticsJob < ApplicationJob
+class DailyAnalyticsJob < ApplicationJob
   queue_as :low
 
   def perform
@@ -112,28 +112,6 @@ class AnalyticsJob < ApplicationJob
         csv << [card.user_id, card.user.full_name, card.user.email, card.user.zipcode, card.slate.prizes.first ? card.slate.prizes.first.try(:product).try(:name) : "NA", card.slate.name, card.slate.start_time.strftime("%m/%d/%Y")]
       end
     end
-  end
-
-  def number_of_playing_promotions_used_by_week level:
-    promotions = Promotion.where(type: "DrizlyPromotion", used: true, category: "Playing", level: level).where('updated_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day) 
-    promotions.size
-  end
-
-  def number_of_playing_promotions_used_all_time level:
-    promotions = Promotion.where(type: "DrizlyPromotion", used: true, category: "Playing", level: level) 
-    promotions.size
-  end
-
-  def number_of_sweep_promotions_used_by_week level:
-    slates = Slate.finished.where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 5, DateTime.current.end_of_day) 
-    promotions = Promotion.where(type: "DrizlyPromotion", category: "Sweep", used: true, level: level).joins(:slate).where('slates.id IN (?)', slates.map(&:id))
-    promotions.size
-  end
-
-  def number_of_sweep_promotions_used_all_time level:
-    slates = Slate.finished
-    promotions = Promotion.where(type: "DrizlyPromotion", category: "Sweep", used: true, level: level).joins(:slate).where('slates.id IN (?)', slates.map(&:id))
-    promotions.size
   end
 
 end

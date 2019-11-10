@@ -3,19 +3,19 @@ require 'rufus-scheduler'
 scheduler = Rufus::Scheduler::singleton
 
 if Rails.env.development?
-  @accounts = Account.all
+  @accounts = Account.active
 
   scheduler.cron '0 1 * * *' do
     @accounts.each { |account| store_leaderboard(account: account) }
   end
 
   scheduler.cron '0 12 * * *' do
-    @accounts.each { |account| fetch_analytics(account: account) }
+    @accounts.each { |account| fetch_daily_analytics(account: account) }
   end
 
-  def fetch_analytics account:
+  def fetch_daily_analytics account:
     Apartment::Tenant.switch(account.tenant) do
-      AnalyticsJob.perform_later
+      DailyAnalyticsJob.perform_later
     end
   end
 
@@ -36,19 +36,33 @@ if Rails.env.development?
 end
 
 if Rails.env.production?
-  @accounts = Account.all
+  @accounts = Account.active
 
   # scheduler.cron '0 1 * * *' do
   #   @accounts.each { |account| store_and_cleanup_leaderboard(account: account) }
   # end
 
-  scheduler.cron '0 12 * * *' do
-    @accounts.each { |account| fetch_analytics(account: account) }
+  scheduler.cron '0 12 * * 1' do
+    @accounts.each { |account| fetch_daily_analytics(account: account) }
   end
 
-  def fetch_analytics account:
+  scheduler.cron '0 12 * * 2' do
+    @accounts.each { |account| fetch_daily_analytics(account: account) }
+  end
+
+  scheduler.cron '0 12 * * 2' do
+    @accounts.each { |account| fetch_weekly_analytics(account: account) }
+  end
+
+  def fetch_daily_analytics account:
     Apartment::Tenant.switch(account.tenant) do
-      AnalyticsJob.perform_later
+      DailyAnalyticsJob.perform_later
+    end
+  end
+
+  def fetch_weekly_analytics account:
+    Apartment::Tenant.switch(account.tenant) do
+      WeeklyAnalyticsJob.perform_later
     end
   end
 
