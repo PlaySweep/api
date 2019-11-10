@@ -16,7 +16,15 @@ json.played slate.played?(current_user.id)
 json.winner slate.winner, partial: 'v1/users/user_for_member', as: :user
 json.has_winner slate.has_winner?
 json.previous_user_ids slate.previous_user_ids
-json.prize slate.prize
+json.prize do
+  json.id slate.prize.id
+  json.product do 
+    json.id slate.prize.product.id
+    json.name slate.prize.product.name
+    json.category slate.prize.product.category
+  end
+  json.date slate.prize.date
+end
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
   json.slate_id prize.slate_id
