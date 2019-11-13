@@ -60,7 +60,7 @@ class Card < ApplicationRecord
   end
 
   def handle_losers
-    SendLosingSlateMessageJob.set(wait_until: slate.start_time.tomorrow.beginning_of_day + 10.hours).perform_later(user_id, slate_id)
+    SendLosingSlateMessageJob.perform_later(user_id, slate_id)
   end
 
   def complete_referral!

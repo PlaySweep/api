@@ -48,3 +48,5 @@ require 'capistrano/rake'
 Dir.glob("lib/capistrano/tasks/*.rake").each { |r| import r }
 
 require 'capistrano/honeybadger'
+
+require 'appsignal/capistrano'
