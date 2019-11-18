@@ -4,7 +4,7 @@ class WeeklyAnalyticsJob < ApplicationJob
     def perform
       number_of_promotions_used_by_week
       DataMailer.weekly_promotions(email: "ben@endemiclabs.co").deliver_later
-      number_of_sweep_promotions_used_by_week
+      drizly_sweep_winners(from: 5)
       DataMailer.weekly_sweep_promotions(email: "ben@endemiclabs.co").deliver_later
     end
   
@@ -38,7 +38,7 @@ class WeeklyAnalyticsJob < ApplicationJob
       promotions.size
     end
   
-    def number_of_sweep_promotions_used_by_week from:
+    def drizly_sweep_winners from:
       slates = Slate.finished.where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - from, DateTime.current.end_of_day) 
       promotions = Promotion.where(type: "DrizlyPromotion", category: "Sweep", used: true).joins(:slate).where('slates.id IN (?)', slates.map(&:id))
       CSV.open("#{Rails.root}/tmp/sweep_promotions.csv", "wb") do |csv|

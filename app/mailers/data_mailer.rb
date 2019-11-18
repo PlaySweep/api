@@ -53,7 +53,7 @@ class DataMailer < ApplicationMailer
     attachments["sweep_promotions.csv"] = { mime_type: 'text/csv', content: sweep_promotions }
     mail(
       to: email,
-      subject: "#{account.friendly_name} #{account.name} Sweep Promotions",
+      subject: "#{account.friendly_name} #{account.name} Sweep Promotion User List",
       body: "Attached below."
     )
   end
