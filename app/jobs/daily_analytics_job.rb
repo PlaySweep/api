@@ -43,6 +43,15 @@ class DailyAnalyticsJob < ApplicationJob
     end
   end
 
+  def leaderboard_csv
+    CSV.open("#{Rails.root}/tmp/world_series_leaderboard.csv", "wb") do |csv|
+      csv << ["Rank", "Score", "Name"]
+      LeaderboardResult.where(leaderboard_history_id: 3).order(:rank).each do |result|
+        csv << [result.rank, result.score, result.user.full_name.empty? ? "#{result.user.first_name}" : "#{result.user.full_name}"]
+      end
+    end
+  end
+
   def for_referral day:, team:, source:
     User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).where(confirmed: true).data_where(referral: source).joins(:roles).where("roles.resource_id = ?", team.id)
   end

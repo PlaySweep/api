@@ -17,11 +17,17 @@ namespace :prod do
 end
 
 def re_engage_drizly user:
-  content = "Hey #{user.first_name}, just a friendly reminder that you still haven't set up your account to receive your earned $20 Drizly credit - tap below if you're still interested and we'll take care of the rest!"
+  message = "Hey #{user.first_name}, your $20 Drizly credit is still available!"
+  FacebookMessaging::Standard.deliver(
+    user: user, 
+    message: message, 
+    notification_type: "REGULAR"
+  )
+  content = "We noticed you still haven't set up your account to receive your earned $20 Drizly credit - tap below to finish up and we'll take care of the rest!"
   FacebookMessaging::Standard.deliver(
     user: user, 
     message: content, 
-    notification_type: "REGULAR"
+    notification_type: "NO_PUSH"
   )
   quick_replies = FacebookParser::QuickReplyObject.new([
     {
@@ -44,12 +50,18 @@ def re_engage_drizly user:
   FacebookMessaging::Generic::Promotion.deliver(user: user, quick_replies: quick_replies)
 end
 
-def notify_drizly user:
-  content = "The $20 Drizly credit that you won has been successfully applied to your account! Click below and you'll be taken straight to Drizly where you can order your #{user.account.friendly_name}!"
+def notify_drizly user:, expiration:
+  message = "Congratulations #{user.first_name}, a $20 credit has been successfully added to your Drizly account!"
+  FacebookMessaging::Standard.deliver(
+    user: user, 
+    message: message, 
+    notification_type: "REGULAR"
+  )
+  content = "You're now ready to stock up with #{user.account.friendly_name} for the weekend.\n\nFYI, you have until #{expiration} to use your credit so get in there 🕑"
   FacebookMessaging::Standard.deliver(
     user: user, 
     message: content, 
-    notification_type: "REGULAR"
+    notification_type: "NO_PUSH"
   )
   quick_replies = FacebookParser::QuickReplyObject.new([
     {
@@ -76,7 +88,7 @@ def notify users:, week:
   users.each_with_index do |user, index|
     begin
       if user.confirmed && user.current_team.present?
-        content = "We're less than a couple hours away from #{user.current_team.abbreviation} #{week} kickoff! Answer 6 questions tonight and win!"
+        content = "We're less than a few hours away from #{user.current_team.abbreviation} #{week} kickoff! Answer 6 questions tonight and win!"
         FacebookMessaging::Standard.deliver(
           user: user, 
           message: content, 
@@ -96,7 +108,7 @@ def notify users:, week:
         ]).objects
         FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
       elsif !user.confirmed
-        content = "We're less than a couple hours away from #{week} kickoff! Answer 6 questions tonight and win!"
+        content = "We're less than a few hours away from #{week} kickoff! Answer 6 questions tonight and win!"
         FacebookMessaging::Standard.deliver(
           user: user, 
           message: content, 

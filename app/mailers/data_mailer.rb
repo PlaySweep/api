@@ -25,13 +25,24 @@ class DataMailer < ApplicationMailer
     )
   end
 
-  def weekly_sweep_promotions email:
+  def contest_leaderboard email:
     account = Account.first
-    sweep_promotions = File.read("#{Rails.root}/tmp/playing_promotions.csv")
-    attachments["playing_promotions.csv"] = { mime_type: 'text/csv', content: playing_promotions }
+    world_series_leaderboard_csv = File.read("#{Rails.root}/tmp/world_series_leaderboard.csv")
+    attachments["world_series_leaderboard.csv"] = { mime_type: 'text/csv', content: world_series_leaderboard_csv }
     mail(
       to: email,
-      subject: "#{account.friendly_name} #{account.name} Playing Promotions",
+      subject: "#{account.friendly_name} #{account.name} World Series Leaderboard",
+      body: "Attached below."
+    )
+  end
+
+  def weekly_promotions email:
+    account = Account.first
+    number_of_promotions = File.read("#{Rails.root}/tmp/number_of_promotions.csv")
+    attachments["number_of_promotions.csv"] = { mime_type: 'text/csv', content: number_of_promotions }
+    mail(
+      to: email,
+      subject: "#{account.friendly_name} #{account.name} Number of Promotions",
       body: "Attached below."
     )
   end

@@ -2,18 +2,33 @@ class WeeklyAnalyticsJob < ApplicationJob
     queue_as :low
   
     def perform
-      number_of_playing_promotions_used_by_week
-      DataMailer.weekly_playing_promotions(email: "ben@endemiclabs.co").deliver_later
+      number_of_promotions_used_by_week
+      DataMailer.weekly_promotions(email: "ben@endemiclabs.co").deliver_later
       number_of_sweep_promotions_used_by_week
       DataMailer.weekly_sweep_promotions(email: "ben@endemiclabs.co").deliver_later
     end
   
-    def number_of_playing_promotions_used_by_week
-      promotions = Promotion.where(type: "DrizlyPromotion", used: true, category: "Playing").where('updated_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day) 
-      promotions.each do |promotion|
-        CSV.open("#{Rails.root}/tmp/playing_promotions.csv", "wb") do |csv|
-          csv << ["Type", "Code"]
-          csv << [promotion.category, promotion.level]
+    def number_of_promotions_used_by_week
+      promotions = Promotion.where(type: "DrizlyPromotion", used: true).where('updated_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 9, DateTime.current.end_of_day - 3) 
+      CSV.open("#{Rails.root}/tmp/number_of_promotions.csv", "wb") do |csv|
+        csv << ["Type", "Level"]
+        promotions.each do |promotion|
+          if promotion.category == "Playing"
+            case promotion.level
+            when 1
+              level = "$5"
+            when 2
+              level = "$10"
+            end
+          end
+
+          if promotion.category == "Sweep"
+            case promotion.level
+            when 1
+              level = "$20"
+            end
+          end
+          csv << [promotion.category, level]
         end
       end
     end
@@ -23,13 +38,13 @@ class WeeklyAnalyticsJob < ApplicationJob
       promotions.size
     end
   
-    def number_of_sweep_promotions_used_by_week
-      slates = Slate.finished.where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 5, DateTime.current.end_of_day) 
-      promotions = Promotion.where(type: "DrizlyPromotion", category: "Sweep", used: true, level: level).joins(:slate).where('slates.id IN (?)', slates.map(&:id))
-      promotions.each do |promotion|
-        CSV.open("#{Rails.root}/tmp/sweep_promotions_by_week.csv", "wb") do |csv|
-          csv << ["Type", "Code"]
-          csv << [promotion.category, promotion.level]
+    def number_of_sweep_promotions_used_by_week from:
+      slates = Slate.finished.where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - from, DateTime.current.end_of_day) 
+      promotions = Promotion.where(type: "DrizlyPromotion", category: "Sweep", used: true).joins(:slate).where('slates.id IN (?)', slates.map(&:id))
+      CSV.open("#{Rails.root}/tmp/sweep_promotions.csv", "wb") do |csv|
+        csv << ["User ID", "Category", "Level", "Name"]
+        promotions.each do |promotion|
+          csv << [promotion.user.id, promotion.category, promotion.level, promotion.user.full_name]
         end
       end
     end

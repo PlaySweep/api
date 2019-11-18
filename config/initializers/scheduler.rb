@@ -26,10 +26,11 @@ if Rails.env.development?
         leaderboard_name = "week_#{account.current_week - 1}"
         leaderboard = Board.fetch(leaderboard: leaderboard_name)
         # store leaderboard results into appropriate tables
-        history = LeaderboardHistory.new(name: "Week #{week}", description: "Most points earned during a weekly period.")
+        leaderboard_history_name = leaderboard_name.split('_').map(&:capitalize).join(' ')
+        history = LeaderboardHistory.new(name: leaderboard_history_name, description: "Most points earned during a weekly period.")
         DataMigration.seed_leaderboard_results(leaderboard: leaderboard_name, history: history)
         # delete the old weeks leaderboard in redis
-        leaderboard.delete_leaderboard
+        # leaderboard.delete_leaderboard
       end
     end
   end
