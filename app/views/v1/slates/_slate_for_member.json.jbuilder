@@ -25,7 +25,7 @@ json.prize do
     json.category slate.prize.product.category
   end
   json.date slate.prize.date
-end
+end unless slate.global?
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
   json.slate_id prize.slate_id
