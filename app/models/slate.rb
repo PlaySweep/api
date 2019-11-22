@@ -5,12 +5,13 @@ class Slate < ApplicationRecord
 
   belongs_to :winner, foreign_key: :winner_id, class_name: "User", optional: true
 
+  belongs_to :contest, optional: true
   has_many :events, dependent: :destroy
   has_many :entries, dependent: :destroy
   has_many :users, through: :events
   has_many :picks, through: :users
   has_many :cards, dependent: :destroy
-  has_many :prizes, dependent: :destroy
+  has_many :prizes, as: :prizeable, dependent: :destroy
 
   enum status: [ :inactive, :pending, :started, :complete, :done, :postponed ]
 

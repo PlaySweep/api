@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :contests, only: [:index, :show, :update]
     resources :slates, only: [:index, :show, :update]
     resources :orders, only: [:create]
     resources :teams, only: [:index]
