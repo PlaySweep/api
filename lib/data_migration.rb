@@ -245,6 +245,79 @@ class DataMigration
     end
   end
 
+  def api_object user:
+    current_age = age(user.dob)
+    user_object = {
+      "id*": user.id.to_s,
+      "source_consumer_id*": "#{user.account.tenant}_#{user.id}",
+      "contact_channel": "",
+      "consumer_type": "",
+      "consumer_type_2": "",
+      "personal_information": {
+        "first_name*": user.first_name || "",
+        "middle_name": "",
+        "last_name*": user.last_name || "",
+        "birth_date*": user.dob || "",
+        "age": current_age.to_s || "",
+        "age_range": "",
+        "above_lda": "Y",
+        "gender": user.gender || ""
+      },
+      "contact_information": {
+        "email": {
+          "email_primary*": user.email || "",
+          "email_primary_verified": user.email || "",
+          "email_personal": "",
+          "email_work": "",
+          "email_other": ""
+        },
+        "phone": {
+          "primary*": "",
+          "work": "",
+          "home": "",
+          "mobile": ""
+        },
+        "address": {
+          "home": {
+            "address_line_1": user.line1 || "",
+            "address_line_2": user.line2 || "",
+            "address_line_3": "",
+            "city": user.city || "",
+            "state": user.state || "",
+            "zip5": user.zipcode || "",
+            "zip9": "",
+            "country*": "US"
+          }
+        }
+      },
+      "social_information": {
+        "facebook_id": user.facebook_uuid || "",
+        "facebook_profile_url": user.profile_pic || "",
+        "facebook_friends": "",
+        "twitter_id": "",
+        "twitter_handle": "",
+        "twitter_profile_url": "",
+        "tw_followers_cnt": "",
+        "tw_following_cnt": ""
+      },
+      "brand_opted_in*": "Y",
+      "corp_opted_in*": "Y",
+      "airline_preferred": "",
+      "language_preferred": "en",
+      "education_level": "",
+      "occupation": "",
+      "source_consumer_created*": user.created_at.strftime("%Y-%m-%d"),
+      "source_consumer_updated": "",
+      "additional_information": {}
+    }
+    puts user_object.to_json
+    puts "\n"
+  end
+
+  def map_api_object users:
+    users.each { |user| api_object(user: user) }
+  end
+
   def data_api_formatter users:
     events = users.map do |user|
       user.slates.first(5).map do |slate|
@@ -280,12 +353,13 @@ class DataMigration
           }
         }
       end
+      
     end
     formatted_users = users.map do |user|
       current_age = age(user.dob)
       {
         "id*": user.id,
-        "source_consumer_id*": "",
+        "source_consumer_id*": "#{user.account.tenant}_#{user.id}",
         "contact_channel": "",
         "consumer_type": "",
         "consumer_type_2": "",
@@ -344,7 +418,7 @@ class DataMigration
         "occupation": "",
         "source_consumer_created*": "",
         "source_consumer_updated": "",
-        "additional_information": {}
+        "additional_information": ""
       }
 
 
