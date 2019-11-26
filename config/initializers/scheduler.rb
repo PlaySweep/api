@@ -43,11 +43,7 @@ if Rails.env.production?
   #   @accounts.each { |account| store_and_cleanup_leaderboard(account: account) }
   # end
 
-  scheduler.cron '0 12 * * 1' do
-    @accounts.each { |account| fetch_daily_analytics(account: account) }
-  end
-
-  scheduler.cron '0 12 * * 2' do
+  scheduler.cron '0 12 * * *' do
     @accounts.each { |account| fetch_daily_analytics(account: account) }
   end
 
