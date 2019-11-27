@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  PLAYING, SWEEP = 0, 1
+  SWEEP = :sweep
 
   include Redis::Objects
 
@@ -17,17 +17,18 @@ class User < ApplicationRecord
   has_many :picks, dependent: :destroy
   has_many :events, through: :picks
   has_many :cards, dependent: :destroy
-  has_many :referred_users, class_name: "User", foreign_key: :referred_by_id
+  has_many :referrals, -> { where('created_at > ?', ReferralMilestone::START_DATE) }, class_name: "User", foreign_key: :referred_by_id
   has_many :slates, through: :cards
   has_many :entries, dependent: :destroy
   has_many :leaderboard_results
   has_many :leaderboards, through: :leaderboard_results, source: "leaderboard_history", dependent: :destroy
   has_many :orders, dependent: :destroy
   has_many :promotions, foreign_key: :used_by, dependent: :destroy
+  has_many :badges, dependent: :destroy
   has_one :location, dependent: :destroy
 
   before_create :set_slug, :set_referral_code
-  after_update :create_or_update_location
+  after_update :create_or_update_location, :run_referral_achievements
 
   jsonb_accessor :data,
     referral: [:string]
@@ -47,7 +48,7 @@ class User < ApplicationRecord
   scope :for_owner, ->(owner_id) { joins(:roles).where('roles.resource_id = ?', owner_id) }
   scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
-  
+
   validates :slug, :referral_code, uniqueness: true
 
   def update_latest_stats slate:
@@ -227,6 +228,13 @@ class User < ApplicationRecord
     if saved_change_to_zipcode?
       location = Geocoder.search(zipcode).select { |result| result.country_code == "us" }.first
       Location.find_or_create_by(user_id: id).update_attributes(city: location.try(:city), state: location.try(:state), postcode: zipcode, lat: location.try(:coordinates).try(:first), long: location.try(:coordinates).try(:last), country: location.try(:country), country_code: location.try(:country_code))
+    end
+  end
+
+  def run_referral_achievements
+    if saved_change_to_referred_by_id?(from: nil)
+      referred_user = self
+      BadgeService::Referral.new(user: referred_user).run
     end
   end
 

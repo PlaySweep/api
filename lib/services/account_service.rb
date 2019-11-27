@@ -35,7 +35,6 @@ class AccountService
         )
         current_score = leaderboard.score_for(member) || 0
         leaderboard.rank_member(member, current_score += referral_rule.level)
-        notify_referrer(reason: User::PLAYING)
       end
     end
   
@@ -82,14 +81,7 @@ class AccountService
         )
         current_score = leaderboard.score_for(member) || 0
         leaderboard.rank_member(member, current_score += sweep_rule.level)
-        notify_referrer(reason: User::SWEEP)
       end
-    end
-
-    private
-
-    def notify_referrer reason:
-      NotifyReferrerJob.perform_later(@user.referred_by_id, @user.id, reason)
     end
 
   end

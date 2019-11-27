@@ -5,12 +5,9 @@ class NotifyReferrerJob < ApplicationJob
     user = User.find(user_id)
     referred_user = User.find(referred_id)
     case reason
-    when "playing"
-      referrer_notification_copy = user.account.copies.where(category: "Notify Playing Referral").sample.message
-      referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.abbreviated_name }
-    when "sweep"
+    when User::SWEEP
       referrer_notification_copy = user.account.copies.where(category: "Notify Sweep Referral").sample.message
-      referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.abbreviated_name, earned_entry_count: 3 }
+      referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.abbreviated_name }
     else
       referrer_notification_copy = user.account.copies.where(category: "Notify Referral").sample.message
       referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.abbreviated_name }
