@@ -25,7 +25,7 @@ module BadgeService
 
     def create_badge level:
       milestone = ReferralMilestone.find_by(level: level)
-      @user.badges.create(achievement_id: milestone.id)
+      @user.referred_by.badges.create(achievement_id: milestone.id)
     end
   
   end

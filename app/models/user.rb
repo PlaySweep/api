@@ -28,7 +28,8 @@ class User < ApplicationRecord
   has_one :location, dependent: :destroy
 
   before_create :set_slug, :set_referral_code
-  after_update :create_or_update_location, :run_referral_achievements
+  after_update :create_or_update_location
+  after_create :run_badge_service
 
   jsonb_accessor :data,
     referral: [:string]
@@ -231,11 +232,8 @@ class User < ApplicationRecord
     end
   end
 
-  def run_referral_achievements
-    if saved_change_to_referred_by_id?(from: nil)
-      referred_user = self
-      BadgeService::Referral.new(user: referred_user).run
-    end
+  def run_badge_service
+    BadgeService::Referral.new(user: self).run if saved_change_to_referral_completed_at?
   end
 
 end
