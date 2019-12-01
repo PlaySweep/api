@@ -12,6 +12,7 @@ json.confirmed user.confirmed
 json.locked user.locked
 json.slug user.slug
 json.referral_code user.referral_code
+json.referral_count user.referrals.size
 json.has_recently_won user.has_recently_won?
 json.has_never_played user.has_never_played?
 json.played_for_first_time user.played_for_first_time?
@@ -21,19 +22,20 @@ json.current_team user.current_team, partial: 'v1/teams/team', as: :team
 json.current_team_is_default user.current_team_is_default?
 json.current_team_leaderboard user.current_team.active_leaderboard.present?
 json.leaderboard do
-  if user.account.active_leaderboard
-    json.name user.account.active_leaderboard.leaderboard_name.split("_").map(&:capitalize).join(" ").to_s
-    json.overall do
-      json.top_scorers user.account.active_leaderboard.top(3)
-      json.around_me user.around_me
-      json.rank user.rank
-      json.score user.score
-      json.ordinal_position user.ordinal_position
-      json.tied user.tied?
-    end
-  else
-    {}
-  end
+  json.account do
+    json.top_scorers user.account.active_leaderboard.top(3)
+    json.rank user.account.active_leaderboard.rank_for(user.id).to_i || 0
+    json.score user.account.active_leaderboard.score_for(user.id).to_i || 0
+    json.ordinal_position user.account.active_leaderboard.score_for(user.id).to_i.ordinalize.last(2)
+    json.tied user.account.active_leaderboard.total_members_in_score_range(user.account.active_leaderboard.rank_for(user.id).to_i, user.account.active_leaderboard.rank_for(user.id).to_i) > 1.0
+  end if user.account.active_leaderboard?
+  json.owner do
+    json.top_scorers user.current_team.active_leaderboard.top(3)
+    json.rank user.current_team.active_leaderboard.score_for(user.id).to_i || 0
+    json.score user.current_team.active_leaderboard.rank_for(user.id).to_i || 0
+    json.ordinal_position user.current_team.active_leaderboard.score_for(user.id).to_i.ordinalize.last(2)
+    json.tied user.current_team.active_leaderboard.total_members_in_score_range(user.current_team.active_leaderboard.rank_for(user.id).to_i, user.current_team.active_leaderboard.rank_for(user.id).to_i) > 1.0
+  end if user.current_team.active_leaderboard?
 end
 json.account do
   json.id user.account.id
@@ -68,18 +70,7 @@ json.links user.account.links.each do |link|
 end
 json.shipping user.shipping
 json.promotions user.promotions
-json.stats do
-  if user.current_team.active_leaderboard
-    json.top_scorers user.current_team.active_leaderboard.top(5)
-    json.score user.score
-    json.rank user.rank
-    json.ordinal_position user.ordinal_position
-    json.tied user.tied?
-  end
-  json.current_pick_streak user.current_pick_streak
-  json.highest_pick_streak user.highest_pick_streak
-  json.wins user.picks.win.size
-  json.losses user.picks.loss.size
-end
 json.latest_stats user.latest_stats
 json.recent_orders user.orders.recent, partial: 'v1/orders/order', as: :order
+json.current_badge user.badges.for_referral_milestones.current, partial: "v1/badges/badge", as: :badge
+json.badges user.badges, partial: "v1/badges/badge", as: :badge

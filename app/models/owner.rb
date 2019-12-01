@@ -9,6 +9,11 @@ class Owner < ApplicationRecord
   has_many :rewards, as: :rewardable
   has_many :targets, class_name: "BroadcastTarget", as: :targetable
 
+  def active_leaderboard?
+    active_reward = rewards.active.find_by(category: "Weekly Points")
+    active_reward.present?
+  end
+
   def active_leaderboard
     active_reward = rewards.active.find_by(category: "Weekly Points")
     if active_reward.present?

@@ -10,10 +10,23 @@ class Account < ApplicationRecord
 
   scope :active, -> { where(active: true) }
 
+  def active_leaderboard?
+    active_reward = rewards.active.find_by(category: "Contest")
+    active_reward.present?
+  end
+
   def active_leaderboard
-    active_reward = rewards.active.find_by(category: "Account") # TODO: Do not commit the change to category: "Account" until RTWS is over for MLB
+    active_reward = rewards.active.find_by(category: "Contest")
     if active_reward.present?
-      leaderboard_name = "week_#{current_week}"
+      leaderboard_name = "contest_#{active_reward.name}".to_sym
+      Board.fetch(leaderboard: leaderboard_name)
+    end
+  end
+
+  def active_weekly_leaderboard
+    active_reward = rewards.active.find_by(category: "Contest")
+    if active_reward.present?
+      leaderboard_name = "contest_#{current_week}_#{active_reward.name}".to_sym
       Board.fetch(leaderboard: leaderboard_name)
     end
   end

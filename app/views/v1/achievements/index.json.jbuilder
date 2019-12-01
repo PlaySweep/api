@@ -1,0 +1,1 @@
+json.achievements @achievements, partial: 'v1/achievements/achievement', as: :achievement

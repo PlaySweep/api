@@ -29,7 +29,6 @@ class Sweep < ApplicationRecord
   end
 
   def run_services
-    AccountService.new(user, slate: slate).run(type: :sweep)
     OwnerService.new(user, slate: slate).run(type: :sweep)
     ContestService.new(user, slate: slate).run(type: :sweep)
     DrizlyService.new(user, slate).run(type: :sweep)

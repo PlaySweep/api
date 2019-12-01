@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     resources :slates, only: [:index, :show, :update]
     resources :orders, only: [:create]
     resources :teams, only: [:index]
+    resources :achievements, only: :index
   end
   
   namespace :admin, defaults: { format: :json } do

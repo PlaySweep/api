@@ -1,3 +1,0 @@
-class AccountRule < Rule
-    
-end

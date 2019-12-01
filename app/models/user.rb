@@ -115,44 +115,6 @@ class User < ApplicationRecord
     roles.map(&:resource_id)
   end
 
-  def member
-    "week_#{current_team.account.current_week}_user_#{id}"
-  end
-
-  def score
-    if current_team.rewards.active.find_by(category: "Weekly Points").present?
-      current_team.active_leaderboard.score_for(member).to_i
-    else
-      0
-    end
-  end
-
-  def rank
-    if current_team.rewards.active.find_by(category: "Weekly Points").present?
-      current_team.active_leaderboard.rank_for(member).to_i
-    else
-      0
-    end
-  end
-
-  def ordinal_position
-    rank.ordinalize.last(2)
-  end
-
-  def tied?
-    if current_team.rewards.active.find_by(category: "Weekly Points").present?
-      current_team.active_leaderboard.total_members_in_score_range(score, score) > 1.0
-    end
-  end
-
-  def around_me
-    if current_team.rewards.active.find_by(category: "Weekly Points").present?
-      current_team.active_leaderboard.around_me(member, page_size: 500).first(5)
-    else
-      []
-    end
-  end
-
   def highest_sweep_streak
     streaks.find_by(type: "SweepStreak").try(:highest) || 0
   end
