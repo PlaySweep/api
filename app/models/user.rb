@@ -103,6 +103,10 @@ class User < ApplicationRecord
     cards.size == 0
   end
 
+  def has_never_played_contest?
+    cards.for_contest.size == 0
+  end
+
   def played_for_first_time?
     cards.size == 1
   end

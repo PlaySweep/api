@@ -5,7 +5,7 @@ json.event_size slate.events.size
 json.status slate.status
 json.start_time slate.start_time
 json.local slate.local
-json.global slate.global
+json.is_contest slate.contest_id?
 json.result slate.result
 json.score slate.score
 json.total_sweeps slate.cards.win.size

@@ -16,6 +16,7 @@ json.referral_count user.referrals.size
 json.has_recently_won user.has_recently_won?
 json.has_never_played user.has_never_played?
 json.played_for_first_time user.played_for_first_time?
+json.has_never_played_contest user.has_never_played_contest?
 json.eligible_for_drizly user.eligible_for_drizly?
 json.location user.location
 json.current_team user.current_team, partial: 'v1/teams/team', as: :team
@@ -23,17 +24,17 @@ json.current_team_is_default user.current_team_is_default?
 json.current_team_leaderboard user.current_team.active_leaderboard.present?
 json.leaderboard do
   json.account do
-    json.top_scorers user.account.active_leaderboard.top(3)
+    json.top_scorers user.account.active_leaderboard.top(3, { with_member_data: true })
     json.rank user.account.active_leaderboard.rank_for(user.id).to_i || 0
     json.score user.account.active_leaderboard.score_for(user.id).to_i || 0
-    json.ordinal_position user.account.active_leaderboard.score_for(user.id).to_i.ordinalize.last(2)
+    json.ordinal_position user.account.active_leaderboard.rank_for(user.id).to_i.ordinalize.last(2)
     json.tied user.account.active_leaderboard.total_members_in_score_range(user.account.active_leaderboard.rank_for(user.id).to_i, user.account.active_leaderboard.rank_for(user.id).to_i) > 1.0
   end if user.account.active_leaderboard?
   json.owner do
-    json.top_scorers user.current_team.active_leaderboard.top(3)
+    json.top_scorers user.current_team.active_leaderboard.top(3, { with_member_data: true })
     json.rank user.current_team.active_leaderboard.score_for(user.id).to_i || 0
     json.score user.current_team.active_leaderboard.rank_for(user.id).to_i || 0
-    json.ordinal_position user.current_team.active_leaderboard.score_for(user.id).to_i.ordinalize.last(2)
+    json.ordinal_position user.current_team.active_leaderboard.rank_for(user.id).to_i.ordinalize.last(2)
     json.tied user.current_team.active_leaderboard.total_members_in_score_range(user.current_team.active_leaderboard.rank_for(user.id).to_i, user.current_team.active_leaderboard.rank_for(user.id).to_i) > 1.0
   end if user.current_team.active_leaderboard?
 end

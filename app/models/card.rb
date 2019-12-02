@@ -8,6 +8,7 @@ class Card < ApplicationRecord
   validates :slate_id, uniqueness: { scope: :user_id, message: "only 1 Card per Slate" }
 
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) } 
+  scope :for_contest, -> { joins(:slate).where("slates.contest_id IS NOT NULL") } 
 
   around_save :catch_uniqueness_exception
   after_create :run_services, :complete_referral!
