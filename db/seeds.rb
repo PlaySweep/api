@@ -6,10 +6,14 @@ unless Rails.env.production?
   account = Account.first
   account.rewards.create(name: "race_to_the_super_bowl", description: "Race to the NFL Super Bowl LIV", category: "Contest", active: false)
 
-  ReferralMilestone.create(name: "1 Referral", description: "When you refer your first friend, you earn 1 entry into a local contest drawing of your choice", level: 1, difficulty: nil, threshold: "1")
-  ReferralMilestone.create(name: "5 Referrals", description: "Get to 5 referrals and we'll send you 1 Bud Light bottle opener.", level: 2, difficulty: nil, threshold: "5")
-  ReferralMilestone.create(name: "15 Referrals", description: "When you reach to 15 referrals you'll earn a Bud Light T-shirt.", level: 3, difficulty: nil, threshold: "15")
-  ReferralMilestone.create(name: "75 Referrals", description: "Make your way all the way up to 75 referrals and we'll give you 2 tickets to an NFL game!", level: 4, difficulty: nil, threshold: "75")
+  Product.create(global: true, name: "Automatic Sweep", category: "Digital")
+  Product.create(global: true, name: "2 Tickets", category: "Tickets")
+
+
+  milestone1 = ReferralMilestone.create(name: "1 Referral", description: "When you refer your first friend, you automatically earn 1 entry into the next contest you enter. Kind of like an Automatic Sweep!", level: 1, difficulty: nil, threshold: "1")
+  milestone2 = ReferralMilestone.create(name: "5 Referrals", description: "Hit 5 referrals and we’ll send you your own Bud Light bottle opener.", level: 2, difficulty: nil, threshold: "5")
+  milestone3 = ReferralMilestone.create(name: "15 Referrals", description: "Hit 15 referrals and we’ll send you a Bud Light T-Shirt.", level: 3, difficulty: nil, threshold: "15")
+  milestone4 = ReferralMilestone.create(name: "75 Referrals", description: "Hit 75 referrals and we’ll send you 2 tickets to a 2019 NFL regular season game (travel not included).", level: 4, difficulty: nil, threshold: "75")
 
 
 end
