@@ -3,9 +3,6 @@ require 'csv'
 unless Rails.env.production?
   Apartment::Tenant.switch!('budlight')
 
-  account = Account.first
-  account.rewards.create(name: "race_to_the_super_bowl", description: "Race to the NFL Super Bowl LIV", category: "Contest", active: false)
-
   Product.create(global: true, name: "Automatic Sweep", category: "Digital")
   Product.create(global: true, name: "2 Tickets", category: "Tickets")
 
