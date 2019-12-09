@@ -9,7 +9,6 @@ json.global slate.global
 json.winner slate.winner, partial: 'v1/users/user_for_member', as: :user
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
-  json.slate_id prize.slate_id
   json.sku_id prize.sku_id
   json.product_id prize.product_id
   json.name prize.product.name
