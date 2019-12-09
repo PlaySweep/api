@@ -20,8 +20,8 @@ class Slate < ApplicationRecord
   scope :finished, -> { where(status: [3, 4]) }
   scope :ascending, -> { order(start_time: :asc) }
   scope :descending, -> { order(start_time: :desc) }
-  scope :since_last_week, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 5, DateTime.current.end_of_day + 2) }
-  scope :for_the_month, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day + 7) }
+  scope :since_last_week, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day) }
+  scope :for_the_month, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 30, DateTime.current.end_of_day) }
   scope :filtered, ->(role_ids) { where(owner_id: role_ids) } 
   scope :unfiltered, -> { data_where(global: true) } 
   scope :finished_contest_count_for, ->(owner_id) { finished.where(owner_id: owner_id) } 
