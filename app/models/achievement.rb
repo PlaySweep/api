@@ -5,7 +5,8 @@ class Achievement < ApplicationRecord
 
   jsonb_accessor :data,
     difficulty: [:string, default: nil],
-    threshold: [:string, default: nil]
+    threshold: [:string, default: nil],
+    disclaimer: [:string, default: nil]
 
   def prize
     return prizes.first if prizes.any?

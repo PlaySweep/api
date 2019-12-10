@@ -4,6 +4,7 @@ json.description achievement.description
 json.level achievement.level
 json.difficulty achievement.difficulty
 json.threshold achievement.threshold
+json.disclaimer achievement.disclaimer
 json.prize do
   json.id achievement.prize.id
   json.product do 
