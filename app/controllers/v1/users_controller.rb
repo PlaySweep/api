@@ -37,7 +37,7 @@ class V1::UsersController < ApplicationController
         add_role if team
         subscribe_to(resource: team, user: @user)
       end
-      WelcomeJob.perform_later(@user.id) if params[:onboard]
+      params[:job_name].constantize.perform_later(@user.id) if params[:onboard]
       respond_with @user
     else
       render json: { errors: @user.errors }, status: :unprocessable_entity
