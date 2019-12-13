@@ -10,7 +10,7 @@ module FacebookParser
         message: {
           text: payload[:message]
         },
-        message_type: "UPDATE",
+        message_type: "RESPONSE",
         notification_type: payload[:notification_type]
       }
     end
