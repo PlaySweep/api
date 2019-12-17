@@ -13,6 +13,16 @@ class DailyAnalyticsJob < ApplicationJob
     DataMailer.losers_to(email: "budweisersweep@endemiclabs.co").deliver_later
   end
 
+  def fetch_new_users day:
+    CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_new_users.csv", "wb") do |csv|
+      csv << ["Date", "Name", "Team", "Signed Up", "Source"]
+      users = User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day)
+      users.each do |user|
+        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), user.full_name, user.current_team.abbreviation, user.confirmed, user.referral ? user.referral : "other"]
+      end
+    end
+  end
+
   def merge_acquisition day:
     CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_final_acquisition.csv", "wb", write_headers: true, headers: ["Date", "Team", "Count", "Source"]) do |csv|
       Dir["tmp/#{(DateTime.current - day).to_date}_acquisition_data_for_*.csv"].each do |path|  # for each of your csv files

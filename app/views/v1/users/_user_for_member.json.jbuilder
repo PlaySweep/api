@@ -8,6 +8,8 @@ json.handle user.handle
 json.email user.email
 json.dob user.dob
 json.zipcode user.zipcode
+json.phone_number user.phone_number
+json.phone_number_exists user.phone_number?
 json.confirmed user.confirmed
 json.locked user.locked
 json.slug user.slug
@@ -71,6 +73,9 @@ json.links user.account.links.each do |link|
 end
 json.shipping user.shipping
 json.promotions user.promotions
+json.stats do
+  json.current_pick_streak user.current_pick_streak
+end
 json.latest_stats user.latest_stats
 json.recent_orders user.orders.recent, partial: 'v1/orders/order', as: :order
 json.current_badge user.badges.for_referral_milestones.current, partial: "v1/badges/badge", as: :badge

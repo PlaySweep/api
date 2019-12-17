@@ -25,7 +25,7 @@ module FacebookParser
             }
           }
         },
-        message_type: "UPDATE",
+        message_type: "RESPONSE",
         notification_type: payload[:notification_type]
       }
     end

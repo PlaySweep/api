@@ -11,7 +11,7 @@ class WeeklyAnalyticsJob < ApplicationJob
     def number_of_promotions_used_by_week
       promotions = Promotion.where(type: "DrizlyPromotion", used: true).where('updated_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 9, DateTime.current.end_of_day - 3) 
       CSV.open("#{Rails.root}/tmp/number_of_promotions.csv", "wb") do |csv|
-        csv << ["Type", "Level"]
+        csv << ["Type", "Level", "Used By"]
         promotions.each do |promotion|
           if promotion.category == "Playing"
             case promotion.level
@@ -28,7 +28,7 @@ class WeeklyAnalyticsJob < ApplicationJob
               level = "$20"
             end
           end
-          csv << [promotion.category, level]
+          csv << [promotion.category, level, promotion.used_by]
         end
       end
     end
