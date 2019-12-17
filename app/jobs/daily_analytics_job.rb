@@ -26,20 +26,15 @@ class DailyAnalyticsJob < ApplicationJob
   def fetch_all_acquisitions_by day:
     teams = Team.active
     teams.each do |team|
-      create_team_acquisition_sheet_by(day: day, team: team, source: "facebook")
-      create_team_acquisition_sheet_by(day: day, team: team, source: "twitter")
-      create_team_acquisition_sheet_by(day: day, team: team, source: "referred")
-      create_team_acquisition_sheet_by(day: day, team: team, source: nil)
-      create_team_acquisition_sheet_by(day: day, team: team, source: "#{team.abbreviation.downcase}_lp")
-      create_team_acquisition_sheet_by(day: day, team: team, source: "#{team.abbreviation.downcase}_lp_2")
+      create_team_acquisition_sheet_by(day: day, team: team)
     end
     merge_acquisition(day: day)
   end
 
-  def create_team_acquisition_sheet_by day:, team:, source:
-    CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_acquisition_data_for_#{team.abbreviation.downcase}_#{source}.csv", "wb") do |csv|
+  def create_team_acquisition_sheet_for users:
+    CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_acquisition_data_for_#{team.abbreviation.downcase}.csv", "wb") do |csv|
       csv << ["Date", "Team", "Count", "Source"]
-      csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), team.abbreviation, for_referral(day: day, team: team, source: source).size, source.nil? ? "other" : source]
+      csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), team.abbreviation, fetch_new_users(day: day, team: team).size, source.nil? ? "other" : source]
     end
   end
 
@@ -52,8 +47,14 @@ class DailyAnalyticsJob < ApplicationJob
     end
   end
 
-  def for_referral day:, team:, source:
-    User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day).where(confirmed: true).data_where(referral: source).joins(:roles).where("roles.resource_id = ?", team.id)
+  def fetch_new_users day:
+    CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_new_users.csv", "wb") do |csv|
+      csv << ["Date", "Name", "Team", "Signed Up", "Source"]
+      users = User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day)
+      users.each do |user|
+        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), user.full_name, user.current_team.abbreviation, user.confirmed, user.referral ? user.referral : "other"]
+      end
+    end
   end
 
   def drizly_winners users:

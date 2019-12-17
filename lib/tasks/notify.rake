@@ -88,11 +88,11 @@ def notify users:, week:
   users.each_with_index do |user, index|
     begin
       if user.confirmed && user.current_team.present?
-        content = "Tomorrow kicks off #{user.current_team.abbreviation} #{week} football - get your answers in now!"
+        content = "We're less than a few hours away from #{user.current_team.abbreviation} #{week} kickoff! Answer 6 questions tonight and win!"
         FacebookMessaging::Standard.deliver(
           user: user, 
           message: content, 
-          notification_type: "REGULAR"
+          notification_type: "SILENT_PUSH"
         )
         quick_replies = FacebookParser::QuickReplyObject.new([
           {
@@ -108,11 +108,11 @@ def notify users:, week:
         ]).objects
         FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
       elsif !user.confirmed
-        content = "Tomorrow kicks off #{user.current_team.abbreviation} #{week} football - get your answers in now!"
+        content = "We're less than a few hours away from #{week} kickoff! Answer 6 questions tonight and win!"
         FacebookMessaging::Standard.deliver(
           user: user, 
           message: content, 
-          notification_type: "REGULAR"
+          notification_type: "SILENT_PUSH"
         )
         FacebookMessaging::Button.deliver(
             user: user,

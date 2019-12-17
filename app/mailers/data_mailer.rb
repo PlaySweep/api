@@ -14,6 +14,17 @@ class DataMailer < ApplicationMailer
     )
   end
 
+  def new_user_acquisition day:, email:
+    account = Account.first
+    acquistion_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_new_users.csv")
+    attachments["#{(DateTime.current - day).to_date}_new_users.csv"] = { mime_type: 'text/csv', content: acquistion_csv }
+    mail(
+      to: email,
+      subject: "#{account.friendly_name} #{account.name} New User Acquisition - #{(DateTime.current - day).to_date}",
+      body: "Attached below."
+    )
+  end
+
   def drizly email:
     account = Account.first
     drizly_winners_csv = File.read("#{Rails.root}/tmp/drizly_winners.csv")

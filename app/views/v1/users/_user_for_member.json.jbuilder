@@ -74,6 +74,10 @@ end
 json.shipping user.shipping
 json.promotions user.promotions
 json.latest_stats user.latest_stats
+json.stats do
+  json.current_pick_streak user.current_pick_streak
+end
+user.latest_stats
 json.recent_orders user.orders.recent, partial: 'v1/orders/order', as: :order
 json.current_badge user.badges.for_referral_milestones.current, partial: "v1/badges/badge", as: :badge
 json.badges user.badges, partial: "v1/badges/badge", as: :badge
