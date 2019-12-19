@@ -79,4 +79,5 @@ end
 json.latest_stats user.latest_stats
 json.recent_orders user.orders.recent, partial: 'v1/orders/order', as: :order
 json.current_badge user.badges.for_referral_milestones.current, partial: "v1/badges/badge", as: :badge
+json.current_badge_exist user.badges.for_referral_milestones.current.present?
 json.badges user.badges, partial: "v1/badges/badge", as: :badge

@@ -6,6 +6,7 @@ class Badge < ApplicationRecord
   enum status: [ :inactive, :current ]
 
   before_create :reset_statuses
+  after_create :notify_badge
 
   scope :for_referral_milestones, -> { joins(:achievement).where("achievements.type = ?", ReferralMilestone::KLASS) }
 
@@ -17,6 +18,10 @@ class Badge < ApplicationRecord
 
   def reset_statuses
     user.badges.map(&:inactive!)
+  end
+
+  def notify_badge
+    NotifyBadgeJob.perform_later(user_id)
   end
 
 end

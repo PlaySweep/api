@@ -17,7 +17,7 @@ class User < ApplicationRecord
   has_many :picks, dependent: :destroy
   has_many :events, through: :picks
   has_many :cards, dependent: :destroy
-  has_many :referrals, -> { where('created_at > ?', ReferralMilestone::START_DATE) }, class_name: "User", foreign_key: :referred_by_id
+  has_many :referrals, -> { where.not(referral_completed_at: nil).where('created_at > ?', ReferralMilestone::START_DATE) }, class_name: "User", foreign_key: :referred_by_id
   has_many :slates, through: :cards
   has_many :entries, dependent: :destroy
   has_many :leaderboard_results
@@ -29,7 +29,7 @@ class User < ApplicationRecord
 
   before_create :set_slug, :set_referral_code
   after_update :create_or_update_location
-  after_create :run_badge_service
+  after_update :run_badge_service, :run_notification_service
 
   jsonb_accessor :data,
     referral: [:string]
@@ -185,7 +185,13 @@ class User < ApplicationRecord
 
   def set_referral_code
     loop do
-      referral_code = "rc#{SecureRandom.hex(6)}"
+      if first_name && last_name
+        referral_code = "#{first_name}#{last_name}#{SecureRandom.hex(2)}".downcase
+      elsif last_name
+        referral_code = "#{last_name}#{SecureRandom.hex(3)}".downcase
+      else
+        referral_code = "#{SecureRandom.hex(3)}".downcase
+      end
       self.referral_code = referral_code
       break unless self.class.exists?(referral_code: referral_code)
     end
@@ -199,7 +205,11 @@ class User < ApplicationRecord
   end
 
   def run_badge_service
-    BadgeService::Referral.new(user: self).run if saved_change_to_referral_completed_at?
+    BadgeService::Referral.new(user: self.referred_by).run if saved_change_to_referral_completed_at?
+  end
+
+  def run_notification_service
+    NotifyReferrerJob.perform_later(referred_by_id, id) if saved_change_to_referral_completed_at?
   end
 
 end
