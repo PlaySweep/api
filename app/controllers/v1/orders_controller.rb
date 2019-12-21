@@ -1,8 +1,12 @@
 class V1::OrdersController < ApplicationController
   respond_to :json
 
+  def index
+    @orders = Order.where(prize_id: params[:prize_id]) if params[:prize_id]
+    respond_with @orders
+  end
+
   def create
-    #TODO pass user_id from web
     @order = Order.create(order_params)
     if @order.save
       respond_with @order

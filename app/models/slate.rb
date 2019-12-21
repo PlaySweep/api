@@ -137,7 +137,7 @@ class Slate < ApplicationRecord
 
   def start_winner_confirmation_window
     if saved_change_to_winner_id? and complete?
-      SendWinnerConfirmationJob.perform_later(id, winner_id) if winner_id?
+      SendWinnerConfirmationJob.perform_later(winner_id, prize.id) if winner_id? && prize
       HandleConfirmationWindowJob.set(wait_until: 24.hours.from_now.to_datetime).perform_later(id)
     end
   end

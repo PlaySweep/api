@@ -1,8 +1,7 @@
 class SendWinnerConfirmationJob < ApplicationJob
   queue_as :high
 
-  def perform slate_id, user_id
-    slate = Slate.find_by(id: slate_id)
+  def perform user_id, prize_id
     user = User.find_by(id: user_id)
     winner_confirmation_banner_copy = user.account.copies.where(category: "Winner Confirmation Banner").sample.message
     interpolated_winner_confirmation_banner_copy = winner_confirmation_banner_copy % { first_name: user.first_name }
@@ -18,7 +17,7 @@ class SendWinnerConfirmationJob < ApplicationJob
       user: user,
       title: "Confirm Now",
       message: winner_confirmation_action_copy,
-      url: "#{ENV["WEBVIEW_URL"]}/confirm_prize/#{user.slug}/#{slate_id}",
+      url: "#{ENV["WEBVIEW_URL"]}/prize_confirmation/#{prize_id}/#{user.slug}",
       notification_type: "NO_PUSH"
     )
   end

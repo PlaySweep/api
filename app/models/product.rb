@@ -9,6 +9,10 @@ class Product < ApplicationRecord
 
   after_create :create_sku
 
+  def is_digital?
+    category == "Digital"
+  end
+
   private
 
   def sku_code

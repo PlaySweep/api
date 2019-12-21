@@ -8,7 +8,7 @@ class Badge < ApplicationRecord
   before_create :reset_statuses
   after_create :notify_badge
 
-  scope :for_referral_milestones, -> { joins(:achievement).where("achievements.type = ?", ReferralMilestone::KLASS) }
+  scope :for_referral_milestones, -> { joins(:achievement).where("achievements.type = ?", "ReferralMilestone") }
 
   def self.current
     find_by(status: Badge::CURRENT)
@@ -21,7 +21,7 @@ class Badge < ApplicationRecord
   end
 
   def notify_badge
-    NotifyBadgeJob.perform_later(user_id)
+    NotifyBadgeJob.perform_later(user_id, achievement.prize.id)
   end
 
 end

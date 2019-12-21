@@ -12,7 +12,7 @@ class Order < ApplicationRecord
   scope :recent, -> { where('created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 14, DateTime.current.end_of_day) }
 
   around_save :catch_uniqueness_exception
-  after_create :trigger_ticket_notification
+  after_create :settle_slate
 
   private
 
@@ -22,11 +22,8 @@ class Order < ApplicationRecord
     self.errors.add(:prize, :taken)
   end
 
-  def trigger_ticket_notification
-    if prize.product.category == "Tickets"
-      text_message = "#{prize.product.name}\nDate: #{prize.date}\n\n#{user.full_name}\n#{user.email}\n#{user.line1} #{user.line2}\n#{user.city}, #{user.state} #{user.postal_code}"
-      Popcorn.notify("2054137379", text_message)
-    end
+  def settle_slate
+    prize.prizeable.done! if prize.prizeable_type == "Slate"
   end
 
 end

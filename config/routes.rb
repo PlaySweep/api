@@ -30,7 +30,8 @@ Rails.application.routes.draw do
 
     resources :contests, only: [:index, :show, :update]
     resources :slates, only: [:index, :show, :update]
-    resources :orders, only: [:create]
+    resources :orders, only: [:index, :create]
+    resources :prizes, only: [:show]
     resources :teams, only: [:index]
     resources :achievements, only: :index
   end

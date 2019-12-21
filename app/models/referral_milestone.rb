@@ -1,4 +1,3 @@
 class ReferralMilestone < Achievement
-  START_DATE = DateTime.new(2019, 9, 8)
-  KLASS = "ReferralMilestone"
+  START_DATE = DateTime.new(2019, 12, 21)
 end
