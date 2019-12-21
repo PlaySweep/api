@@ -4,6 +4,7 @@ json.description slate.description
 json.event_size slate.events.size
 json.status slate.status
 json.start_time slate.start_time
+json.display_week slate.display_week
 json.local slate.local
 json.is_contest slate.contest_id?
 json.result slate.result
