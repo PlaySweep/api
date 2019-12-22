@@ -24,8 +24,10 @@ json.location user.location
 json.current_team user.current_team, partial: 'v1/teams/team', as: :team
 json.current_team_is_default user.current_team_is_default?
 json.current_team_leaderboard user.current_team.active_leaderboard.present?
+json.current_account_leaderboard user.account.active_leaderboard.present?
 json.leaderboard do
   json.account do
+    json.name user.account.rewards.active.find_by(category: "Contest").description
     json.top_scorers user.account.active_leaderboard.top(3, { with_member_data: true })
     json.rank user.account.active_leaderboard.rank_for(user.id).to_i || 0
     json.score user.account.active_leaderboard.score_for(user.id).to_i || 0
@@ -77,6 +79,7 @@ json.stats do
   json.current_pick_streak user.current_pick_streak
 end
 json.latest_stats user.latest_stats
+json.latest_contest_activity user.latest_contest_activity
 json.recent_orders user.orders.recent, partial: 'v1/orders/order', as: :order
 json.current_badge user.badges.for_referral_milestones.current, partial: "v1/badges/badge", as: :badge
 json.current_badge_exist user.badges.for_referral_milestones.current.present?

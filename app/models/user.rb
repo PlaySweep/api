@@ -6,6 +6,7 @@ class User < ApplicationRecord
   value :has_recently_won
   hash_key :stats_hash_key
   list :latest_stats_list, maxlength: 3, marshal: true
+  list :latest_contest_activity_list, maxlength: 3, marshal: true
 
   rolify
 
@@ -65,6 +66,10 @@ class User < ApplicationRecord
 
   def latest_stats
     latest_stats_list.map(&:to_dot)
+  end
+
+  def latest_contest_activity
+    latest_contest_activity_list.map(&:to_dot)
   end
 
   def current_team

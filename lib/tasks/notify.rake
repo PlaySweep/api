@@ -92,7 +92,7 @@ def notify users:, week:
         FacebookMessaging::Standard.deliver(
           user: user, 
           message: content, 
-          notification_type: "REGULAR"
+          notification_type: "SILENT_PUSH"
         )
         quick_replies = FacebookParser::QuickReplyObject.new([
           {
@@ -112,7 +112,7 @@ def notify users:, week:
         FacebookMessaging::Standard.deliver(
           user: user, 
           message: content, 
-          notification_type: "REGULAR"
+          notification_type: "SILENT_PUSH"
         )
         FacebookMessaging::Button.deliver(
             user: user,

@@ -11,8 +11,8 @@ class Card < ApplicationRecord
   scope :for_contest, -> { joins(:slate).where("slates.contest_id IS NOT NULL") } 
 
   around_save :catch_uniqueness_exception
-  after_create :run_services, :complete_referral!
   after_update :handle_results
+  after_create :run_services, :update_latest_contest_activity, :complete_referral!
 
   private
 
@@ -39,6 +39,10 @@ class Card < ApplicationRecord
     elsif saved_change_to_status?(from: 'pending', to: 'loss')
       user.streaks.find_or_create_by(type: "SweepStreak").update_attributes(current: 0)
     end
+  end
+
+  def update_latest_contest_activity
+    user.latest_contest_activity_list << { id: slate.id, played_at: Time.now, name: slate.name }
   end
 
   def update_latest_stats
