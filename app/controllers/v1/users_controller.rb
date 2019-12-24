@@ -4,7 +4,7 @@ class V1::UsersController < ApplicationController
   skip_before_action :authenticate!, only: [:create]
 
   def index
-    @users = User.all
+    @users = User.for_account(params[:league_name])
     respond_with @users
   end
 
@@ -61,12 +61,6 @@ class V1::UsersController < ApplicationController
       end
       unsubscribe(user: @user) if params[:unsubscribe]
     end
-    respond_with @user
-  end
-
-  def reset
-    @user = User.find_by(id: params[:id])
-    @user.has_recently_won.set(nil)
     respond_with @user
   end
 

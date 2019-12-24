@@ -3,7 +3,6 @@ class User < ApplicationRecord
 
   include Redis::Objects
 
-  value :has_recently_won
   hash_key :stats_hash_key
   list :latest_stats_list, maxlength: 3, marshal: true
   list :latest_contest_activity_list, maxlength: 3, marshal: true
@@ -43,6 +42,7 @@ class User < ApplicationRecord
     postal_code: [:string, default: nil],
     country: [:string, default: "United States"]
 
+  scope :for_account, ->(name) { joins(:account).where("accounts.name = ?", name) }
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
   scope :confirmed, -> { where(confirmed: true) }
@@ -98,10 +98,6 @@ class User < ApplicationRecord
     else
       [30.3368251, -97.7545452]
     end
-  end
-
-  def has_recently_won?
-    has_recently_won == "1"
   end
 
   def has_never_played?

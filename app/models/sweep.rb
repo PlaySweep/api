@@ -8,7 +8,7 @@ class Sweep < ApplicationRecord
   jsonb_accessor :data,
     pick_ids: [:string, array: true, default: []]
 
-  after_create :set_data, :run_services
+  after_create :run_services
 
   def picks
     Pick.where(id: pick_ids)
@@ -19,14 +19,6 @@ class Sweep < ApplicationRecord
   end
 
   private
-
-  def set_data
-    begin
-      user.has_recently_won.set("1")
-    rescue Redis::CannotConnectError => e
-      puts e.inspect
-    end
-  end
 
   def run_services
     OwnerService.new(user, slate: slate).run(type: :sweep)
