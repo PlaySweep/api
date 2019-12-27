@@ -31,9 +31,6 @@ class User < ApplicationRecord
   after_update :create_or_update_location
   after_update :run_badge_service, :run_notification_service
 
-  jsonb_accessor :data,
-    referral: [:string]
-
   jsonb_accessor :shipping,
     line1: [:string, default: nil],
     line2: [:string, default: nil],
@@ -48,7 +45,7 @@ class User < ApplicationRecord
   scope :confirmed, -> { where(confirmed: true) }
   scope :unconfirmed, -> { where(confirmed: false) }
   scope :for_owner, ->(owner_id) { joins(:roles).where('roles.resource_id = ?', owner_id) }
-  scope :with_referral, ->(referral) { where("users.data->>'referral' = :referral", referral: "#{referral}")}
+  scope :with_source, ->(source) { where(source: source) }
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
 
   validates :slug, :referral_code, uniqueness: true

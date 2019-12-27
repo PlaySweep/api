@@ -10,7 +10,7 @@ module Indicative
           properties: {
               account: user.account.tenant,
               league: user.account.name,
-              ref: user.referral,
+              ref: user.source,
           }
       }.to_json
 
@@ -29,7 +29,7 @@ module Indicative
           properties: {
               account: user.account.tenant,
               league: user.account.name,
-              ref: user.referral,
+              ref: user.source,
           }
       }.to_json
       
@@ -48,7 +48,7 @@ module Indicative
           properties: {
               account: user.account.tenant,
               league: user.account.name,
-              ref: user.referral,
+              ref: user.source,
           }
       }.to_json
       
