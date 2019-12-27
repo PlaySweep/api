@@ -1,26 +1,24 @@
 class DataMailer < ApplicationMailer
   default from: "ryan@endemiclabs.co"
 
-  def analytics_for day:, email:
+  def engagement_analytics_for day:, email:
     account = Account.first
-    acquistion_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_final_acquisition.csv")
     engagement_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_engagement_data.csv")
-    attachments["#{(DateTime.current - day).to_date}_final_acquisition.csv"] = { mime_type: 'text/csv', content: acquistion_csv }
     attachments["#{(DateTime.current - day).to_date}_engagement_data.csv"] = { mime_type: 'text/csv', content: engagement_csv }
     mail(
       to: email,
-      subject: "#{account.friendly_name} #{account.name} Analytics - #{(DateTime.current - day).to_date}",
+      subject: "#{account.friendly_name} #{account.name} Engagement Analytics - #{(DateTime.current - day).to_date}",
       body: "Attached below."
     )
   end
 
-  def new_user_acquisition day:, email:
+  def user_acquisition_for day:, email:
     account = Account.first
     acquistion_csv = File.read("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_new_users.csv")
     attachments["#{(DateTime.current - day).to_date}_new_users.csv"] = { mime_type: 'text/csv', content: acquistion_csv }
     mail(
       to: email,
-      subject: "#{account.friendly_name} #{account.name} New User Acquisition - #{(DateTime.current - day).to_date}",
+      subject: "#{account.friendly_name} #{account.name} User Acquisition - #{(DateTime.current - day).to_date}",
       body: "Attached below."
     )
   end
@@ -186,6 +184,17 @@ class DataMailer < ApplicationMailer
     mail(
       to: email,
       subject: "#{account.friendly_name} #{account.name} Losers CSV #{DateTime.current.to_date}",
+      body: "Attached below."
+    )
+  end
+
+  def lookalike_audience email:
+    account = Account.first
+    lookalike_audience_csv = File.read("#{Rails.root}/tmp/lookalike_audience.csv")
+    attachments["#{Rails.root}/tmp/lookalike_audience.csv"] = { mime_type: 'text/csv', content: lookalike_audience_csv }
+    mail(
+      to: email,
+      subject: "#{account.friendly_name} #{account.name} Lookalike Audience #{DateTime.current.to_date}",
       body: "Attached below."
     )
   end

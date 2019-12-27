@@ -464,4 +464,14 @@ class DataMigration
     now.year - dob.year - ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
   end
 
+  def fetch_active_users
+    users = User.joins(:cards).group('users.id').order("count(users.id) DESC").first(3000)
+    CSV.open("#{Rails.root}/tmp/lookalike_audience.csv", "wb") do |csv|
+      csv << ["Email", "First Name", "Last Name", "Zipcode", "City", "State", "Country", "DOB", "DOBY", "Gender", "Age", "Facebook ID"]
+      users.each do |user|
+        csv << [user.email, user.first_name, user.last_name, user.zipcode, user.location.city, user.location.state, "United States", user.dob, user.dob.year, user.gender, age(user.dob), "_#{user.facebook_uuid}"]
+      end
+    end
+  end
+
 end
