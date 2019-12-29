@@ -18,7 +18,7 @@ class DailyAnalyticsJob < ApplicationJob
       csv << ["Date", "Name", "Team", "Signed Up", "Source"]
       users = User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day)
       users.each do |user|
-        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), user.full_name, user.current_team.abbreviation, user.confirmed, user.referral ? user.referral : "other"]
+        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), user.full_name, user.current_team.abbreviation, user.confirmed, user.source]
       end
     end
   end
