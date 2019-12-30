@@ -17,3 +17,4 @@ json.images team.images.each do |image|
   json.category image.category
   json.url image.url
 end
+json.active team.active
