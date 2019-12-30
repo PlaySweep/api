@@ -4,7 +4,7 @@ class V1::UsersController < ApplicationController
   skip_before_action :authenticate!, only: [:create]
 
   def index
-    @users = User.for_account(params[:league_name])
+    @users = User.active
     respond_with @users
   end
 
