@@ -3,9 +3,7 @@ class WeeklyAnalyticsJob < ApplicationJob
   
     def perform
       number_of_promotions_used_by_week
-      DataMailer.weekly_promotions(email: "ben@endemiclabs.co").deliver_later
       drizly_sweep_winners(from: 5)
-      DataMailer.weekly_sweep_promotions(email: "ben@endemiclabs.co").deliver_later
     end
   
     def number_of_promotions_used_by_week
@@ -31,6 +29,7 @@ class WeeklyAnalyticsJob < ApplicationJob
           csv << [promotion.category, level, promotion.used_by]
         end
       end
+      DataMailer.weekly_promotions(email: "ben@endemiclabs.co").deliver_later
     end
   
     def number_of_playing_promotions_used_all_time level:
@@ -47,6 +46,7 @@ class WeeklyAnalyticsJob < ApplicationJob
           csv << [promotion.user.id, promotion.category, promotion.level, promotion.user.full_name]
         end
       end
+      DataMailer.weekly_sweep_promotions(email: "ben@endemiclabs.co").deliver_later
     end
   
     def number_of_sweep_promotions_used_all_time level:
