@@ -23,13 +23,5 @@ class Team < Owner
   def coordinates
     [lat, long]
   end
-
-  private
-
-  def destroy_broadcast_label
-    if saved_change_to_active?(to: false)
-      team = FacebookMessaging::Broadcast.fetch_all_labels.select { |label| label["team"].split(' ')[-1] == id }.pop
-      FacebookMessaging::Broadcast.destroy(team["id"])
-    end
-  end
+  
 end

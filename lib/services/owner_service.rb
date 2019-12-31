@@ -14,7 +14,7 @@ class OwnerService
   
     def playing_reward
       playing_rule = OwnerRuleEvaluator.new(@user).playing_rule
-      if reward_active? && playing_rule
+      if reward_active? && playing_rule && !@slate.contest_id?
         member = "week_#{@slate.current_week}_user_#{@user.id}"
         leaderboard_name = "#{@user.current_team.leaderboard_prefix}_week_#{@slate.current_week}"
         leaderboard = Board.fetch(
@@ -40,7 +40,7 @@ class OwnerService
   
     def pick_reward
       pick_rule = OwnerRuleEvaluator.new(@user).pick_rule
-      if reward_active? && pick_rule
+      if reward_active? && pick_rule && !@slate.contest_id?
         member = "week_#{@slate.current_week}_user_#{@user.id}"
         leaderboard_name = "#{@user.current_team.leaderboard_prefix}_week_#{@slate.current_week}"
         leaderboard = Board.fetch(
@@ -52,15 +52,8 @@ class OwnerService
     end
   
     def sweep_reward
-      user_sweep
-      referral_sweep
-    end
-
-    private
-
-    def user_sweep
       sweep_rule = OwnerRuleEvaluator.new(@user).sweep_rule
-      if reward_active? && sweep_rule
+      if reward_active? && sweep_rule && !@slate.contest_id?
         member = "week_#{@slate.current_week}_user_#{@user.id}"
         leaderboard_name = "#{@user.current_team.leaderboard_prefix}_week_#{@slate.current_week}"
         leaderboard = Board.fetch(
@@ -69,11 +62,8 @@ class OwnerService
         current_score = leaderboard.score_for(member) || 0
         leaderboard.rank_member(member, current_score += sweep_rule.level)
       end
-    end
 
-    def referral_sweep
-      sweep_rule = OwnerRuleEvaluator.new(@user).referral_sweep_rule
-      if reward_active? && sweep_rule && @user.referred_by_id?
+      if @user.referred_by_id?
         member = "week_#{@slate.current_week}_user_#{@user.referred_by_id}"
         leaderboard_name = "#{@user.current_team.leaderboard_prefix}_week_#{@slate.current_week}"
         leaderboard = Board.fetch(

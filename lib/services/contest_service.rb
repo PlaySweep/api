@@ -14,7 +14,7 @@ class ContestService
 
   def playing_reward
     playing_rule = ContestRuleEvaluator.new(@user).playing_rule
-    if reward_active? && @slate.contest_id? && playing_rule
+    if reward_active? && playing_rule && @slate.contest_id?
       leaderboard = Board.fetch(
         leaderboard: "contest_#{@reward.name}".to_sym
       )
@@ -36,7 +36,7 @@ class ContestService
 
   def pick_reward
     pick_rule = ContestRuleEvaluator.new(@user).pick_rule
-    if reward_active? && @slate.contest_id? && pick_rule
+    if reward_active? && pick_rule && @slate.contest_id?
       leaderboard = Board.fetch(
         leaderboard: "contest_#{@reward.name}".to_sym
       )
@@ -47,7 +47,7 @@ class ContestService
 
   def sweep_reward
     sweep_rule = ContestRuleEvaluator.new(@user).sweep_rule
-    if reward_active? && @slate.contest_id? && sweep_rule
+    if reward_active? && sweep_rule && @slate.contest_id?
       leaderboard = Board.fetch(
         leaderboard: "contest_#{@reward.name}".to_sym
       )

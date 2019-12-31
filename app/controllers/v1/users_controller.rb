@@ -49,16 +49,7 @@ class V1::UsersController < ApplicationController
     @user.update_attributes(user_params)
     if @user.save
       IndicativeTrackEventConfirmedAccountJob.perform_later(@user.id) if params[:confirmation]
-      if params[:team]
-        team = Team.by_name(params[:team]).first
-        if team
-          unsubscribe(user: @user)
-          remove_role
-
-          add_role
-          subscribe_to(resource: team, user: @user)
-        end
-      end
+      remove_role and add_role if params[:team] && Team.by_name(params[:team]).first
       unsubscribe(user: @user) if params[:unsubscribe]
     end
     respond_with @user
@@ -79,14 +70,6 @@ class V1::UsersController < ApplicationController
       previous_team = previous_role.resource
       @user.remove_role(symbolized_role, previous_team)
     end
-  end
-
-  def subscribe_to resource:, user:
-    FacebookMessaging::Broadcast.subscribe(resource: resource, user: user)
-  end
-
-  def unsubscribe user:
-    FacebookMessaging::Broadcast.unsubscribe(user: user)
   end
 
   def shipping_params

@@ -35,14 +35,4 @@ class V1::Users::RolesController < ApplicationController
     @role = user.roles.find_by(resource_type: "Team")
   end
 
-  private
-
-  def subscribe_to resource:, user:
-    FacebookMessaging::Broadcast.subscribe(resource: resource, user: user)
-  end
-
-  def unsubscribe user:
-    FacebookMessaging::Broadcast.unsubscribe(user: user)
-  end
-
 end

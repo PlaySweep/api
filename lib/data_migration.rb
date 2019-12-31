@@ -100,21 +100,6 @@ class DataMigration
     end
   end
 
-  def self.destroy_existing_labels tenant:
-    Apartment::Tenant.switch(tenant) do
-      ids = %w[2270087886386329 2172397399508220 1837615989673390 1828521320581471 2510310578980060 2175091955917984 2078149078968108 1694716337297531 2464459606919425 2258037547611498 2146409175427900 2843418632335794 2654852247890472 2041441535954622 2586660084740940 2578308915531990 2224001087682719 2209729729114910 2167248286697227 2120441211393738]
-      ids.each {|id| FacebookMessaging::Broadcast.destroy(label_id: id) }
-    end
-  end
-
-  def self.create_targets_for_teams tenant:
-    Apartment::Tenant.switch(tenant) do
-      Team.active.each do |team|
-        FacebookMessaging::Broadcast.create_target_for(resource: team, category: "Team")
-      end
-    end
-  end
-
   def create_slate tenant:, team_name:, abbreviation:, owner_id:, start_time:, standing:
     Apartment::Tenant.switch(tenant) do
       slate = Slate.create(name: team_name, local: true, owner_id: owner_id, start_time: start_time, standing: standing)
