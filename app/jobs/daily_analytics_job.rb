@@ -17,7 +17,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), user.full_name, user.current_team.abbreviation, user.confirmed, user.source]
       end
     end
-    DataMailer.user_acquisition_for(day: 1, email: "ben@endemiclabs.co").deliver_now
+    DataMailer.user_acquisition_for(day: day, email: "ben@endemiclabs.co").deliver_now
   end
 
   def fetch_engagement_data day:
@@ -29,7 +29,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), Slate.finished_contest_count_for(slate.owner_id).size, slate.team.abbreviation, slate.cards.count, slate.prizes.first.try(:product).try(:category), slate.prizes.first.try(:product).try(:name), slate.start_time.strftime("%A").capitalize, slate.cards.map(&:status).reject { |status| status == 'loss' }.count, slate.prizes.first.try(:date)]
       end
     end
-    DataMailer.engagement_analytics_for(day: 1, email: "ben@endemiclabs.co").deliver_now
+    DataMailer.engagement_analytics_for(day: day, email: "ben@endemiclabs.co").deliver_now
   end
 
   def leaderboard_csv
