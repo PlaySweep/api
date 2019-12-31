@@ -129,35 +129,31 @@ def notify users:, week:
   end
 end
 
-def announcement users:
-  users.each_with_index do |user, index|
-    begin
-      if user.confirmed && user.current_team.present?
-        content = "Did you know that you can now earn Bud Light swag when you refer your friends? Tap for more."
-        FacebookMessaging::Standard.deliver(
-          user: user, 
-          message: content, 
-          notification_type: "SILENT_PUSH"
-        )
-        quick_replies = FacebookParser::QuickReplyObject.new([
-          {
-            content_type: :text,
-            title: "Share",
-            payload: "SHARE"
-          }
-        ]).objects
-        FacebookMessaging::Button.deliver(
-          user: user,
-          title: "Share and earn",
-          message: "Introducing Referral Milestones!\n\nFrom in-app prizes to Bud Light swag and game tickets - earn awesome prizes when you invite your friends to play!",
-          url: "#{ENV['WEBVIEW_URL']}/invite/#{user.slug}",
-          quick_replies: quick_replies,
-          notification_type: "NO_PUSH"
-        )
-      end
-      sleep 30 if index % 750 == 0
-    rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
-      # user.update_attributes(active: false)
+def announcement user:, notification:, content:
+  begin
+    if user.confirmed && user.current_team.present?
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: notification, 
+        notification_type: "SILENT_PUSH"
+      )
+      quick_replies = FacebookParser::QuickReplyObject.new([
+        {
+          content_type: :text,
+          title: "Share",
+          payload: "SHARE"
+        }
+      ]).objects
+      FacebookMessaging::Button.deliver(
+        user: user,
+        title: "Share and earn",
+        message: content,
+        url: "#{ENV['WEBVIEW_URL']}/invite/#{user.slug}",
+        quick_replies: quick_replies,
+        notification_type: "NO_PUSH"
+      )
     end
+  rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
+    # user.update_attributes(active: false)
   end
 end

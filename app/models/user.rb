@@ -29,7 +29,7 @@ class User < ApplicationRecord
 
   before_create :set_slug, :set_referral_code
   after_update :create_or_update_location
-  after_update :run_badge_service, :run_notification_service
+  after_update :run_badge_service, :run_notification_service, :enqueue_engagement_notification
 
   jsonb_accessor :shipping,
     line1: [:string, default: nil],
@@ -208,6 +208,15 @@ class User < ApplicationRecord
 
   def run_notification_service
     NotifyReferrerJob.perform_later(referred_by_id, id) if saved_change_to_referral_completed_at?
+  end
+
+  def enqueue_engagement_notification
+    if saved_change_to_referral_completed_at? && referred_by.referrals.size.include?([3, 10, 50])
+      today = DateTime.current
+      next_monday = today + ( (1 - today.wday) % 7 )
+      next_monday += 7.days if next_monday == today
+      ReferralEngagementNotificationJob.set(wait_until: next_monday.at_midday).perform_later(referred_by_id)
+    end
   end
 
 end
