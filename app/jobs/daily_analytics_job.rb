@@ -17,7 +17,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), user.full_name, user.current_team.abbreviation, user.confirmed, user.source]
       end
     end
-    DataMailer.user_acquisition_for(day: 1, email: "ben@endemiclabs.co").deliver_later
+    DataMailer.user_acquisition_for(day: 1, email: "ben@endemiclabs.co").deliver_now
   end
 
   def fetch_engagement_data day:
@@ -29,7 +29,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), Slate.finished_contest_count_for(slate.owner_id).size, slate.team.abbreviation, slate.cards.count, slate.prizes.first.try(:product).try(:category), slate.prizes.first.try(:product).try(:name), slate.start_time.strftime("%A").capitalize, slate.cards.map(&:status).reject { |status| status == 'loss' }.count, slate.prizes.first.try(:date)]
       end
     end
-    DataMailer.engagement_analytics_for(day: 1, email: "ben@endemiclabs.co").deliver_later
+    DataMailer.engagement_analytics_for(day: 1, email: "ben@endemiclabs.co").deliver_now
   end
 
   def leaderboard_csv
@@ -76,7 +76,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [order.id, order.created_at.strftime("%m/%d/%Y"), order.user.full_name, order.user.email, order.user.phone_number, order.user.shipping["line1"], order.user.shipping["line2"], order.user.shipping["city"], order.user.shipping["state"], order.user.shipping["postal_code"], order.user.shipping["country"], order.prize.try(:product).try(:name), order.prize.sku.code, order.prize.sku.weight, order.prize.sku.unit]
       end
     end
-    DataMailer.orders_to(email: "budweisersweep@endemiclabs.co").deliver_later
+    DataMailer.orders_to(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
   def fetch_winners day:
@@ -86,7 +86,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [sweep.user_id, sweep.user.full_name, sweep.user.email, sweep.user.zipcode, sweep.slate.prizes.first.try(:product).try(:name), sweep.slate.name, sweep.slate.start_time.strftime("%m/%d/%Y")]
       end
     end
-    DataMailer.winners_to(email: "budweisersweep@endemiclabs.co").deliver_later
+    DataMailer.winners_to(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
   def fetch_losers day:
@@ -97,7 +97,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [card.user_id, card.user.full_name, card.user.email, card.user.zipcode, card.slate.prizes.first ? card.slate.prizes.first.try(:product).try(:name) : "NA", card.slate.name, card.slate.start_time.strftime("%m/%d/%Y")]
       end
     end
-    DataMailer.losers_to(email: "budweisersweep@endemiclabs.co").deliver_later
+    DataMailer.losers_to(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
 end

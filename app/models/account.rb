@@ -56,7 +56,10 @@ class Account < ApplicationRecord
       week_49: "Week 14",
       week_50: "Week 15",
       week_51: "Week 16",
-      week_52: "Week 17"
+      week_52: "Week 17",
+      week_53: "Wild Card Weekend",
+      week_54: "Divisional Round",
+      week_55: "Conference Championship",
     }
     week = "week_#{current_week}".to_sym
     weeks_list[week]
