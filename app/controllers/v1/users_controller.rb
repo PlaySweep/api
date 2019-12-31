@@ -52,11 +52,9 @@ class V1::UsersController < ApplicationController
       if params[:team]
         team = Team.by_name(params[:team]).first
         if team
-          unsubscribe(user: @user)
           remove_role
 
           add_role
-          subscribe_to(resource: team, user: @user)
         end
       end
       unsubscribe(user: @user) if params[:unsubscribe]
@@ -79,14 +77,6 @@ class V1::UsersController < ApplicationController
       previous_team = previous_role.resource
       @user.remove_role(symbolized_role, previous_team)
     end
-  end
-
-  def subscribe_to resource:, user:
-    FacebookMessaging::Broadcast.subscribe(resource: resource, user: user)
-  end
-
-  def unsubscribe user:
-    FacebookMessaging::Broadcast.unsubscribe(user: user)
   end
 
   def shipping_params
