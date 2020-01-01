@@ -207,7 +207,7 @@ class User < ApplicationRecord
   end
 
   def run_notification_service
-    NotifyReferrerJob.perform_later(referred_by_id, id) if saved_change_to_referral_completed_at?
+    # NotifyReferrerJob.perform_later(referred_by_id, id) if saved_change_to_referral_completed_at?
   end
 
   def enqueue_engagement_notification
