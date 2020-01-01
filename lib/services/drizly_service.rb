@@ -26,7 +26,7 @@ class DrizlyService
       if promotion = DrizlyPromotion.find_by(category: "Playing", used: false, level: playing_rule.level)
         promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
         DrizlyPlayMailer.notify(@user, promotion).deliver_later
-        SendSlateNotificationWithDrizlyJob.perform_later(@user.id, @slate.id)
+        # SendSlateNotificationWithDrizlyJob.perform_later(@user.id, @slate.id)
       end
     else
       SendSlateNotificationJob.perform_later(@user.id, @slate.id)
