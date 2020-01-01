@@ -21,7 +21,7 @@ class Badge < ApplicationRecord
   end
 
   def notify_badge
-    NotifyBadgeJob.perform_later(user_id, achievement.prize.id)
+    # NotifyBadgeJob.perform_later(user_id, achievement.prize.id)
   end
 
 end

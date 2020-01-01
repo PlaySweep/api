@@ -137,6 +137,11 @@ def announcement user:, notification:, content:
         message: notification, 
         notification_type: "SILENT_PUSH"
       )
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: content, 
+        notification_type: "NO_PUSH"
+      )
       quick_replies = FacebookParser::QuickReplyObject.new([
         {
           content_type: :text,
@@ -144,14 +149,7 @@ def announcement user:, notification:, content:
           payload: "SHARE"
         }
       ]).objects
-      FacebookMessaging::Button.deliver(
-        user: user,
-        title: "Share and earn",
-        message: content,
-        url: "#{ENV['WEBVIEW_URL']}/invite/#{user.slug}",
-        quick_replies: quick_replies,
-        notification_type: "NO_PUSH"
-      )
+      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
     end
   rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
     # user.update_attributes(active: false)
