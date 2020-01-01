@@ -36,7 +36,7 @@ class OwnerService
       referral_rule = OwnerRuleEvaluator.new(@user).referral_rule
       if referral_reward_active? && referral_rule && @user.referred_by_id?
         member = "week_#{@reward.rewardable.account.current_week}_user_#{@user.referred_by_id}"
-        leaderboard_name = "#{@user.current_team.leaderboard_prefix}_week_#{@reward.rewardable.account.current_week}"
+        leaderboard_name = "#{@user.referred_by.current_team.leaderboard_prefix}_week_#{@reward.rewardable.account.current_week}"
         leaderboard = Board.fetch(
           leaderboard: leaderboard_name
         )
