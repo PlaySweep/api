@@ -11,6 +11,13 @@ class OwnerService
       @reward = @user.current_team.rewards.active.find_by(category: "Weekly Points")
       @reward.present?
     end
+
+    def referral_reward_active?
+      if @user.referred_by_id?
+        @reward = @user.referred_by.current_team.rewards.active.find_by(category: "Weekly Points")
+        @reward.present?
+      end
+    end
   
     def playing_reward
       playing_rule = OwnerRuleEvaluator.new(@user).playing_rule
@@ -27,7 +34,7 @@ class OwnerService
   
     def referral_reward
       referral_rule = OwnerRuleEvaluator.new(@user).referral_rule
-      if reward_active? && referral_rule && @user.referred_by_id?
+      if referral_reward_active? && referral_rule && @user.referred_by_id?
         member = "week_#{@reward.rewardable.account.current_week}_user_#{@user.referred_by_id}"
         leaderboard_name = "#{@user.current_team.leaderboard_prefix}_week_#{@reward.rewardable.account.current_week}"
         leaderboard = Board.fetch(
