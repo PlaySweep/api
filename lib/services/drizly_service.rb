@@ -27,7 +27,7 @@ class DrizlyService
         promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
         DrizlyPlayMailer.notify(@user, promotion).deliver_later
         # SendSlateNotificationWithDrizlyJob.perform_later(@user.id, @slate.id)
-      end
+      end unless @slate.contest_id?
     else
       SendSlateNotificationJob.perform_later(@user.id, @slate.id)
     end
@@ -39,7 +39,7 @@ class DrizlyService
       if promotion = DrizlyPromotion.find_by(category: "Sweep", used: false, level: sweep_rule.level)
         promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
         SendWinningSlateMessageWithDrizlyJob.perform_later(@user.id, @slate.id)
-      end
+      end unless @slate.contest_id?
     else
       SendWinningSlateMessageJob.perform_later(@user.id, @slate.id)
     end

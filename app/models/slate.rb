@@ -143,7 +143,8 @@ class Slate < ApplicationRecord
   private
 
   def run_results
-    ResultCardsJob.perform_later(id) and initialize_select_winner_process if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
+    ResultCardsJob.perform_later(id) if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
+    initialize_select_winner_process unless contest_id?
   end
 
   def change_status
@@ -155,7 +156,7 @@ class Slate < ApplicationRecord
   end
 
   def start_winner_confirmation_window
-    if saved_change_to_winner_id? and complete?
+    if saved_change_to_winner_id? and !contest_id? && complete?
       SendWinnerConfirmationJob.perform_later(winner_id, prize.id) if winner_id? && prize
       HandleConfirmationWindowJob.set(wait_until: 24.hours.from_now.to_datetime).perform_later(id)
     end
