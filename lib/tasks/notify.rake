@@ -129,28 +129,28 @@ def notify users:, week:
   end
 end
 
-def announcement user:, notification:, content:
+def announcement user:
   begin
-    if user.confirmed && user.current_team.present?
-      FacebookMessaging::Standard.deliver(
-        user: user, 
-        message: notification, 
-        notification_type: "SILENT_PUSH"
-      )
-      FacebookMessaging::Standard.deliver(
-        user: user, 
-        message: content, 
-        notification_type: "NO_PUSH"
-      )
-      quick_replies = FacebookParser::QuickReplyObject.new([
-        {
-          content_type: :text,
-          title: "Share",
-          payload: "SHARE"
-        }
-      ]).objects
-      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
-    end
+    notification = " 2020 is here, #{user.first_name} - and so is the Road to the Super Bowl! Tap to learn more."
+    content = "From now until the end of the Conference Championships, you have the opportunity to earn points and win an all-expenses paid trip to Super Bowl LIV when you play each week, refer a friend, and more! Get started below by making picks for Wild Card Weekend 👇"
+    FacebookMessaging::Standard.deliver(
+      user: user, 
+      message: notification, 
+      notification_type: "SILENT_PUSH"
+    )
+    FacebookMessaging::Standard.deliver(
+      user: user, 
+      message: content, 
+      notification_type: "NO_PUSH"
+    )
+    quick_replies = FacebookParser::QuickReplyObject.new([
+      {
+        content_type: :text,
+        title: "Share",
+        payload: "SHARE"
+      }
+    ]).objects
+    FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
   rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
     # user.update_attributes(active: false)
   end

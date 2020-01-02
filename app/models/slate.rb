@@ -44,7 +44,6 @@ class Slate < ApplicationRecord
     opponent_standing: [:string, default: nil],
     result: [:string, default: nil],
     score: [:string, default: nil],
-    global: [:boolean, default: false],
     team_id: [:integer, default: nil]
 
   def prize
@@ -97,12 +96,12 @@ class Slate < ApplicationRecord
   end
 
   def owner
-    return Owner.find_by(id: owner_id) unless global?
+    return Owner.find_by(id: owner_id)
     Owner.find_by(id: team_id)
   end
 
   def team
-    return Team.find_by(id: owner_id) unless global?
+    return Team.find_by(id: owner_id)
     Team.find_by(id: team_id)
   end
 

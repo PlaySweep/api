@@ -23,7 +23,7 @@ class SendWinningSlateMessageWithDrizlyJob < ApplicationJob
         payload: "SHARE"
       }
     ]).objects
-    unless slate.global?
+    unless slate.contest_id?
       result_message = slate.result == "W" ? "The #{slate.team.abbreviation} won #{slate.score} - view your results inside" : slate.result == "L" ? "The #{slate.team.abbreviation} lost #{slate.score} - view your results inside" : "The #{slate.team.abbreviation} tied #{slate.score} - view your results inside"
       FacebookMessaging::Standard.deliver(
         user: user,

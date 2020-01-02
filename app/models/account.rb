@@ -18,7 +18,7 @@ class Account < ApplicationRecord
   def active_leaderboard
     active_reward = rewards.active.find_by(category: "Contest")
     if active_reward.present?
-      leaderboard_name = "contest_#{active_reward.name}".to_sym
+      leaderboard_name = "contest_#{active_reward.name}"
       Board.fetch(leaderboard: leaderboard_name)
     end
   end
@@ -26,7 +26,7 @@ class Account < ApplicationRecord
   def active_weekly_leaderboard
     active_reward = rewards.active.find_by(category: "Contest")
     if active_reward.present?
-      leaderboard_name = "contest_#{current_week}_#{active_reward.name}".to_sym
+      leaderboard_name = "contest_#{current_week}_#{active_reward.name}"
       Board.fetch(leaderboard: leaderboard_name)
     end
   end

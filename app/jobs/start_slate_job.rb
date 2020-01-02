@@ -4,7 +4,7 @@ class StartSlateJob < ApplicationJob
   def perform slate_id
     slate = Slate.find_by(id: slate_id)
     slate.started! unless slate.nil? || slate.complete? || slate.done?
-    if slate.global?
+    if slate.contest_id?
       inactive_global_slates = Slate.unfiltered.ascending.inactive
       inactive_global_slates.first.pending! if inactive_global_slates.first
     else

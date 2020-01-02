@@ -16,10 +16,10 @@ class ContestService
     playing_rule = ContestRuleEvaluator.new(@user).playing_rule
     if reward_active? && playing_rule && @slate.contest_id?
       leaderboard = Board.fetch(
-        leaderboard: "contest_#{@reward.name}".to_sym
+        leaderboard: "contest_#{@reward.name}"
       )
       current_score = leaderboard.score_for(@user.id) || 0
-      leaderboard.rank_member(@user.id, current_score += playing_rule.level, { name: @user.abbreviated_name })
+      leaderboard.rank_member(@user.id, current_score += playing_rule.level)
     end
   end
 
@@ -27,10 +27,10 @@ class ContestService
     referral_rule = ContestRuleEvaluator.new(@user).referral_rule
     if reward_active? && referral_rule
       leaderboard = Board.fetch(
-        leaderboard: "contest_#{@reward.name}".to_sym
+        leaderboard: "contest_#{@reward.name}"
       )
       current_score = leaderboard.score_for(@user.id) || 0
-      leaderboard.rank_member(@user.id, current_score += referral_rule.level, { name: @user.abbreviated_name })
+      leaderboard.rank_member(@user.id, current_score += referral_rule.level)
     end
   end
 
@@ -38,10 +38,10 @@ class ContestService
     pick_rule = ContestRuleEvaluator.new(@user).pick_rule
     if reward_active? && pick_rule && @slate.contest_id?
       leaderboard = Board.fetch(
-        leaderboard: "contest_#{@reward.name}".to_sym
+        leaderboard: "contest_#{@reward.name}"
       )
       current_score = leaderboard.score_for(@user.id) || 0
-      leaderboard.rank_member(@user.id, current_score += pick_rule.level, { name: @user.abbreviated_name })
+      leaderboard.rank_member(@user.id, current_score += pick_rule.level)
     end
   end
 
@@ -49,14 +49,14 @@ class ContestService
     sweep_rule = ContestRuleEvaluator.new(@user).sweep_rule
     if reward_active? && sweep_rule && @slate.contest_id?
       leaderboard = Board.fetch(
-        leaderboard: "contest_#{@reward.name}".to_sym
+        leaderboard: "contest_#{@reward.name}"
       )
       current_score = leaderboard.score_for(@user.id) || 0
-      leaderboard.rank_member(@user.id, current_score += sweep_rule.level, { name: @user.abbreviated_name })
+      leaderboard.rank_member(@user.id, current_score += sweep_rule.level)
       
       if @user.referred_by_id?
         current_referrer_score = leaderboard.score_for(@user.referred_by_id) || 0
-        leaderboard.rank_member(@user.referred_by_id, current_referrer_score += sweep_rule.level, { name: @user.referred_by.abbreviated_name })
+        leaderboard.rank_member(@user.referred_by_id, current_referrer_score += sweep_rule.level)
       end
       
     end
