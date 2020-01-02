@@ -24,13 +24,13 @@ class ContestService
   end
 
   def referral_reward
-    referral_rule = ContestRuleEvaluator.new(@user).referral_rule
+    referral_rule = ContestRuleEvaluator.new(@user.referred_by).referral_rule
     if reward_active? && referral_rule
       leaderboard = Board.fetch(
         leaderboard: "contest_#{@reward.name}"
       )
-      current_score = leaderboard.score_for(@user.id) || 0
-      leaderboard.rank_member(@user.id, current_score += referral_rule.level)
+      current_score = leaderboard.score_for(@user.referred_by_id) || 0
+      leaderboard.rank_member(@user.referred_by_id, current_score += referral_rule.level)
     end
   end
 
