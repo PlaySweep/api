@@ -148,6 +148,11 @@ def announcement user:
         content_type: :text,
         title: "Share",
         payload: "SHARE"
+      },
+      {
+        content_type: :text,
+        title: "Status",
+        payload: "STATUS"
       }
     ]).objects
     FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
