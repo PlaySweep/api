@@ -1,10 +1,12 @@
 ---
-:concurrency: 25
+:concurrency: 10
 :pidfile: ./tmp/pids/sidekiq.pid
 :logfile: ./log/sidekiq.log
 :queues:
   - [critical, 5]
-  - [high, 5]
-  - [default, 2]
-  - [low, 2]
-  - [mailers, 2]
+  - [high, 3]
+  - default
+  - low
+  - mailers
+:limits:
+  low: 2

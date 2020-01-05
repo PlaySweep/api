@@ -3,7 +3,7 @@ class ReferralEngagementNotificationJob < ApplicationJob
   
     def perform referrer_id
       referrer = User.find(referrer_id)
-      if referrer.referrals.size == 3
+      if referrer.referrals.size.include?(User::REFERRAL_THRESHOLD)
         referrer_notification_copy = referrer.account.copies.where(category: "Referral Engagement Notification").sample.message
         referrer_notification_copy_interpolated = referrer_notification_copy % { first_name: referrer.first_name, referral_count: referrer.referrals.size }
         quick_replies = FacebookParser::QuickReplyObject.new([

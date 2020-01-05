@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   SWEEP = :sweep
+  REFERRAL_THRESHOLD = [3, 10, 50]
 
   include Redis::Objects
 
@@ -207,15 +208,12 @@ class User < ApplicationRecord
   end
 
   def run_notification_service
-    # NotifyReferrerJob.perform_later(referred_by_id, id) if saved_change_to_referral_completed_at?
+    NotifyReferrerJob.perform_later(referred_by_id, id) if saved_change_to_referral_completed_at?
   end
 
   # def enqueue_engagement_notification
-  #   if saved_change_to_referral_completed_at? && referred_by.referrals.size.include?([3, 10, 50])
-  #     today = DateTime.current
-  #     next_monday = today + ( (1 - today.wday) % 7 )
-  #     next_monday += 7.days if next_monday == today
-  #     ReferralEngagementNotificationJob.set(wait_until: next_monday.at_midday).perform_later(referred_by_id)
+  #   if saved_change_to_referral_completed_at? && referred_by.referrals.size.include?(REFERRAL_THRESHOLD)
+  #     ReferralEngagementNotificationJob.set(wait_until: 5.days.from_now.at_midday).perform_later(referred_by_id)
   #   end
   # end
 
