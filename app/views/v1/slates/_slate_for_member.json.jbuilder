@@ -6,6 +6,7 @@ json.status slate.status
 json.start_time slate.start_time
 json.local slate.local
 json.is_contest slate.contest_id?
+json.contest_id slate.contest_id
 json.winner slate.winner, partial: 'v1/users/user_for_member', as: :user
 json.has_winner slate.has_winner?
 json.previous_user_ids slate.previous_user_ids
