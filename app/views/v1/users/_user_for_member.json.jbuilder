@@ -31,7 +31,7 @@ json.leaderboard do
     json.rank user.account.active_leaderboard.rank_for(user.id).to_i || 0
     json.score user.account.active_leaderboard.score_for(user.id).to_i || 0
     json.ordinal_position user.account.active_leaderboard.rank_for(user.id).to_i.ordinalize.last(2)
-    json.tied user.account.active_leaderboard.total_members_in_score_range(user.account.active_leaderboard.rank_for(user.id).to_i, user.account.active_leaderboard.rank_for(user.id).to_i) > 1.0
+    json.tied user.account.active_leaderboard.total_members_in_score_range(user.account.active_leaderboard.score_for(user.id).to_i, user.account.active_leaderboard.score_for(user.id).to_i) > 1.0
   end if user.account.active_leaderboard?
   json.owner do
     json.name user.current_team.rewards.active.find_by(category: "Weekly Points").description
@@ -39,7 +39,7 @@ json.leaderboard do
     json.rank user.current_team.active_leaderboard.rank_for("week_#{user.account.current_week}_user_#{user.id}").to_i || 0
     json.score user.current_team.active_leaderboard.score_for("week_#{user.account.current_week}_user_#{user.id}").to_i || 0
     json.ordinal_position user.current_team.active_leaderboard.rank_for("week_#{user.account.current_week}_user_#{user.id}").to_i.ordinalize.last(2)
-    json.tied user.current_team.active_leaderboard.total_members_in_score_range(user.current_team.active_leaderboard.rank_for("week_#{user.account.current_week}_user_#{user.id}").to_i, user.current_team.active_leaderboard.rank_for("week_#{user.account.current_week}_user_#{user.id}").to_i) > 1.0
+    json.tied user.current_team.active_leaderboard.total_members_in_score_range(user.current_team.active_leaderboard.score_for("week_#{user.account.current_week}_user_#{user.id}").to_i, user.current_team.active_leaderboard.score_for("week_#{user.account.current_week}_user_#{user.id}").to_i) > 1.0
   end if user.current_team.active_leaderboard?
 end
 json.account do
