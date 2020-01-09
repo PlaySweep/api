@@ -112,4 +112,15 @@ class DailyAnalyticsJob < ApplicationJob
     DataMailer.gopuff_to(email: "ben@endemiclabs.co").deliver_now
   end
 
+  def fetch_skus
+    CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_skus.csv", "wb") do |csv|
+      csv << ["Product Name", "Code", "Size"]
+      skus = Sku.all
+      skus.each do |sku|
+        csv << [sku.product.name, sku.code, sku.size]
+      end
+    end
+    DataMailer.products(email: "budweisersweep@endemiclabs.co").deliver_now
+  end
+
 end

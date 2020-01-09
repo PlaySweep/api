@@ -113,8 +113,8 @@ class DataMailer < ApplicationMailer
 
   def products email:
     account = Account.first
-    products_csv = File.read("#{Rails.root}/tmp/products.csv")
-    attachments["#{Rails.root}/tmp/products.csv"] = { mime_type: 'text/csv', content: products_csv }
+    products_csv = File.read("#{Rails.root}/tmp/#{DateTime.current.to_date}_skus.csv")
+    attachments["#{Rails.root}/tmp/#{DateTime.current.to_date}_skus.csv"] = { mime_type: 'text/csv', content: products_csv }
     mail(
       to: email,
       subject: "#{account.friendly_name} #{account.name} Products CSV #{DateTime.current.to_date}",
