@@ -21,7 +21,7 @@ def re_engage_drizly user:
   FacebookMessaging::Standard.deliver(
     user: user, 
     message: message, 
-    notification_type: "REGULAR"
+    notification_type: "SILENT_PUSH"
   )
   content = "We noticed you still haven't set up your account to receive your earned $20 Drizly credit - tap below to finish up and we'll take care of the rest!"
   FacebookMessaging::Standard.deliver(
@@ -131,8 +131,8 @@ end
 
 def announcement user:
   begin
-    notification = " 2020 is here, #{user.first_name} - and so is the Road to the Super Bowl! Tap to learn more."
-    content = "From now until the end of the Conference Championships, you have the opportunity to earn points and win an all-expenses paid trip to Super Bowl LIV when you play each week, refer a friend, and more! Get started below by making picks for Wild Card Weekend 👇"
+    notification = "Hey #{user.first_name}, I think I have an easy way for you to add a #{user.current_team.abbreviation} Playoff Sweatshirt to your wardrobe 👀"
+    content = "In addition to chasing that trip to the Super Bowl, you can now earn some points for the #{user.current_team.abbreviation} contest each week and take home a Playoff Sweatshirt! Details inside 👇"
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 
@@ -158,5 +158,42 @@ def announcement user:
     FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
   rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
     # user.update_attributes(active: false)
+  end
+end
+
+def targeted_messaging user: 
+  begin
+    notification = "Congrats, #{user.first_name}! You're a top performer in the Race to the NFL Super Bowl LIV leaderboard!"
+    content = "We still have a few more weeks left, so study those questions hard and keep bringing those die hard sports friends of yours to help rise up the board!"
+    FacebookMessaging::Standard.deliver(
+      user: user, 
+      message: notification, 
+      notification_type: "SILENT_PUSH"
+    )
+    FacebookMessaging::Standard.deliver(
+      user: user, 
+      message: content, 
+      notification_type: "NO_PUSH"
+    )
+    quick_replies = FacebookParser::QuickReplyObject.new([
+      {
+        content_type: :text,
+        title: "Share",
+        payload: "SHARE"
+      },
+      {
+        content_type: :text,
+        title: "Status",
+        payload: "STATUS"
+      },
+      {
+        content_type: :text,
+        title: "Play again",
+        payload: "PLAY"
+      }
+    ]).objects
+    FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
+  rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
+    
   end
 end

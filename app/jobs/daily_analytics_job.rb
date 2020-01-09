@@ -100,4 +100,15 @@ class DailyAnalyticsJob < ApplicationJob
     DataMailer.losers_to(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
-end
+  def fetch_gopuff
+    CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_gopuff.csv", "wb") do |csv|
+      csv << ["Date", "Name", "Email", "Zipcode", "Source"]
+      users = User.where('source ilike ?', '%gopuff%')
+      users.each do |user|
+        csv << [user.created_at.strftime("%Y%m%d"), user.full_name, user.email, user.zipcode, user.source]
+      end
+    end
+    DataMailer.gopuff_to(email: "ben@endemiclabs.co").deliver_now
+  end
+
+end`
