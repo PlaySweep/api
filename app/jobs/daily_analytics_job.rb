@@ -4,6 +4,7 @@ class DailyAnalyticsJob < ApplicationJob
   def perform
     fetch_new_users(day: 1)
     fetch_engagement_data(day: 1)
+    fetch_gopuff
     fetch_orders
     fetch_winners(day: 1)
     fetch_losers(day: 1)
