@@ -18,6 +18,7 @@ module FacebookParser
                   type: :web_url,
                   url: payload[:url],
                   title: payload[:title],
+                  webview_share_button: :hide,
                   webview_height_ratio: :full,
                   messenger_extensions: true
                 }
