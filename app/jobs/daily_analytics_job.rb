@@ -112,4 +112,4 @@ class DailyAnalyticsJob < ApplicationJob
     DataMailer.gopuff_to(email: "ben@endemiclabs.co").deliver_now
   end
 
-end`
+end
