@@ -131,8 +131,8 @@ end
 
 def announcement user:
   begin
-    notification = "Hey #{user.first_name}, I have an easy way for you to add a #{user.current_team.abbreviation} Playoff Sweatshirt to your wardrobe 👀"
-    content = "In addition to chasing that trip to the Super Bowl, you can now earn some points for the #{user.current_team.abbreviation} contest each week and take home a Playoff Sweatshirt! Details inside 👇"
+    notification = "Hey #{user.first_name}, I might have an easy way for you to add a #{user.current_team.abbreviation} Playoff Sweatshirt to your wardrobe 👀"
+    content = "In addition to chasing that trip to the Super Bowl, you can now earn some points for the #{user.current_team.abbreviation} contest each week and take home a Playoff Sweatshirt!"
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 
@@ -200,8 +200,8 @@ end
 
 def notify user: 
   begin
-    notification = "Divisional playoff week is here! Get your answers in for the Race to the NFL Super Bowl LIV."
-    content = "There's still plenty of time to make a move up the leaderboard and win a trip to Super Bowl LIV!"
+    notification = "Championship week is here! Get your answers in for the Road to the NFL Super Bowl LIV."
+    content = "It's your last week to make a move up the leaderboard and win a trip to Super Bowl LIV! Tap below to play 👇"
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 
