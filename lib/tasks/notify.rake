@@ -163,8 +163,8 @@ end
 
 def targeted_messaging user: 
   begin
-    notification = "Congrats, #{user.first_name}! You're a top performer in the Race to the NFL Super Bowl LIV leaderboard!"
-    content = "We still have a few more weeks left, so study those questions hard and keep bringing those die hard sports friends of yours to help rise up the board!"
+    notification = "If you're seeing this #{user.first_name}, you are still in the hunt in the Road to Super Bowl LIV 🏈"
+    content = "You're in exclusive club territory now, #{user.first_name}. And you still have a few more days left to make that push up the leaderboard and win a trip to Super Bowl LIV - good luck!"
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 
@@ -185,11 +185,6 @@ def targeted_messaging user:
         content_type: :text,
         title: "Status",
         payload: "STATUS"
-      },
-      {
-        content_type: :text,
-        title: "Play again",
-        payload: "PLAY"
       }
     ]).objects
     FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)

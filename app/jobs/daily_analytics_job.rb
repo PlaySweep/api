@@ -103,10 +103,10 @@ class DailyAnalyticsJob < ApplicationJob
 
   def fetch_gopuff
     CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_gopuff.csv", "wb") do |csv|
-      csv << ["Date", "Name", "Email", "Zipcode", "Source"]
+      csv << ["ID", "Date", "Name", "Email", "Zipcode", "Source"]
       users = User.where('source ilike ?', '%gopuff%')
       users.each do |user|
-        csv << [user.created_at.strftime("%Y%m%d"), user.full_name, user.email, user.zipcode, user.source]
+        csv << [user.id, user.created_at.strftime("%Y%m%d"), user.full_name, user.email, user.zipcode, user.source]
       end
     end
     DataMailer.gopuff_to(email: "ben@endemiclabs.co").deliver_now
