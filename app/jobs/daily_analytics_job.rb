@@ -126,7 +126,7 @@ class DailyAnalyticsJob < ApplicationJob
   def fetch_products
     CSV.open("#{Rails.root}/tmp/products.csv", "wb") do |csv|
       csv << ["ID", "Team", "Name", "Category"]
-      products = Product.active.order(id: :asc)
+      products = Product.active.order(owner_id: :asc)
       products.each do |product|
         csv << [product.id, product.team ? product.team.name : "Global", product.name, product.category]
       end
