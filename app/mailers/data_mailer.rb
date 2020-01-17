@@ -111,13 +111,24 @@ class DataMailer < ApplicationMailer
     )
   end
 
-  def products email:
+  def skus email:
     account = Account.first
-    products_csv = File.read("#{Rails.root}/tmp/#{DateTime.current.to_date}_skus.csv")
-    attachments["#{Rails.root}/tmp/#{DateTime.current.to_date}_skus.csv"] = { mime_type: 'text/csv', content: products_csv }
+    skus_csv = File.read("#{Rails.root}/tmp/#{DateTime.current.to_date}_skus.csv")
+    attachments["#{Rails.root}/tmp/#{DateTime.current.to_date}_skus.csv"] = { mime_type: 'text/csv', content: skus_csv }
     mail(
       to: email,
       subject: "#{account.friendly_name} #{account.name} Products CSV #{DateTime.current.to_date}",
+      body: "Attached below."
+    )
+  end
+
+  def products email:
+    account = Account.first
+    products_csv = File.read("#{Rails.root}/tmp/products.csv")
+    attachments["#{Rails.root}/tmp/products.csv"] = { mime_type: 'text/csv', content: products_csv }
+    mail(
+      to: email,
+      subject: "#{account.friendly_name} #{account.name} Products CSV",
       body: "Attached below."
     )
   end
@@ -129,6 +140,17 @@ class DataMailer < ApplicationMailer
     mail(
       to: email,
       subject: "#{account.friendly_name} #{account.name} Prizes CSV #{DateTime.current.to_date}",
+      body: "Attached below."
+    )
+  end
+
+  def teams email:
+    account = Account.first
+    teams_csv = File.read("#{Rails.root}/tmp/teams.csv")
+    attachments["#{Rails.root}/tmp/teams.csv"] = { mime_type: 'text/csv', content: teams_csv }
+    mail(
+      to: email,
+      subject: "#{account.friendly_name} #{account.name} Teams CSV",
       body: "Attached below."
     )
   end

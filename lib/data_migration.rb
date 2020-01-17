@@ -294,8 +294,9 @@ class DataMigration
       "source_consumer_created*": user.created_at.strftime("%Y-%m-%d"),
       "source_consumer_updated": "",
       "additional_information": {}
-    }
-    puts user_object.to_json
+    }.to_json
+    user_object.delete!("//")
+    puts user_object + ","
     puts "\n"
   end
 
@@ -304,42 +305,6 @@ class DataMigration
   end
 
   def data_api_formatter users:
-    events = users.map do |user|
-      user.slates.first(5).map do |slate|
-        {
-          "id*": user.id.to_s,
-          "event_information": {
-            "source_event_id*": "BUDA-8574-10418-BUD",
-            "type": "",
-            "event_name*": "Event_#{user.created_at.strftime("%Y-%m-%d")}",
-            "event_description": "",
-            "event_location": "",
-            "event_start_timestamp": "",
-            "event_end_timestamp": ""
-          },
-          "location_information": {
-            "address_line_1": "",
-            "address_line_2": "",
-            "address_line_3": "",
-            "city": "",
-            "state": "",
-            "zip": "",
-            "country": ""
-          },
-          "contact_information": {
-            "event_rep_name": "",
-            "event_rep_email": "",
-            "event_rep_phone": ""
-          },
-          "source_event_created*": "Event_#{user.created_at.strftime("%Y-%m-%d")}",
-          "source_event_updated": "Event_#{user.updated_at.strftime("%Y-%m-%d")}",
-          "additional_information": {
-            
-          }
-        }
-      end
-      
-    end
     formatted_users = users.map do |user|
       current_age = age(user.dob)
       {
@@ -405,43 +370,39 @@ class DataMigration
         "source_consumer_updated": "",
         "additional_information": ""
       }
-
-      event = {
-        "id*": "10418",
-        "event_information": {
-          "source_event_id*": "BUDA-8574-10418-BUD",
-          "type": "",
-          "event_name*": "Event_BUDA-8574-10418-BUD",
-          "event_description": "",
-          "event_location": "",
-          "event_start_timestamp": "",
-          "event_end_timestamp": ""
-        },
-        "location_information": {
-          "address_line_1": "",
-          "address_line_2": "",
-          "address_line_3": "",
-          "city": "",
-          "state": "",
-          "zip": "",
-          "country": ""
-        },
-        "contact_information": {
-          "event_rep_name": "",
-          "event_rep_email": "",
-          "event_rep_phone": ""
-        },
-        "source_event_created*": "#{Time.now.strftime("%Y-%m-%d")}",
-        "source_event_updated": "#{Time.now.strftime("%Y-%m-%d")}",
-        "additional_information": {
-          
-        }
-      }
-
-
     end
 
-    return { "real_time_flag*": "N", "consumer_profiles": formatted_users, "events": [event]  }
+    return { "real_time_flag*": "N", "consumer_profiles": formatted_users, "events": [{
+      "id*": "10418",
+      "event_information": {
+        "source_event_id*": "BUDA-8574-10418-BUD",
+        "type": "",
+        "event_name*": "Event_BUDA-8574-10418-BUD",
+        "event_description": "",
+        "event_location": "",
+        "event_start_timestamp": "",
+        "event_end_timestamp": ""
+      },
+      "location_information": {
+        "address_line_1": "",
+        "address_line_2": "",
+        "address_line_3": "",
+        "city": "",
+        "state": "",
+        "zip": "",
+        "country": ""
+      },
+      "contact_information": {
+        "event_rep_name": "",
+        "event_rep_email": "",
+        "event_rep_phone": ""
+      },
+      "source_event_created*": "#{Time.now.strftime("%Y-%m-%d")}",
+      "source_event_updated": "#{Time.now.strftime("%Y-%m-%d")}",
+      "additional_information": {
+        
+      }
+    }]  }
   end
 
   def age(dob)

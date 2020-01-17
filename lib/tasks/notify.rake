@@ -131,8 +131,8 @@ end
 
 def announcement user:
   begin
-    notification = "Hey #{user.first_name}, I might have an easy way for you to add a #{user.current_team.abbreviation} Playoff Sweatshirt to your wardrobe 👀"
-    content = "In addition to chasing that trip to the Super Bowl, you can now earn some points for the #{user.current_team.abbreviation} contest each week and take home a Playoff Sweatshirt!"
+    notification = "Hey #{user.first_name}, we're closing in on Championship weekend and there are even more ways to win #{user.current_team.abbreviation} prizes 👀"
+    content = "Score the most points amongst your fellow #{user.current_team.abbreviation} fans for the week and take home a #{user.current_team.abbreviation} Playoff Sweatshirt!"
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 

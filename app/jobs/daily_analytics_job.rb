@@ -120,7 +120,29 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [sku.product.name, sku.code, sku.size]
       end
     end
-    DataMailer.products(email: "budweisersweep@endemiclabs.co").deliver_now
+    DataMailer.skus(email: "budweisersweep@endemiclabs.co").deliver_now
+  end
+
+  def fetch_products
+    CSV.open("#{Rails.root}/tmp/products.csv", "wb") do |csv|
+      csv << ["ID", "Team", "Name", "Category"]
+      products = Product.active.order(id: :asc)
+      products.each do |product|
+        csv << [product.id, product.team ? product.team.name : "Global", product.name, product.category]
+      end
+    end
+    DataMailer.products(email: "ryan@endemiclabs.co").deliver_now
+  end
+
+  def fetch_active_teams
+    CSV.open("#{Rails.root}/tmp/teams.csv", "wb") do |csv|
+      csv << ["ID", "Name"]
+      teams = Team.active.order(id: :asc)
+      teams.each do |team|
+        csv << [team.id, team.name]
+      end
+    end
+    DataMailer.teams(email: "ryan@endemiclabs.co").deliver_now
   end
 
 end
