@@ -6,7 +6,7 @@ class GoPuffMailer < ApplicationMailer
 
     mail(
       to: @user.email,
-      subject: "Hi #{@user.first_name}, we have one more way for you to get to Super Bowl LIV 👀",
+      subject: "There's one more way to get to Super Bowl LIV, #{user.first_name} 🏈!",
       content_type: "text/html"
     )
   end
