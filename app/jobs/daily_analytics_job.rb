@@ -123,6 +123,20 @@ class DailyAnalyticsJob < ApplicationJob
     DataMailer.skus(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
+  def fetch_lookalike_audience
+    CSV.open("#{Rails.root}/tmp/lookalike_audience.csv", "wb") do |csv|
+      csv << ["fb page id", "email", "first name", "last name", "dob", "doby", "gender", "age", "zip", "city", "state", "country", "# of referrals", "# of contests played"]
+      referred_by_ids = User.where.not(referred_by_id: nil, referral_completed_at: nil).where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 30, DateTime.current.end_of_day).pluck(:referred_by_id).uniq
+      users = User.where(id: referred_by_ids)
+      users.each do |user|
+        now = Time.now.utc.to_date
+        age = now.year - user.dob.year - ((now.month > user.dob.month || (now.month == user.dob.month && now.day >= user.dob.day)) ? 0 : 1)
+        csv << ["#{user.facebook_uuid}_", user.email, user.first_name, user.last_name, user.dob, user.dob.year, user.gender, age, "*#{user.location.postcode}", user.location.city || user.city, user.location.state || user.state, "US", user.referrals.size, user.cards.size]
+      end
+    end
+    DataMailer.lookalike_audience(email: "ben@endemiclabs.co").deliver_now
+  end
+
   def fetch_products
     CSV.open("#{Rails.root}/tmp/products.csv", "wb") do |csv|
       csv << ["ID", "Team", "Name", "Category"]

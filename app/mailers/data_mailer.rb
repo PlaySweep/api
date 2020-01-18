@@ -133,6 +133,17 @@ class DataMailer < ApplicationMailer
     )
   end
 
+  def lookalike_audience email:
+    account = Account.first
+    lookalike_audience_csv = File.read("#{Rails.root}/tmp/lookalike_audience.csv")
+    attachments["#{Rails.root}/tmp/lookalike_audience.csv"] = { mime_type: 'text/csv', content: lookalike_audience_csv }
+    mail(
+      to: email,
+      subject: "#{account.friendly_name} #{account.name} Lookalike Audience CSV",
+      body: "Attached below."
+    )
+  end
+
   def prizes email:
     account = Account.first
     prizes_csv = File.read("#{Rails.root}/tmp/prizes.csv")
