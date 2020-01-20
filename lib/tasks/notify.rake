@@ -163,8 +163,8 @@ end
 
 def targeted_messaging user: 
   begin
-    notification = "If you're seeing this #{user.first_name}, you are still in the hunt in the Road to Super Bowl LIV 🏈"
-    content = "You're in exclusive club territory now, #{user.first_name}. And you still have a few more days left to make that push up the leaderboard and win a trip to Super Bowl LIV - good luck!"
+    notification = "🏈 Who's in the top 20? You are, #{user.first_name}!"
+    content = "Even if you don't get to #1, 2nd-20th place win a Sweatshirt for their favorite NFL team - so keep it up!"
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 
@@ -195,16 +195,18 @@ end
 
 def notify user: 
   begin
-    notification = "Championship week is here! Get your answers in for the Road to the NFL Super Bowl LIV."
-    content = "It's your last week to make a move up the leaderboard and win a trip to Super Bowl LIV! Tap below to play 👇"
+    notification = "🏈 Conference Championship day has arrived! Sign up and get your answers in for the Road to the NFL Super Bowl LIV."
+    content = "And we have questions that cover it all! Tap below to begin 👇"
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 
       notification_type: "SILENT_PUSH"
     )
-    FacebookMessaging::Standard.deliver(
-      user: user, 
-      message: content, 
+    FacebookMessaging::Button.deliver(
+      user: user,
+      title: "Let's go!",
+      message: content,
+      url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
       notification_type: "NO_PUSH"
     )
     quick_replies = FacebookParser::QuickReplyObject.new([
@@ -219,7 +221,6 @@ def notify user:
         payload: "STATUS"
       }
     ]).objects
-    FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
   rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
     
   end
