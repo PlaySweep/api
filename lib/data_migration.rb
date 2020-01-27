@@ -109,6 +109,16 @@ class DataMigration
     end
   end
 
+  def self.fetch_go_puff
+    csv_text = File.read(Rails.root.join('lib', 'seeds', 'correct_csv.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: "ISO-8859-1")
+    players = []
+    csv.each do |row|
+      players.push({date: row["Date"], email: row["Email"], name: row["Name"], zip: row["Zipcode"], source: row["Source"]})
+    end
+    players
+  end
+
   def self.upload_teams
     Apartment::Tenant.switch!('budlight')
     csv_text = File.read(Rails.root.join('lib', 'seeds', 'nfl_teams.csv'))
@@ -220,7 +230,7 @@ class DataMigration
     end
   end
 
-  def seed_leaderboard_results leaderboard:, history:
+  def self.seed_leaderboard_results leaderboard:, history:
     board = Board.fetch(leaderboard: leaderboard)
     board.all_members.each do |player|
       user = User.find_by(id: player[:member])
