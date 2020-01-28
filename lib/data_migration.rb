@@ -181,6 +181,23 @@ class DataMigration
     end
   end
 
+  def self.upload_slates team:
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{team}_slates.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    count = 0
+    csv.each do |row|
+      slate = Slate.new
+      product = Product.first
+      slate.name = row["name"]
+      slate.start_time = row["start_time"]
+      slate.owner_id = row["team_id"]
+      slate.local = row["local"]
+      slate.opponent_id = row["opponent_id"]
+      slate.prizes.build(product_id: product.id, sku_id: product.skus.first.id)
+      slate.save
+    end
+  end
+
   def self.upload_drizly_promotions name:, category:, value:, level:
     csv_text = File.read(Rails.root.join('lib', 'seeds', "#{name}_promo.csv"))
     csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')

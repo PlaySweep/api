@@ -195,8 +195,8 @@ end
 
 def notify user: 
   begin
-    notification = "🏈 Conference Championship day has arrived! Sign up and get your answers in for the Road to the NFL Super Bowl LIV."
-    content = "And we have questions that cover it all! Tap below to begin 👇"
+    notification = "🏈 Super Bowl week is here! Sign up to get your answers in and win some Super Bowl prizes."
+    content = "It's the Chiefs high flying offense vs that 49ers swarming defense - and we have questions that cover it all! Tap below to begin 👇"
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 
