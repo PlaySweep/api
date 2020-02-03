@@ -195,32 +195,74 @@ end
 
 def notify user: 
   begin
-    notification = "🏈 Super Bowl week is here! Sign up to get your answers in and win some Super Bowl prizes."
-    content = "It's the Chiefs high flying offense vs that 49ers swarming defense - and we have questions that cover it all! Tap below to begin 👇"
-    FacebookMessaging::Standard.deliver(
-      user: user, 
-      message: notification, 
-      notification_type: "SILENT_PUSH"
-    )
-    FacebookMessaging::Button.deliver(
-      user: user,
-      title: "Let's go!",
-      message: content,
-      url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
-      notification_type: "NO_PUSH"
-    )
-    quick_replies = FacebookParser::QuickReplyObject.new([
-      {
-        content_type: :text,
-        title: "Share",
-        payload: "SHARE"
-      },
-      {
-        content_type: :text,
-        title: "Status",
-        payload: "STATUS"
-      }
-    ]).objects
+    if user.confirmed && (user.current_team.abbreviation == "Chiefs" || user.current_team.abbreviation == "49ers")
+      notification = "🏈 We're so close, #{user.first_name}. Tap to find out how you can win an autographed football from the Super Bowl MVP!"
+      content = "Get all 6 questions right for the Super Bowl contest and you'll have a chance at winning a Super Bowl MVP Autographed Football!\n\nPlus, you can also win a #{user.current_team.abbreviation} Super Bowl Hoodie & Hat by taking 1st place amongst your fellow #{user.current_team.abbreviation} fans on the team leaderboard 📈"
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: notification, 
+        notification_type: "SILENT_PUSH"
+      )
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: content, 
+        notification_type: "NO_PUSH"
+      )
+      quick_replies = FacebookParser::QuickReplyObject.new([
+        {
+          content_type: :text,
+          title: "Share",
+          payload: "SHARE"
+        },
+        {
+          content_type: :text,
+          title: "Status",
+          payload: "STATUS"
+        }
+      ]).objects
+      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
+    elsif user.confirmed
+      notification = "🏈 We're so close, #{user.first_name}. Tap to find out how you can win an autographed football from the Super Bowl MVP!"
+      content = "Get all 6 questions right for the Super Bowl contest and you'll have a chance at winning a Super Bowl MVP Autographed Football!"
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: notification, 
+        notification_type: "SILENT_PUSH"
+      )
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: content, 
+        notification_type: "NO_PUSH"
+      )
+      quick_replies = FacebookParser::QuickReplyObject.new([
+        {
+          content_type: :text,
+          title: "Share",
+          payload: "SHARE"
+        },
+        {
+          content_type: :text,
+          title: "Status",
+          payload: "STATUS"
+        }
+      ]).objects
+      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
+    else
+      notification = "🏈 We're so close, #{user.first_name}. Tap to find out how you can win an autographed football from the Super Bowl MVP!"
+      content = "Get all 6 questions right for the Super Bowl contest and you'll have a chance at winning a Super Bowl MVP Autographed Football! Sign up below 👇"
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: notification, 
+        notification_type: "SILENT_PUSH"
+      )
+      FacebookMessaging::Button.deliver(
+        user: user,
+        title: "Let's go!",
+        message: content,
+        url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
+        notification_type: "NO_PUSH"
+      )
+    end
   rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
     
   end
