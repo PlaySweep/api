@@ -261,7 +261,7 @@ class DataMigration
     current_age = age(user.dob)
     user_object = {
       "id*": user.id.to_s,
-      "source_consumer_id*": "#{user.account.tenant}_#{user.id}",
+      "source_consumer_id*": "budlight_#{user.id}",
       "contact_channel": "",
       "consumer_type": "",
       "consumer_type_2": "",
@@ -336,7 +336,7 @@ class DataMigration
       current_age = age(user.dob)
       {
         "id*": user.id,
-        "source_consumer_id*": "#{user.account.tenant}_#{user.id}",
+        "source_consumer_id*": "budlight_#{user.id}",
         "contact_channel": "",
         "consumer_type": "",
         "consumer_type_2": "",
