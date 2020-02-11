@@ -1,6 +1,6 @@
 # config/deploy/production.rb
 
-server 'sweep_prod2', user: 'ubuntu', roles: %w{ app db web }
+server 'sweep_prod1', user: 'ubuntu', roles: %w{ app db web }
 set :deploy_to, "/var/www/sweep_api"
 set :tmp_dir, '/home/deploy/tmp'
 

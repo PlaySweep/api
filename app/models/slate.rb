@@ -12,6 +12,7 @@ class Slate < ApplicationRecord
   has_many :picks, through: :users
   has_many :cards, dependent: :destroy
   has_many :prizes, as: :prizeable, dependent: :destroy
+  has_many :participants, dependent: :destroy
 
   enum status: [ :inactive, :pending, :started, :complete, :done, :postponed ]
 
@@ -37,11 +38,7 @@ class Slate < ApplicationRecord
     local: [:boolean, default: false],
     opponent_id: [:integer, default: nil],
     field: [:string, default: nil],
-    opponent_pitcher: [:string, default: nil],
-    pitcher: [:string, default: nil],
     previous_user_ids: [:string, array: true, default: []],
-    standing: [:string, default: nil],
-    opponent_standing: [:string, default: nil],
     result: [:string, default: nil],
     score: [:string, default: nil],
     team_id: [:integer, default: nil]

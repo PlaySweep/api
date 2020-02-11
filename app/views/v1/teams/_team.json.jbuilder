@@ -9,8 +9,13 @@ json.lat team.lat
 json.long team.long
 json.coordinates team.coordinates
 json.division team.division
+json.conference team.conference
 json.promoted team.promoted
 json.initials team.initials
+json.details do
+  json.position team.standing.position
+  json.standing team.standing.records
+end
 json.images team.images.each do |image|
   json.id image.id
   json.description image.description

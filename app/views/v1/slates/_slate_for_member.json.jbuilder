@@ -38,15 +38,9 @@ json.prizes slate.prizes.each do |prize|
   json.category prize.product.category
   json.date prize.date
 end
-json.team slate.team, partial: 'v1/teams/team', as: :team
-json.field slate.field
-json.standing slate.standing
-json.pitcher
-json.opponent do
-  json.id slate.try(:opponent).try(:id)
-  json.image slate.try(:opponent).try(:image)
-  json.abbreviation slate.try(:opponent).try(:abbreviation)
-  json.initials slate.try(:opponent).try(:initials)
-  json.pitcher slate.try(:opponent_pitcher)
-  json.standing slate.try(:opponent_standing)
-end if slate.opponent
+json.participants slate.participants.each do |participant|
+  json.id participant.id
+  json.field participant.field
+  json.team participant.team, partial: 'v1/teams/team', as: :team
+  json.player participant.player, partial: 'v1/players/player', as: :player
+end
