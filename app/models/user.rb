@@ -32,6 +32,10 @@ class User < ApplicationRecord
   after_update :create_or_update_location
   after_update :run_badge_service, :run_notification_service
 
+  typed_store :settings do |s|
+    s.string :notification_preference, default: 'sms', null: false
+  end
+
   jsonb_accessor :shipping,
     line1: [:string, default: nil],
     line2: [:string, default: nil],
