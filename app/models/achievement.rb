@@ -3,10 +3,7 @@ class Achievement < ApplicationRecord
   has_many :users, through: :badges
   has_many :prizes, as: :prizeable, dependent: :destroy
 
-  jsonb_accessor :data,
-    difficulty: [:string, default: nil],
-    threshold: [:string, default: nil],
-    disclaimer: [:string, default: nil]
+  store_accessor :data, :difficulty, :threshold, :disclaimer
 
   def prize
     return prizes.first if prizes.any?

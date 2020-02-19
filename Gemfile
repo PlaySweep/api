@@ -37,8 +37,6 @@ gem 'possessive'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
-gem 'activerecord-typedstore'
-
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
@@ -49,7 +47,6 @@ gem 'responders'
 
 gem 'rolify'
 
-gem "jsonb_accessor", "~> 1.0.0"
 gem 'faraday'
 gem 'hash_dot'
 gem 'json'

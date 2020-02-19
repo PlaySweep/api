@@ -5,8 +5,7 @@ class Sweep < ApplicationRecord
   scope :ascending, -> { joins(:slate).merge(Slate.ascending) }
   scope :descending, -> { joins(:slate).merge(Slate.descending) }
 
-  jsonb_accessor :data,
-    pick_ids: [:string, array: true, default: []]
+  store_accessor :data, :pick_ids
 
   after_create :run_services
 

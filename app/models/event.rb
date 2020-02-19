@@ -19,8 +19,7 @@ class Event < ApplicationRecord
   scope :descending, -> { joins(:slate).merge(Slate.descending) }
   scope :unfiltered, -> { joins(:slate).merge(Slate.unfiltered) }
 
-  jsonb_accessor :data,
-    category: [:string, default: nil]
+  store_accessor :data, :category
 
   def winner_ids
     selections.winners.map(&:id)

@@ -14,6 +14,10 @@ class Slate < ApplicationRecord
   has_many :prizes, as: :prizeable, dependent: :destroy
   has_many :participants, dependent: :destroy
 
+  store_accessor :data, :winner_id, :local, :field,
+                        :opponent_id, :previous_user_ids,
+                        :result, :score, :team_id
+
   enum status: [ :inactive, :pending, :started, :complete, :done, :postponed ]
 
   scope :for_admin, -> { where(status: [0, 1, 2]) }
@@ -32,16 +36,6 @@ class Slate < ApplicationRecord
   after_update :change_status, :run_results, :start_winner_confirmation_window
 
   accepts_nested_attributes_for :prizes
-
-  jsonb_accessor :data,
-    winner_id: [:integer, default: nil],
-    local: [:boolean, default: false],
-    opponent_id: [:integer, default: nil],
-    field: [:string, default: nil],
-    previous_user_ids: [:string, array: true, default: []],
-    result: [:string, default: nil],
-    score: [:string, default: nil],
-    team_id: [:integer, default: nil]
 
   def prize
     return prizes.first if prizes.any?

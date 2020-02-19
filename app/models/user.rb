@@ -1,7 +1,6 @@
 class User < ApplicationRecord
   SWEEP = :sweep
   REFERRAL_THRESHOLD = [3, 10, 50]
-
   include Redis::Objects
 
   hash_key :stats_hash_key
@@ -9,6 +8,8 @@ class User < ApplicationRecord
   list :latest_contest_activity_list, maxlength: 3, marshal: true
 
   rolify
+
+  store_accessor :settings, :notification_preference
 
   belongs_to :account, optional: true
   belongs_to :league, foreign_key: :account_id, optional: true
@@ -31,18 +32,6 @@ class User < ApplicationRecord
   before_create :set_slug, :set_referral_code
   after_update :create_or_update_location
   after_update :run_badge_service, :run_notification_service
-
-  typed_store :settings do |s|
-    s.string :notification_preference, default: 'sms', null: false
-  end
-
-  jsonb_accessor :shipping,
-    line1: [:string, default: nil],
-    line2: [:string, default: nil],
-    city: [:string, default: nil],
-    state: [:string, default: nil],
-    postal_code: [:string, default: nil],
-    country: [:string, default: "United States"]
 
   scope :for_account, ->(name) { joins(:account).where("accounts.name = ?", name) }
   scope :active, -> { where(active: true) }
