@@ -3,7 +3,7 @@ class DataMigration
     Apartment::Tenant.switch(tenant) do
       Team.active.each do |team|
         User.joins(:preference).where("preferences.data->>'owner_id' = :owner_id", owner_id: team.id.to_s).each do |user|
-          user.add_role team.name.downcase.split(' ').join('_').to_sym, team unless user.has_role?(team.name.downcase.split(' ').join('_').to_sym, team) 
+          user.add_role team.name.downcase.split(' ').join('_').to_sym, team unless user.has_role?(team.name.downcase.split(' ').join('_').to_sym, team)
           print "Switched #{user.first_name} to #{team.name} using Roles."
         end
       end
@@ -188,13 +188,42 @@ class DataMigration
     csv.each do |row|
       slate = Slate.new
       product = Product.first
+      slate.id = row["id"]
       slate.name = row["name"]
       slate.start_time = row["start_time"]
       slate.owner_id = row["team_id"]
       slate.local = row["local"]
       slate.opponent_id = row["opponent_id"]
-      slate.prizes.build(product_id: product.id, sku_id: product.skus.first.id)
       slate.save
+    end
+  end
+
+  def self.upload_events team:
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{team}_events.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    csv.each do |row|
+      event = Event.new
+      event.id = row["id"]
+      event.type = row["type"]
+      event.description = row["description"]
+      event.order = row["order"]
+      event.category = row["category"]
+      event.slate_id = row["slate_id"]
+      event.save
+    end
+  end
+
+  def self.upload_selections team:
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{team}_selections.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    csv.each do |row|
+      selection = Selection.new
+      selection.id = row["id"]
+      selection.description = row["description"]
+      selection.order = row["order"]
+      selection.category = row["category"]
+      selection.event_id = row["event_id"]
+      selection.save
     end
   end
 
@@ -427,7 +456,7 @@ class DataMigration
       "source_event_created*": "#{Time.now.strftime("%Y-%m-%d")}",
       "source_event_updated": "#{Time.now.strftime("%Y-%m-%d")}",
       "additional_information": {
-        
+
       }
     }]  }
   end
@@ -445,6 +474,14 @@ class DataMigration
         csv << [user.email, user.first_name, user.last_name, user.zipcode, user.location.city, user.location.state, "United States", user.dob, user.dob.year, user.gender, age(user.dob), "_#{user.facebook_uuid}"]
       end
     end
+  end
+
+  def migrate_addresses user:
+
+  end
+
+  def migrate_phone_numbers user:
+
   end
 
 end
