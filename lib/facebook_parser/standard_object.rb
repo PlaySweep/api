@@ -10,7 +10,8 @@ module FacebookParser
         message: {
           text: payload[:message]
         },
-        message_type: "RESPONSE",
+        message_type: "MESSAGE_TAG",
+        tag: "CONFIRMED_EVENT_UPDATE",
         notification_type: payload[:notification_type]
       }
     end

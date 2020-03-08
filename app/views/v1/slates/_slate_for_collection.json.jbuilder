@@ -44,3 +44,4 @@ json.participants slate.participants.each do |participant|
   json.team participant.team, partial: 'v1/teams/team', as: :team
   json.player participant.player, partial: 'v1/players/player', as: :player
 end
+json.owner_image slate.team.image

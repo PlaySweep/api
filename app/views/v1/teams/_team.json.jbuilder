@@ -13,8 +13,8 @@ json.conference team.conference
 json.promoted team.promoted
 json.initials team.initials
 json.details do
-  json.position team.standing.position
-  json.standing team.standing.records
+  json.position team.try(:standing).try(:position)
+  json.standing team.try(:standing).try(:records)
 end
 json.images team.images.each do |image|
   json.id image.id

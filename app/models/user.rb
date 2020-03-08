@@ -204,10 +204,4 @@ class User < ApplicationRecord
     NotifyReferrerJob.perform_later(referred_by_id, id) if saved_change_to_referral_completed_at?
   end
 
-  # def enqueue_engagement_notification
-  #   if saved_change_to_referral_completed_at? && referred_by.referrals.size.include?(REFERRAL_THRESHOLD)
-  #     ReferralEngagementNotificationJob.set(wait_until: 5.days.from_now.at_midday).perform_later(referred_by_id)
-  #   end
-  # end
-
 end
