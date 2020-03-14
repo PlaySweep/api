@@ -484,4 +484,18 @@ class DataMigration
 
   end
 
+  def self.migrate_to_participants slate:
+    if slate.opponent_id
+      if slate.field == "home"
+        slate.participants.create(owner_id: slate.owner_id, slate_id: slate.id, field: "home")
+        slate.participants.create(owner_id: slate.opponent_id, slate_id: slate.id, field: "away")
+      else
+        slate.participants.create(owner_id: slate.owner_id, slate_id: slate.id, field: "away")
+        slate.participants.create(owner_id: slate.opponent_id, slate_id: slate.id, field: "home")
+      end
+    else
+      slate.participants.create(owner_id: slate.owner_id, slate_id: slate.id)
+    end
+  end
+
 end
