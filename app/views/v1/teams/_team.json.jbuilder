@@ -15,6 +15,7 @@ json.initials team.initials
 json.details do
   json.position team.try(:standing).try(:position)
   json.standing team.try(:standing).try(:records)
+  json.division team.try(:standing).try(:division)
 end
 json.images team.images.each do |image|
   json.id image.id
