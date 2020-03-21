@@ -4,6 +4,7 @@ class CreateQuizzes < ActiveRecord::Migration[5.2]
       t.string :name
       t.string :description
       t.datetime :start_time
+      t.datetime :end_time
       t.string :type, default: "Quiz"
       t.integer :status, default: 0
       t.references :owner, foreign_key: true

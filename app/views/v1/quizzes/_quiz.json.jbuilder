@@ -3,6 +3,7 @@ json.name quiz.name
 json.description quiz.description
 json.status quiz.status
 json.start_time quiz.start_time
+json.end_time quiz.end_time
 json.played quiz.played?(current_user.id)
 json.prize do
   json.id quiz.prize.id
