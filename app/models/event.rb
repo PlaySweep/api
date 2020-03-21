@@ -2,7 +2,7 @@ class Event < ApplicationRecord
   INCOMPLETE, COMPLETE = 0, 1
 
   belongs_to :slate
-  has_many :cards, through: :slate
+  has_many :cards, as: :cardable, through: :slate
   has_many :selections, dependent: :destroy
   has_many :picks, dependent: :destroy
   has_many :users, through: :picks

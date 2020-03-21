@@ -10,8 +10,11 @@ Rails.application.routes.draw do
           get "roles/change_teams"
         end
         resources :picks, only: [:index, :show, :create, :update]
+        resources :choices, only: [:index, :show, :create, :update]
         resources :roles, only: [:create]
         resources :slates, only: [:index, :show]
+        resources :quizzes, only: [:index, :show]
+        resources :cards, only: [:create, :update]
       end
     end
 
@@ -22,10 +25,11 @@ Rails.application.routes.draw do
     end
 
     resources :achievements, only: [:index]
-    resources :contests, :slates, only: [:index, :show, :update]
+    resources :contests, :slates, :quizzes, only: [:index, :show, :update]
     resources :orders, only: [:index, :create]
     resources :prizes, only: [:show]
     resources :teams, only: [:index]
+    resources :question_sessions, only: [:create, :update]
   end
   
   namespace :admin, defaults: { format: :json } do
@@ -33,6 +37,9 @@ Rails.application.routes.draw do
     resources :teams, only: [:index, :show]
     resources :slates, only: [:index, :show, :create, :update, :destroy] do
       resources :events, only: [:create, :show, :update, :destroy]
+    end
+    resources :quizzes, only: [:index, :show, :create, :update, :destroy] do
+      resources :questions, only: [:create, :show, :update, :destroy]
     end
     resources :products, only: [:index, :show, :create]
   end

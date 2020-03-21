@@ -1,6 +1,6 @@
 class DrizlyService
-  def initialize user, slate
-    @user, @slate = user, slate
+  def initialize user, resource
+    @user, @resource = user, resource
   end
 
   def run type: 
@@ -22,26 +22,29 @@ class DrizlyService
 
   def for_playing
     playing_rule = DrizlyRuleEvaluator.new(@user).playing_rule
-    if @user.played_for_first_time? && playing_rule && playing_reward_active?
-      if promotion = DrizlyPromotion.find_by(category: "Playing", used: false, level: playing_rule.level)
-        promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
-        DrizlyPlayMailer.notify(@user, promotion).deliver_later
-        # SendSlateNotificationWithDrizlyJob.perform_later(@user.id, @slate.id)
-      end unless @slate.contest_id?
-    else
-      SendSlateNotificationJob.perform_later(@user.id, @slate.id)
+    if @resource.class.name == "Slate"
+      if @user.played_for_first_time? && playing_rule && playing_reward_active?
+        if promotion = DrizlyPromotion.find_by(category: "Playing", used: false, level: playing_rule.level)
+          promotion.update_attributes(used_by: @user.id, slate_id: @resource.id, used: true)
+          DrizlyPlayMailer.notify(@user, promotion).deliver_later
+        end unless @resource.contest_id?
+      else
+        SendSlateNotificationJob.perform_later(@user.id, @resource.id)
+      end
     end
   end
 
   def for_sweep
     sweep_rule = DrizlyRuleEvaluator.new(@user).sweep_rule
-    if sweep_rule && sweep_reward_active? && @user.won_for_first_time?
-      if promotion = DrizlyPromotion.find_by(category: "Sweep", used: false, level: sweep_rule.level)
-        promotion.update_attributes(used_by: @user.id, slate_id: @slate.id, used: true)
-        SendWinningSlateMessageWithDrizlyJob.perform_later(@user.id, @slate.id)
-      end unless @slate.contest_id?
-    else
-      SendWinningSlateMessageJob.perform_later(@user.id, @slate.id)
+    if @resource.class.name == "Slate"
+      if sweep_rule && sweep_reward_active? && @user.won_for_first_time?
+        if promotion = DrizlyPromotion.find_by(category: "Sweep", used: false, level: sweep_rule.level)
+          promotion.update_attributes(used_by: @user.id, slate_id: @resource.id, used: true)
+          SendWinningSlateMessageWithDrizlyJob.perform_later(@user.id, @resource.id)
+        end unless @resource.contest_id?
+      else
+        SendWinningSlateMessageJob.perform_later(@user.id, @resource.id)
+      end
     end
   end
 end

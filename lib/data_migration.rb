@@ -181,6 +181,49 @@ class DataMigration
     end
   end
 
+  def self.upload_quizzes team:
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{team}_quizzes.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    count = 0
+    csv.each do |row|
+      quiz = Quiz.new
+      product = Product.first
+      quiz.id = row["id"]
+      quiz.name = row["name"]
+      quiz.owner_id = row["team_id"]
+      quiz.start_time = row["start_time"]
+      quiz.save
+    end
+  end
+
+  def self.upload_questions team:
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{team}_questions.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    csv.each do |row|
+      question = Question.new
+      question.id = row["id"]
+      question.type = "Question"
+      question.description = row["description"]
+      question.order = row["order"]
+      question.quiz_id = row["quiz_id"]
+      question.save
+    end
+  end
+
+  def self.upload_answers team:
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{team}_answers.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    csv.each do |row|
+      answer = Answer.new
+      answer.id = row["id"]
+      answer.description = row["description"]
+      answer.order = row["order"]
+      answer.status = row["status"].to_i
+      answer.question_id = row["question_id"]
+      answer.save
+    end
+  end
+
   def self.upload_slates team:
     csv_text = File.read(Rails.root.join('lib', 'seeds', "#{team}_slates.csv"))
     csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')

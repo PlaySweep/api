@@ -1,0 +1,31 @@
+class V1::Users::CardsController < ApplicationController
+  respond_to :json
+
+  def create
+    @card = current_user.cards.create(cardable_type: params[:cardable_type], cardable_id: params[:cardable_id])
+    if @card.save
+      puts @card.errors.inspect
+      respond_with @card
+    else
+      puts @card.errors.inspect
+      render json: { errors: @card.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    @card = Card.find(params[:id])
+    @card.update_attributes(card_params)
+    if @card.save
+      respond_with @card
+    else
+      render json: { errors: @card.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def card_params
+    params.require(:card).permit(:status)
+  end
+
+end

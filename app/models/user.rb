@@ -17,10 +17,12 @@ class User < ApplicationRecord
   has_many :sweeps, dependent: :destroy
   has_many :streaks, dependent: :destroy
   has_many :picks, dependent: :destroy
+  has_many :choices, dependent: :destroy
   has_many :events, through: :picks
   has_many :cards, dependent: :destroy
   has_many :referrals, -> { where.not(referral_completed_at: nil).where('created_at > ?', ReferralMilestone::START_DATE) }, class_name: "User", foreign_key: :referred_by_id
-  has_many :slates, through: :cards
+  has_many :slates, through: :cards, source: :cardable, source_type: "Slate"
+  has_many :quizzes, through: :cards, source: :cardable, source_type: "Quiz"
   has_many :entries, dependent: :destroy
   has_many :leaderboard_results
   has_many :leaderboards, through: :leaderboard_results, source: "leaderboard_history", dependent: :destroy
@@ -95,10 +97,6 @@ class User < ApplicationRecord
     cards.size == 0
   end
 
-  def has_never_played_contest?
-    cards.for_contest.size == 0
-  end
-
   def played_for_first_time?
     cards.size == 1
   end
@@ -154,9 +152,21 @@ class User < ApplicationRecord
     picks_for_slate.sort == slate.winners.map(&:id).uniq.sort
   end
 
-  def completed_selections_for slate
-    events = picks.pending.where( event_id: slate.events.map(&:id) )
-    events.size == slate.events.size
+  def won_quiz? quiz
+    question_ids = questions.where(slate_id: slate.id).map(&:id)
+    picks_for_quiz = choices.where(question_id: question_ids).map(&:answer_id)
+    picks_for_quiz.sort == quiz.winners.map(&:id).uniq.sort
+  end
+
+  def completed_selections_for resource:
+    case resource.class.name
+    when "Slate"
+      events = picks.pending.where( event_id: resource.events.map(&:id) )
+      events.size == resource.events.size
+    when "Quiz"
+      questions = choices.pending.where( question_id: resource.questions.map(&:id) )
+      questions.size == resource.questions.size   
+    end
   end
 
   private

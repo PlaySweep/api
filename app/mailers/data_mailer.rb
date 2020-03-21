@@ -117,7 +117,7 @@ class DataMailer < ApplicationMailer
     attachments["#{Rails.root}/tmp/#{DateTime.current.to_date}_skus.csv"] = { mime_type: 'text/csv', content: skus_csv }
     mail(
       to: email,
-      subject: "#{account.friendly_name} #{account.name} Products CSV #{DateTime.current.to_date}",
+      subject: "#{account.friendly_name} #{account.name} Skus CSV #{DateTime.current.to_date}",
       body: "Attached below."
     )
   end

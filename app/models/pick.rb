@@ -40,7 +40,7 @@ class Pick < ApplicationRecord
   end
 
   def create_card_when_finished
-    Card.create(user_id: user_id, slate_id: event.slate_id) if user.completed_selections_for(event.slate)
+    Card.create(user_id: user_id, cardable_type: "Slate", cardable_id: event.slate_id) if user.completed_selections_for(resource: event.slate)
   end
 
   def update_user_streaks

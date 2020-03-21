@@ -114,10 +114,10 @@ class DailyAnalyticsJob < ApplicationJob
 
   def fetch_skus
     CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_skus.csv", "wb") do |csv|
-      csv << ["Product Name", "Code", "Size"]
+      csv << ["ID", "Product Name", "Description", "Code", "Size"]
       skus = Sku.all
       skus.each do |sku|
-        csv << [sku.product.name, sku.code, sku.size]
+        csv << [sku.id, sku.product.name, sku.product.description, sku.code, sku.size]
       end
     end
     DataMailer.skus(email: "budweisersweep@endemiclabs.co").deliver_now

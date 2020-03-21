@@ -1,14 +1,11 @@
 class Card < ApplicationRecord
   PENDING, WIN, LOSS = 0, 1, 2
   belongs_to :user
-  belongs_to :slate
+  belongs_to :cardable, polymorphic: true
 
   enum status: [ :pending, :win, :loss ]
 
-  validates :slate_id, uniqueness: { scope: :user_id, message: "only 1 Card per Slate" }
-
-  scope :for_slate, ->(slate_id) { where(slate_id: slate_id) } 
-  scope :for_contest, -> { joins(:slate).where("slates.contest_id IS NOT NULL") } 
+  validates :cardable_id, uniqueness: { scope: :user_id, message: "only 1 Card per Entry" }
 
   around_save :catch_uniqueness_exception
   after_update :handle_results
@@ -19,13 +16,13 @@ class Card < ApplicationRecord
   def catch_uniqueness_exception
     yield
   rescue ActiveRecord::RecordNotUnique
-    self.errors.add(:slate, :taken)
+    self.errors.add(:cardable, :taken)
   end
 
   def run_services
-    OwnerService.new(user, slate: slate).run(type: :playing)
-    ContestService.new(user, slate: slate).run(type: :playing)
-    DrizlyService.new(user, slate).run(type: :playing)
+    OwnerService.new(user, slate: cardable).run(type: :playing)
+    ContestService.new(user, slate: cardable).run(type: :playing)
+    DrizlyService.new(user, cardable).run(type: :playing)
     IndicativeTrackEventPlayedContestJob.perform_later(user_id)
   end
 
@@ -42,11 +39,11 @@ class Card < ApplicationRecord
   end
 
   def update_latest_contest_activity
-    user.latest_contest_activity_list << { id: slate.id, played_at: Time.now, name: slate.name }
+    user.latest_contest_activity_list << { id: cardable_id, played_at: Time.now, name: cardable.name }
   end
 
   def update_latest_stats
-    user.update_latest_stats(slate: slate) if saved_change_to_status?
+    user.update_latest_stats(slate: cardable) if saved_change_to_status?
   end
 
   def handle_results
@@ -60,11 +57,11 @@ class Card < ApplicationRecord
   end
 
   def create_sweep_records
-    user.sweeps.create(slate_id: slate_id, pick_ids: user.picks.for_slate(slate_id).map(&:id))
+    user.sweeps.create(slate_id: cardable_id, pick_ids: user.picks.for_slate(cardable_id).map(&:id))
   end
 
   def handle_losers
-    SendLosingSlateMessageJob.perform_later(user_id, slate_id)
+    SendLosingSlateMessageJob.perform_later(user_id, cardable_id)
   end
 
   def complete_referral!

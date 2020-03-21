@@ -10,7 +10,7 @@ class Slate < ApplicationRecord
   has_many :entries, dependent: :destroy
   has_many :users, through: :events
   has_many :picks, through: :users
-  has_many :cards, dependent: :destroy
+  has_many :cards, as: :cardable, dependent: :destroy
   has_many :prizes, as: :prizeable, dependent: :destroy
   has_many :participants, dependent: :destroy
 
@@ -50,14 +50,19 @@ class Slate < ApplicationRecord
   end
 
   def played? current_user_id
-    cards.find_by(user_id: current_user_id, slate_id: id).present?
+    cards.find_by(user_id: current_user_id, cardable_id: id).present?
   end
 
   def number_of_correct_answers_for current_user_id
-    card = cards.find_by(user_id: current_user_id, slate_id: id)
+    card = cards.find_by(user_id: current_user_id, cardable_id: id)
     if card
-      picks = card.user.picks.where(event_id: card.slate.events.map(&:id))
-      picks.win.count
+      case card.cardable.class.name
+      when "Slate"
+        data = card.user.picks.where(event_id: card.cardable.events.map(&:id))
+      when "Quiz"
+        data = card.user.choices.where(question_id: card.cardable.questions.map(&:id))
+      end
+      data.win.count
     end
   end
 

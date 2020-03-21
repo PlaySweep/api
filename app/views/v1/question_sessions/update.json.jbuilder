@@ -1,0 +1,1 @@
+json.question_session @question_session, partial: 'v1/question_sessions/question_session', as: :question_session
