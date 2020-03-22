@@ -63,7 +63,7 @@ class Card < ApplicationRecord
 
   def handle_losers
     SendLosingSlateMessageJob.perform_later(user_id, cardable_id) if cardable.class.name == "Slate"
-    SendLosingQuizMessageJob.perform_later(user_id, cardable_id) if cardable.class.name == "Quiz"
+    SendLosingTriviaMessageJob.perform_later(user_id, cardable_id) if cardable.class.name == "Quiz"
   end
 
   def complete_referral!
