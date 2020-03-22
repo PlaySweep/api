@@ -72,7 +72,8 @@ json.links user.account.links.each do |link|
   json.category link.category
   json.url link.url
 end
-json.shipping user.shipping
+json.addresses user.addresses
+json.phone_numbers user.phone_numbers
 json.promotions user.promotions
 json.stats do
   json.current_pick_streak user.current_pick_streak

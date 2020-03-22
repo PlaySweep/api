@@ -6,3 +6,4 @@ json.product_id prize.product_id
 json.name prize.product.name
 json.category prize.product.category
 json.global prize.product.global
+json.orders prize.orders, partial: 'v1/orders/order', as: :order
