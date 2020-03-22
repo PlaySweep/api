@@ -10,7 +10,7 @@ module FacebookMessaging
           interpolated_contest_copy = contest_copy % { team_abbreviation: user.current_team.abbreviation }
           template = FacebookParser::TemplateObject.new({
             facebook_uuid: user.facebook_uuid,
-            title: "#{user.current_team.abbreviation.possessive} Contests",
+            title: "#{user.current_team.abbreviation.possessive} Trivia Contests",
             image_url: user.current_team.entry_image,
             subtitle: interpolated_contest_copy,
             buttons: [{title: "More contests", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}"}],
@@ -36,7 +36,7 @@ module FacebookMessaging
             title: "#{user.account.friendly_name} Featured Game",
             image_url: user.account.images.find_by(category: "Account Lockup").url, # Make selections for the #{user.account.friendly_name.capitalize} Featured Game and win awesome prizes!
             subtitle: interpolated_contest_copy,
-            buttons: [{title: "More contests", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}"}, {title: "See status", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}/2"}],
+            buttons: [{title: "More contests", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}"}],
             notification_type: notification_type
           }).payload
           template[:message][:quick_replies] = quick_replies if quick_replies
