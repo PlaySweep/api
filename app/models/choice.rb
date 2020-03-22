@@ -6,11 +6,23 @@ class Choice < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
+  validates :answer_id, :question_id, uniqueness: { scope: :user_id, message: "only 1 per question" }
+
   scope :for_quiz, ->(question_id) { joins(:question).where('questions.quiz_id = ?', question_id) }
 
+  around_save :catch_uniqueness_exception
   after_create :create_card_when_finished
 
   def create_card_when_finished
     Card.create(user_id: user_id, cardable_type: "Quiz", cardable_id: question.quiz_id) if user.completed_selections_for(resource: question.quiz)
   end
+
+  private
+
+  def catch_uniqueness_exception
+    yield
+  rescue ActiveRecord::RecordNotUnique
+    self.errors.add(:answer, :taken)
+  end
+
 end

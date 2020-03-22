@@ -5,8 +5,7 @@ class V1::Users::QuizzesController < ApplicationController
     @user = User.find_by(id: params[:user_id])
     # @quizzes = @user.quizzes.started.descending if params[:started]
     # @quizzes = @user.quizzes.finished.since_last_week.descending if params[:finished]
-    @quizzes = @user.quizzes if params[:started]
-    @quizzes = @user.quizzes if params[:finished]
+    @quizzes = @user.quizzes.finished.since_last_week.descending if params[:finished]
     respond_with @quizzes
   end
 

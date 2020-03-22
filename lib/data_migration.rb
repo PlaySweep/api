@@ -181,23 +181,25 @@ class DataMigration
     end
   end
 
-  def self.upload_quizzes team:
-    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{team}_quizzes.csv"))
+  def self.upload_quizzes
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "quizzes.csv"))
     csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
     count = 0
     csv.each do |row|
       quiz = Quiz.new
-      product = Product.first
+      sku = Sku.find_by(id: row["sku_id"])
       quiz.id = row["id"]
       quiz.name = row["name"]
       quiz.owner_id = row["team_id"]
       quiz.start_time = row["start_time"]
+      quiz.end_time = row["end_time"]
       quiz.save
+      quiz.prizes.create(product_id: sku.product_id, sku_id: sku.id) if sku
     end
   end
 
-  def self.upload_questions team:
-    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{team}_questions.csv"))
+  def self.upload_questions
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "questions.csv"))
     csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
     csv.each do |row|
       question = Question.new
@@ -210,8 +212,8 @@ class DataMigration
     end
   end
 
-  def self.upload_answers team:
-    csv_text = File.read(Rails.root.join('lib', 'seeds', "#{team}_answers.csv"))
+  def self.upload_answers
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "answers.csv"))
     csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
     csv.each do |row|
       answer = Answer.new

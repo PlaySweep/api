@@ -6,10 +6,12 @@ class Quiz < ApplicationRecord
   enum status: [ :inactive, :pending, :started, :complete, :done ]
 
   scope :filtered, ->(role_ids) { where(owner_id: role_ids).or(Quiz.where(owner_id: nil)) }
+  scope :inactive, -> { where(status: 0) }
   scope :available, -> { where(status: [1, 2]) }
   scope :finished, -> { where(status: [3, 4]) }
   scope :ascending, -> { order(start_time: :asc) }
   scope :descending, -> { order(start_time: :desc) } 
+  scope :since_last_week, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 10, DateTime.current.end_of_day) }
 
   def owner
     return Owner.find_by(id: owner_id)
