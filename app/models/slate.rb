@@ -3,8 +3,6 @@ class Slate < ApplicationRecord
 
   resourcify
 
-  belongs_to :winner, foreign_key: :winner_id, class_name: "User", optional: true
-
   belongs_to :contest, optional: true
   has_many :events, dependent: :destroy
   has_many :entries, dependent: :destroy
@@ -64,6 +62,10 @@ class Slate < ApplicationRecord
       end
       data.win.count
     end
+  end
+
+  def winner
+    User.find_by(id: winner_id)
   end
 
   def has_winner?

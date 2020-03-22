@@ -1,5 +1,4 @@
 class Quiz < ApplicationRecord
-  belongs_to :winner, foreign_key: :winner_id, class_name: "User", optional: true
   has_many :questions, dependent: :destroy
   has_many :cards, as: :cardable, dependent: :destroy
   has_many :prizes, as: :prizeable, dependent: :destroy
@@ -19,6 +18,10 @@ class Quiz < ApplicationRecord
 
   after_update :initialize_starting_process, :initialize_closing_process, :initialize_select_winner_process, :start_winner_confirmation_window
   
+  def winner
+    User.find_by(id: winner_id)
+  end
+
   def has_winner?
     winner.present?
   end
@@ -56,7 +59,7 @@ class Quiz < ApplicationRecord
   end
 
   def initialize_select_winner_process
-    SelectWinnerJob.set(wait_until: 1.hour.from_now.to_datetime).perform_later(id, "Quiz") if saved_change_to_status?(from: 'pending', to: 'ended')
+    SelectWinnerJob.set(wait_until: 1.hour.from_now.to_datetime).perform_later(id, "Quiz") if saved_change_to_status?(from: 'pending', to: 'complete')
   end
 
   def start_winner_confirmation_window
