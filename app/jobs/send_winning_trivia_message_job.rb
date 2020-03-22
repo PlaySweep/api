@@ -23,6 +23,15 @@ class SendWinningTriviaMessageJob < ApplicationJob
       message: interpolated_winning_quiz_copy,
       notification_type: "NO_PUSH"
     )
+    product = Product.find_by(default: true)
+    card = Card.win.where(user_id: user_id, cardable_id: quiz.id)
+    prize = card.prizes.create(product_id: product.id, sku_id: product.skus.first.id)
+    FacebookMessaging::Button.deliver(
+      user: user,
+      title: "Confirm Now",
+      url: "#{ENV["WEBVIEW_URL"]}/prize_confirmation/#{prize.id}/#{user.slug}",
+      notification_type: "NO_PUSH"
+    )
     FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
   end
 end

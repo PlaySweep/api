@@ -2,6 +2,7 @@ class Card < ApplicationRecord
   PENDING, WIN, LOSS = 0, 1, 2
   belongs_to :user
   belongs_to :cardable, polymorphic: true
+  has_many :prizes, as: :prizeable, dependent: :destroy
 
   enum status: [ :pending, :win, :loss ]
 
