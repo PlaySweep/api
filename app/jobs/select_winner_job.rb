@@ -1,12 +1,13 @@
 class SelectWinnerJob < ApplicationJob
   queue_as :high
 
-  def perform slate_id
-    slate = Slate.find_by(id: slate_id)
-    find_winner(slate) unless slate.done?
+  def perform resource_id, resource_type
+    resource = resource_type.constantize.find_by(id: resource_id)
+    find_winner_for_slate(resource) if resource_type == "Slate" && unless resource.done?
+    find_winner_for_quiz(resource) if resource_type == "Quiz" && unless resource.ended?
   end
 
-  def find_winner slate
+  def find_winner_for_slate slate
     previous_user_ids = slate.previous_user_ids || []
     winner_collection = slate.cards.win - previous_user_ids
     loser_collection = slate.cards.loss - previous_user_ids
@@ -41,6 +42,35 @@ class SelectWinnerJob < ApplicationJob
           Popcorn.notify("4805227771", "No one eligible for slate: #{slate.id}")
           found_a_winner = true
         end
+      end
+    end
+    
+  end
+
+  def find_winner_for_quiz quiz
+    previous_user_ids = quiz.previous_user_ids || []
+    winner_collection = quiz.cards.win
+    loser_collection = quiz.cards.loss
+    found_a_winner = false
+
+    if winner_collection.empty?
+      Popcorn.notify("4805227771", "No eligible winners for quiz: #{quiz.id}")
+    elsif loser_collection.empty?
+      Popcorn.notify("4805227771", "No eligible losers for quiz: #{quiz.id}")
+    end
+
+    until found_a_winner
+      if winner_collection.any?
+        user_id = winner_collection.sample.user_id
+        slate.update_attributes(winner_id: user_id)
+        found_a_winner = true
+      elsif loser_collection.any?
+        user_id = loser_collection.sample.user_id
+        slate.update_attributes(winner_id: user_id)
+        found_a_winner = true
+      else
+        Popcorn.notify("4805227771", "No one eligible for quiz: #{quiz.id}")
+        found_a_winner = true
       end
     end
     
