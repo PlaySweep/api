@@ -5,7 +5,7 @@ class V1::QuizzesController < ApplicationController
     user = User.find_by(id: params[:user_id])
     if user
       @quizzes = Quiz.filtered(user.filtered_ids).ascending.available
-      @quizzes = Quiz.filtered(user.filtered_ids).ascending.inactive if params[:inactive]
+      @quizzes = Quiz.filtered(user.filtered_ids).ascending.inactive if params[:upcoming]
       respond_with @quizzes
     else
       render json: { errors: [] }, status: :unprocessable_entity
