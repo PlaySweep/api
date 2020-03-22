@@ -4,6 +4,7 @@ class Team < Owner
   has_one :standing, foreign_key: :owner_id
   has_many :products, foreign_key: :owner_id
   has_many :slates, foreign_key: :owner_id
+  has_many :quizzes, foreign_key: :owner_id
   has_many :players, foreign_key: :owner_id
 
   store_accessor :data, :entry_image, :local_image, :sponsored,
