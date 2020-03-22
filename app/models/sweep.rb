@@ -1,9 +1,6 @@
 class Sweep < ApplicationRecord
   belongs_to :user
-  belongs_to :slate
-
-  scope :ascending, -> { joins(:slate).merge(Slate.ascending) }
-  scope :descending, -> { joins(:slate).merge(Slate.descending) }
+  belongs_to :sweepable, polymorphic: true
 
   store_accessor :data, :pick_ids
 
@@ -13,16 +10,20 @@ class Sweep < ApplicationRecord
     Pick.where(id: pick_ids)
   end
 
-  def selections
+  def slate_selections
     picks.map(&:selection)
+  end
+
+  def quiz_answers
+    choices.map(&:answer)
   end
 
   private
 
   def run_services
-    OwnerService.new(user, slate: slate).run(type: :sweep)
-    ContestService.new(user, slate: slate).run(type: :sweep)
-    DrizlyService.new(user, slate).run(type: :sweep)
+    OwnerService.new(user, slate: sweepable).run(type: :sweep)
+    ContestService.new(user, slate: sweepable).run(type: :sweep)
+    DrizlyService.new(user, sweepable).run(type: :sweep)
   end
 
 end

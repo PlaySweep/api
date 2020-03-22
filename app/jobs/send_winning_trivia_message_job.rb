@@ -24,7 +24,7 @@ class SendWinningTriviaMessageJob < ApplicationJob
       notification_type: "NO_PUSH"
     )
     product = Product.find_by(default: true)
-    card = Card.win.where(user_id: user_id, cardable_id: quiz.id)
+    card = user.cards.win.where(cardable_id: quiz.id)
     prize = card.prizes.create(product_id: product.id, sku_id: product.skus.first.id)
     FacebookMessaging::Button.deliver(
       user: user,

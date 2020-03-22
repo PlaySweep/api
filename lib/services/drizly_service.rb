@@ -39,7 +39,8 @@ class DrizlyService
     if sweep_rule && sweep_reward_active? && @user.won_for_first_time?
       if promotion = DrizlyPromotion.find_by(category: "Sweep", used: false, level: sweep_rule.level)
         promotion.update_attributes(used_by: @user.id, slate_id: @resource.id, used: true)
-        SendWinningSlateMessageWithDrizlyJob.perform_later(@user.id, @resource.id)
+        SendWinningSlateMessageWithDrizlyJob.perform_later(@user.id, @resource.id) if @resource.class.name == "Slate"
+        SendWinningTriviaMessageJob.perform_later(@user.id, @resource.id) if @resource.class.name == "Quiz"
       end unless @resource.contest_id?
     else
       SendWinningSlateMessageJob.perform_later(@user.id, @resource.id) if @resource.class.name == "Slate"

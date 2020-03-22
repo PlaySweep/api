@@ -58,8 +58,8 @@ class Card < ApplicationRecord
   end
 
   def create_sweep_records
-    user.sweeps.create(slate_id: cardable_id, pick_ids: user.picks.for_slate(cardable_id).map(&:id)) if cardable.class.name == "Slate"
-    user.sweeps.create(slate_id: cardable_id, pick_ids: user.choices.for_quiz(cardable_id).map(&:id)) if cardable.class.name == "Quiz"
+    user.sweeps.create(sweepable_id: cardable_id, sweepable_type: "Slate", pick_ids: user.picks.for_slate(cardable_id).map(&:id)) if cardable.class.name == "Slate"
+    user.sweeps.create(sweepable_id: cardable_id, sweepable_type: "Quiz", pick_ids: user.choices.for_quiz(cardable_id).map(&:id)) if cardable.class.name == "Quiz"
   end
 
   def handle_losers
