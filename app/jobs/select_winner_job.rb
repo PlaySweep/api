@@ -3,8 +3,8 @@ class SelectWinnerJob < ApplicationJob
 
   def perform resource_id, resource_type
     resource = resource_type.constantize.find_by(id: resource_id)
-    find_winner_for_slate(resource) if resource_type == "Slate" && unless resource.done?
-    find_winner_for_quiz(resource) if resource_type == "Quiz" && unless resource.ended?
+    find_winner_for_slate(resource) if resource_type == "Slate" && !resource.done?
+    find_winner_for_quiz(resource) if resource_type == "Quiz" && !resource.ended?
   end
 
   def find_winner_for_slate slate
