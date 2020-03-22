@@ -9,6 +9,8 @@ Rails.application.routes.draw do
         member do
           get "roles/change_teams"
         end
+        resources :addresses, only: [:show, :create, :update]
+        resources :phone_numbers, only: [:show, :create, :update]
         resources :picks, only: [:index, :show, :create, :update]
         resources :choices, only: [:index, :show, :create, :update]
         resources :roles, only: [:create]

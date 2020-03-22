@@ -14,6 +14,7 @@ class User < ApplicationRecord
   belongs_to :account, optional: true
   belongs_to :league, foreign_key: :account_id, optional: true
   belongs_to :referred_by, class_name: "User", optional: true
+  has_many :addresses, dependent: :destroy
   has_many :sweeps, dependent: :destroy
   has_many :streaks, dependent: :destroy
   has_many :picks, dependent: :destroy
@@ -28,6 +29,7 @@ class User < ApplicationRecord
   has_many :leaderboards, through: :leaderboard_results, source: "leaderboard_history", dependent: :destroy
   has_many :orders, dependent: :destroy
   has_many :promotions, foreign_key: :used_by, dependent: :destroy
+  has_many :phone_numbers, dependent: :destroy
   has_many :badges, dependent: :destroy
   has_one :location, dependent: :destroy
 
