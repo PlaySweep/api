@@ -48,7 +48,6 @@ class SelectWinnerJob < ApplicationJob
   end
 
   def find_winner_for_quiz quiz
-    previous_user_ids = quiz.previous_user_ids || []
     winner_collection = quiz.cards.win
     loser_collection = quiz.cards.loss
     found_a_winner = false
@@ -62,11 +61,11 @@ class SelectWinnerJob < ApplicationJob
     until found_a_winner
       if winner_collection.any?
         user_id = winner_collection.sample.user_id
-        slate.update_attributes(winner_id: user_id)
+        quiz.update_attributes(winner_id: user_id)
         found_a_winner = true
       elsif loser_collection.any?
         user_id = loser_collection.sample.user_id
-        slate.update_attributes(winner_id: user_id)
+        quiz.update_attributes(winner_id: user_id)
         found_a_winner = true
       else
         Popcorn.notify("4805227771", "No one eligible for quiz: #{quiz.id}")
