@@ -28,7 +28,8 @@ class SendWinningTriviaMessageJob < ApplicationJob
     prize = card.prizes.create(product_id: product.id, sku_id: product.skus.first.id)
     FacebookMessaging::Button.deliver(
       user: user,
-      title: "Confirm Now",
+      title: "Confirm now",
+      message: "Enter your shipping address below for your #{product.name}!",
       url: "#{ENV["WEBVIEW_URL"]}/prize_confirmation/#{prize.id}/#{user.slug}",
       notification_type: "NO_PUSH"
     )
