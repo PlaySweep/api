@@ -59,13 +59,13 @@ class Quiz < ApplicationRecord
   end
 
   def initialize_select_winner_process
-    SelectWinnerJob.set(wait_until: 1.hour.from_now.to_datetime).perform_later(id, "Quiz") if saved_change_to_status?(from: 'pending', to: 'complete')
+    SelectWinnerJob.set(wait_until: 1.hour.from_now).perform_later(id, "Quiz") if saved_change_to_status?(from: 'pending', to: 'complete')
   end
 
   def start_winner_confirmation_window
     if complete? && saved_change_to_data?
       SendWinnerConfirmationJob.perform_later(winner_id, prize.id) if winner_id.present? && prize
-      HandleConfirmationWindowJob.set(wait_until: 24.hours.from_now.to_datetime).perform_later(id, "Quiz")
+      HandleConfirmationWindowJob.set(wait_until: 24.hours.from_now).perform_later(id, "Quiz")
     end
   end
 

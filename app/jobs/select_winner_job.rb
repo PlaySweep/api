@@ -3,8 +3,8 @@ class SelectWinnerJob < ApplicationJob
 
   def perform resource_id, resource_type
     resource = resource_type.constantize.find_by(id: resource_id)
-    find_winner_for_slate(resource) if resource_type == "Slate" && !resource.done?
-    find_winner_for_quiz(resource) if resource_type == "Quiz" && !resource.complete?
+    find_winner_for_slate(resource) if resource_type == "Slate" && !resource.complete?
+    find_winner_for_quiz(resource) if resource_type == "Quiz" && !resource.pending?
   end
 
   def find_winner_for_slate slate
@@ -16,12 +16,6 @@ class SelectWinnerJob < ApplicationJob
     if slate.ticket_prizing?
       winner_collection = winner_collection.select { |card| card.user.eligible_for_prize?(slate: slate) }
       loser_collection = loser_collection.select { |card| card.user.eligible_for_prize?(slate: slate) }
-    end
-
-    if winner_collection.empty?
-      Popcorn.notify("4805227771", "No eligible winners for slate: #{slate.id}")
-    elsif loser_collection.empty?
-      Popcorn.notify("4805227771", "No eligible losers for slate: #{slate.id}")
     end
 
     if previous_user_ids.size >= 2
@@ -51,12 +45,6 @@ class SelectWinnerJob < ApplicationJob
     winner_collection = quiz.cards.win
     loser_collection = quiz.cards.loss
     found_a_winner = false
-
-    if winner_collection.empty?
-      Popcorn.notify("4805227771", "No eligible winners for quiz: #{quiz.id}")
-    elsif loser_collection.empty?
-      Popcorn.notify("4805227771", "No eligible losers for quiz: #{quiz.id}")
-    end
 
     until found_a_winner
       if winner_collection.any?
