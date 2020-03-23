@@ -28,7 +28,7 @@ class WelcomeBackJob < ApplicationJob
         FacebookMessaging::Button.deliver(
           user: user,
           title: "Play now",
-          message: "There are more #{team.abbreviation} games to play!",
+          message: "There are more #{team.abbreviation} contests to play!",
           url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}",
           quick_replies: quick_replies,
           notification_type: "NO_PUSH"
