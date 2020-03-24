@@ -24,7 +24,7 @@ class V1::Users::PhoneNumbersController < ApplicationController
   private
 
   def phone_numbers_params
-    params.require(:address).permit(:line1, :line2, :city, :state, :postal_code, :country)
+    params.require(:phone_number).permit(:number)
   end
 
 end

@@ -522,12 +522,12 @@ class DataMigration
   end
 
   def self.migrate_addresses user:
-    if user.shipping.present?
+    if user.shipping.present? && user.shipping['line1'].present?
       user.addresses.create(line1: user.shipping['line1'], line2: user.shipping['line2'], city: user.shipping['city'], state: user.shipping['state'], postal_code: user.shipping['postal_code'], country: "United States")
     end
   end
 
-  def migrate_phone_numbers user:
+  def self.migrate_phone_numbers user:
     if user.phone_number.present?
       user.phone_numbers.create(number: user.phone_number)
     end
