@@ -9,7 +9,7 @@ class User < ApplicationRecord
 
   rolify
 
-  store_accessor :settings, :notification_preference
+  store_accessor :data, :notification_preference
 
   belongs_to :account, optional: true
   belongs_to :league, foreign_key: :account_id, optional: true

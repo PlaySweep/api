@@ -521,12 +521,16 @@ class DataMigration
     end
   end
 
-  def migrate_addresses user:
-
+  def self.migrate_addresses user:
+    if user.shipping.present?
+      user.addresses.create(line1: user.shipping['line1'], line2: user.shipping['line2'], city: user.shipping['city'], state: user.shipping['state'], postal_code: user.shipping['postal_code'], country: "United States")
+    end
   end
 
   def migrate_phone_numbers user:
-
+    if user.phone_number.present?
+      user.phone_numbers.create(number: user.phone_number)
+    end
   end
 
   def self.migrate_to_participants slate:
