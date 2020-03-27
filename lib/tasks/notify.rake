@@ -131,8 +131,8 @@ end
 
 def announcement user:
   begin
-    notification = "Hey #{user.first_name}, we're closing in on Championship weekend and there are even more ways to win #{user.current_team.abbreviation} prizes 👀"
-    content = "Score the most points amongst your fellow #{user.current_team.abbreviation} fans for the week and take home a #{user.current_team.abbreviation} Playoff Sweatshirt!"
+    notification = "The Budweiser Sweep is back with some Yankees Trivia, #{user.first_name}!"
+    content = "Take a shot at winning awesome prizes with our daily Yankees Trivia! 10 questions, every day. Get em' all right and win!"
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 
@@ -148,14 +148,10 @@ def announcement user:
         content_type: :text,
         title: "Share",
         payload: "SHARE"
-      },
-      {
-        content_type: :text,
-        title: "Status",
-        payload: "STATUS"
       }
     ]).objects
     FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
+    puts "Delivered message to #{user.last_name} (#{user.id})"
   rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
     # user.update_attributes(active: false)
   end
