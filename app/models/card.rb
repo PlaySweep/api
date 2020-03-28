@@ -6,7 +6,7 @@ class Card < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
-  validates :cardable_id, uniqueness: { scope: :user_id, message: "only 1 Card per Entry" }
+  validates :cardable_id, :cardable_type, uniqueness: { scope: :user_id, message: "only 1 Card per Entry" }
 
   around_save :catch_uniqueness_exception
   after_update :handle_results
