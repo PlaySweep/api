@@ -3,6 +3,11 @@ class HandleConfirmationWindowJob < ApplicationJob
 
   def perform resource_id, resource_type
     resource = resource_type.constantize.find_by(id: resource_id)
-    SelectWinnerJob.perform_later(resource_id) unless slate.done?
+    if resource_type == "Slate"
+      SelectWinnerJob.perform_later(resource_id) unless resource.done?
+    end
+    if resource_type == "Quiz"
+      SelectWinnerJob.perform_later(resource_id) unless resource.complete?
+    end
   end
 end

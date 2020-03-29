@@ -155,7 +155,7 @@ class User < ApplicationRecord
   end
 
   def won_quiz? quiz
-    question_ids = questions.where(slate_id: slate.id).map(&:id)
+    question_ids = questions.where(quiz: quiz.id).map(&:id)
     picks_for_quiz = choices.where(question_id: question_ids).map(&:answer_id)
     picks_for_quiz.sort == quiz.winners.map(&:id).uniq.sort
   end
