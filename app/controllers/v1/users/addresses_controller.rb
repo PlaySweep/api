@@ -23,8 +23,13 @@ class V1::Users::AddressesController < ApplicationController
 
   private
 
+  def data_params
+    return params[:address][:data] if params[:address][:data].nil?
+    JSON.parse(params[:address][:data].to_json)
+  end
+
   def address_params
-    params.require(:address).permit(:line1, :line2, :city, :state, :postal_code, :country, :formatted_address)
+    params.require(:address).permit(:line1, :line2, :city, :state, :postal_code, :country, :formatted_address).merge(data: data_params)
   end
 
 end
