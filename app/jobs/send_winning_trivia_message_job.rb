@@ -17,20 +17,10 @@ class SendWinningTriviaMessageJob < ApplicationJob
       }
     ]).objects
     winning_quiz_copy = user.account.copies.where(category: "Winning Quiz").sample.message
-    interpolated_winning_quiz_copy = winning_quiz_copy % { first_name: user.first_name, prize_name: "Budweiser Bottle Opener", drawing_prize_name: quiz.prize.product.name }
+    interpolated_winning_quiz_copy = winning_quiz_copy % { first_name: user.first_name, drawing_prize_name: quiz.prize.product.name }
     FacebookMessaging::Standard.deliver(
       user: user,
       message: interpolated_winning_quiz_copy,
-      notification_type: "NO_PUSH"
-    )
-    product = Product.find_by(default: true)
-    card = user.cards.win.find_by(cardable_id: quiz.id)
-    prize = card.prizes.create(product_id: product.id, sku_id: product.skus.first.id)
-    FacebookMessaging::Button.deliver(
-      user: user,
-      title: "Confirm now",
-      message: "Enter your shipping address below for your #{product.name}!",
-      url: "#{ENV["WEBVIEW_URL"]}/prize_confirmation/#{prize.id}/#{user.slug}",
       notification_type: "NO_PUSH"
     )
     FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)

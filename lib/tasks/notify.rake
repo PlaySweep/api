@@ -131,8 +131,8 @@ end
 
 def announcement user:
   begin
-    notification = "The Budweiser Sweep is back with some MLB & Dodgers Trivia, #{user.first_name}!"
-    content = "10 questions, every day. Get em' all right and win awesome prizes!\n\nDodgers contests open every day at 5p, local time."
+    notification = "The Budweiser Sweep is back with some MLB & Athletics Trivia, #{user.first_name}!"
+    content = "10 questions, every day. Get em' all right and win awesome prizes!\n\nAthletics contests open every day at 5p, local time."
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 

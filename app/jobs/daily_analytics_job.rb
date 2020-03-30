@@ -77,7 +77,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [order.id, order.created_at.strftime("%m/%d/%Y"), order.user.full_name, order.user.email, order.user.phone_number, order.user.addresses.first.line1, order.user.addresses.first.line2, order.user.addresses.first.city, order.user.addresses.first.state, order.user.addresses.first.postal_code, order.user.addresses.first.country, order.prize.try(:product).try(:name), order.prize.sku.code, order.prize.sku.weight, order.prize.sku.unit, "Endemic Labs - #{order.user.account.name}"]
       end
     end
-    DataMailer.orders_to(email: "ryan@endemiclabs.co").deliver_now
+    DataMailer.orders_to(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
   def fetch_winners day:
