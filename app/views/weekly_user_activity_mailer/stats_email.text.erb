@@ -1,0 +1,16 @@
+
+User Feedback Stats for <%= (DateTime.current - day).to_date %>
+===============================================
+ 
+- 20 new users
+<% @new_users.each do |user| %>
+  <%= user.first_name %>
+<% end %>
+- 20 users who played two weeks ago and played again the following week
+<% @returned_users.each do |user| %>
+  <%= user.first_name %>
+<% end %>
+- 20 users who played two weeks ago and didn't return
+<% @left_users.each do |user| %>
+  <%= user.first_name %>
+<% end %>

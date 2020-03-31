@@ -8,6 +8,12 @@ class Card < ApplicationRecord
 
   validates :cardable_id, uniqueness: { scope: [:user_id, :cardable_type], message: "only 1 Card per Entry" }
 
+  scope :for_quizzes, -> { where(cardable_type: "Quiz").joins('INNER JOIN quizzes ON quizzes.id = cards.cardable_id') }
+  scope :for_slates, -> { where(cardable_type: "Slate").joins('INNER JOIN slates ON slates.id = cards.cardable_id') }
+  scope :two_weeks_ago, ->(resource) { where("#{resource}.start_time BETWEEN ? AND ?", DateTime.current.beginning_of_day - 14.days, DateTime.current.end_of_day - 8.days) }
+  scope :one_week_ago, ->(resource) { where("#{resource}.start_time BETWEEN ? AND ?", DateTime.current.beginning_of_day - 7.days, DateTime.current.end_of_day - 1.day) }
+
+  
   around_save :catch_uniqueness_exception
   after_update :handle_results
   after_create :run_services, :update_latest_contest_activity, :complete_referral!
