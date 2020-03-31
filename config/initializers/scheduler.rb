@@ -57,15 +57,14 @@ if Rails.env.production?
 
   def fetch_player_activity account:
     Apartment::Tenant.switch(account.tenant) do
-      unique_ids_two_weeks_ago = Card.for_quizzes.days_ago('quizzes').select(:user_id).distinct.pluck(:user_id)
-      unique_ids_one_week_ago = Card.for_quizzes.days_ago('quizzes').select(:user_id).distinct.pluck(:user_id)
-      all_ids = unique_ids_two_weeks_ago.concat(unique_ids_one_week_ago).group_by{ |e| e }
-      left_user_ids = all_ids.select { |k, v| v.length <= 1 }.map(&:first).sample(25)
-      returned_user_ids = all_ids.select { |k, v| v.length > 1 }.map(&:first).sample(25)
+      unique_ids_two_weeks_ago = Card.for_quizzes.between_days('quizzes', 14, 8).select(:user_id).distinct.pluck(:user_id)
+      unique_ids_one_week_ago = Card.for_quizzes.between_days('quizzes', 7, 1).select(:user_id).distinct.pluck(:user_id)
+      returned_user_ids = unique_ids_two_weeks_ago.select { |id| unique_ids_one_week_ago.include?(id) }
+      left_user_ids = unique_ids_two_weeks_ago.reject { |id| unique_ids_one_week_ago.include?(id) }
       returned_users = User.where(id: returned_user_ids)
       left_users = User.where(id: left_user_ids)
       new_users = User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day - 1)
-      WeeklyUserActivity.with(new_users, returned_users, left_users).welcome_email.deliver_now
+      WeeklyUserActivityMailer.stats_email(new_users: new_users, returned_users: returned_users, left_users: left_users).deliver_now
     end
   end
 

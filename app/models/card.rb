@@ -10,8 +10,7 @@ class Card < ApplicationRecord
 
   scope :for_quizzes, -> { where(cardable_type: "Quiz").joins('INNER JOIN quizzes ON quizzes.id = cards.cardable_id') }
   scope :for_slates, -> { where(cardable_type: "Slate").joins('INNER JOIN slates ON slates.id = cards.cardable_id') }
-  scope :two_weeks_ago, ->(resource) { where("#{resource}.start_time BETWEEN ? AND ?", DateTime.current.beginning_of_day - 14.days, DateTime.current.end_of_day - 8.days) }
-  scope :one_week_ago, ->(resource) { where("#{resource}.start_time BETWEEN ? AND ?", DateTime.current.beginning_of_day - 7.days, DateTime.current.end_of_day - 1.day) }
+  scope :between_days, ->(resource, from, to) { where("#{resource}.start_time BETWEEN ? AND ?", DateTime.current.beginning_of_day - from.days, DateTime.current.end_of_day - to.days) }
 
   
   around_save :catch_uniqueness_exception
