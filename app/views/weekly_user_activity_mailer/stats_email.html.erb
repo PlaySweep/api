@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <!--[if !mso]><!-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!--<![endif]-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>User Feedback List</title>
+</head>
+<body>
+  <h1>User Feedback Stats for <%= DateTime.current.to_date %></h1>
+
+  <h3>25 new users</h3>
+  <ol>
+    <% @new_users.each_with_index do |user, index| %>
+      <li><%= index + 1 %>. <%= user.first_name %> <%= user.last_name %> ( <%= user.email %> )</li>
+    <% end %>
+  </ol>
+  <br />
+  <br />
+
+  <h3>Users who returned</h3>
+  <ol>
+    <% @returned_users.each_with_index do |user, index| %>
+      <li><%= index + 1 %>. <%= user.first_name %> <%= user.last_name %> ( <%= user.email %> )</li>
+    <% end %>
+  </ol>
+  <br />
+  <br />
+
+  <h3>Users who did not return</h3>
+  <ol>
+    <% @left_users.each_with_index do |user, index| %>
+      <li><%= index + 1 %>. <%= user.first_name %> <%= user.last_name %> ( <%= user.email %> )</li>
+    <% end %>
+  </ol>
+  <br />
+  <br />
+
+</body>
+</html>
