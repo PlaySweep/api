@@ -15,8 +15,8 @@
 
   <h3>25 new users</h3>
   <ol>
-    <% @new_users.each_with_index do |user, index| %>
-      <li><%= index + 1 %>. <%= user.first_name %> <%= user.last_name %> ( <%= user.email %> )</li>
+    <% @new_users.each do |user| %>
+      <li><%= user.first_name %> <%= user.last_name %> ( <%= user.email %> )</li>
     <% end %>
   </ol>
   <br />
@@ -24,8 +24,8 @@
 
   <h3>Users who returned</h3>
   <ol>
-    <% @returned_users.each_with_index do |user, index| %>
-      <li><%= index + 1 %>. <%= user.first_name %> <%= user.last_name %> ( <%= user.email %> )</li>
+    <% @returned_users.each do |user| %>
+      <li><%= user.first_name %> <%= user.last_name %> ( <%= user.email %> )</li>
     <% end %>
   </ol>
   <br />
@@ -33,8 +33,8 @@
 
   <h3>Users who did not return</h3>
   <ol>
-    <% @left_users.each_with_index do |user, index| %>
-      <li><%= index + 1 %>. <%= user.first_name %> <%= user.last_name %> ( <%= user.email %> )</li>
+    <% @left_users.each do |user| %>
+      <li><%= user.first_name %> <%= user.last_name %> ( <%= user.email %> )</li>
     <% end %>
   </ol>
   <br />

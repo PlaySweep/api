@@ -6,6 +6,6 @@ class WeeklyUserActivityMailer < ApplicationMailer
     @returned_users = returned_users
     @left_users = left_users
     
-    mail(to: 'budweisersweep@endemiclabs.co', subject: "User Feedback Data - #{(DateTime.current).to_date}")
+    mail(to: 'ben@endemiclabs.co', subject: "User Feedback Data - #{(DateTime.current).to_date}")
   end
 end
