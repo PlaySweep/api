@@ -16,5 +16,5 @@ json.prize do
   json.date quiz.prize.date
 end
 json.label "Trivia"
-json.owner_image quiz.owner ? quiz.owner.image : "https://budweiser-sweep-assets.s3.amazonaws.com/budweiser_national_logo.png"
+json.owner_image quiz.owner ? quiz.owner.image : "https://budweiser-sweep-assets.s3.amazonaws.com/mlb_national_logo.png"
 json.questions quiz.questions.ordered, partial: 'v1/questions/question', as: :question

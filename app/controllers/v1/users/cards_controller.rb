@@ -1,6 +1,15 @@
 class V1::Users::CardsController < ApplicationController
   respond_to :json
 
+  def index
+    @cards = Card.where(cardable_type: params[:cardable_type], cardable_id: params[:cardable_id])
+    if @cards
+      respond_with @cards
+    else
+      render json: { errors: [] }, status: :unprocessable_entity
+    end
+  end
+
   def create
     @card = current_user.cards.create(cardable_type: params[:cardable_type], cardable_id: params[:cardable_id])
     if @card.save

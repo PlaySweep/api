@@ -16,7 +16,7 @@ Rails.application.routes.draw do
         resources :roles, only: [:create]
         resources :slates, only: [:index, :show]
         resources :quizzes, only: [:index, :show]
-        resources :cards, only: [:create, :update]
+        resources :cards, only: [:index, :create, :update]
       end
     end
 
@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     resources :orders, only: [:index, :create]
     resources :prizes, only: [:show]
     resources :teams, only: [:index]
+    resources :questions, only: [:show]
     resources :question_sessions, only: [:create, :update]
   end
   
