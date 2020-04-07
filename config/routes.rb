@@ -17,6 +17,7 @@ Rails.application.routes.draw do
         resources :slates, only: [:index, :show]
         resources :quizzes, only: [:index, :show]
         resources :cards, only: [:index, :create, :update]
+        resources :user_elements, only: [:index]
       end
     end
 

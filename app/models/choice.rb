@@ -6,7 +6,7 @@ class Choice < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
-  validates :answer_id, :question_id, uniqueness: { scope: :user_id, message: "only 1 per question" }
+  validates :question_id, uniqueness: { scope: :user_id, message: "only 1 per question" }
 
   scope :for_quiz, ->(question_id) { joins(:question).where('questions.quiz_id = ?', question_id) }
 
