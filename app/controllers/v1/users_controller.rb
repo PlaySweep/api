@@ -89,6 +89,6 @@ class V1::UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:facebook_uuid, :active, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :phone_number, :zipcode, :confirmed, :locked, :gender, :source, user_elements_attributes: [:id, :used_for_id, :used_on_id, :used_at, :used]).merge(data: data_params).merge(shipping: shipping_params)
+    params.require(:user).permit(:facebook_uuid, :active, :first_name, :last_name, :locale, :profile_pic, :timezone, :email, :dob, :phone_number, :zipcode, :confirmed, :locked, :gender, :source).merge(data: data_params).merge(shipping: shipping_params)
   end
 end

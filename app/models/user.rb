@@ -34,8 +34,6 @@ class User < ApplicationRecord
   has_many :badges, dependent: :destroy
   has_one :location, dependent: :destroy
 
-  accepts_nested_attributes_for :elements
-
   before_create :set_slug, :set_referral_code
   after_update :create_or_update_location
   after_update :run_badge_service, :run_notification_service

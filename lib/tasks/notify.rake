@@ -131,8 +131,8 @@ end
 
 def announcement user:, team:
   begin
-    notification = "The Budweiser Sweep is back with some MLB & #{team.abbreviation} Trivia, #{user.first_name}!"
-    content = "10 questions, every day. Get em' all right and win awesome prizes!\n\n#{team.abbreviation} contests open every day at 5p, local time."
+    notification = "We have more MLB & #{team.abbreviation} Trivia available, #{user.first_name}!"
+    content = "10 questions. Get em' all right and win awesome prizes!"
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 
@@ -153,7 +153,8 @@ def announcement user:, team:
     FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
     puts "Delivered message to #{user.last_name} (#{user.id})"
   rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
-    # user.update_attributes(active: false)
+    puts "Deactivate #{user.last_name} (#{user.id})"
+    user.update_attributes(active: false)
   end
 end
 
