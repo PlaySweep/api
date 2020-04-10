@@ -210,11 +210,14 @@ class User < ApplicationRecord
   end
 
   def run_badge_service
-    BadgeService::Referral.new(user: self.referred_by).run if saved_change_to_referral_completed_at?
+    if saved_change_to_referral_completed_at?(from: nil)
+      BadgeService::Referral.new(user: self.referred_by).run
+      self.referred_by.elements.create(element_id: 1)
+    end
   end
 
   def run_notification_service
-    NotifyReferrerJob.perform_later(referred_by_id, id) if saved_change_to_referral_completed_at?
+    NotifyReferrerJob.perform_later(referred_by_id, id) if saved_change_to_referral_completed_at?(from: nil)
   end
 
 end
