@@ -35,6 +35,7 @@ class User < ApplicationRecord
   has_many :promotions, foreign_key: :used_by, dependent: :destroy
   has_many :phone_numbers, dependent: :destroy
   has_many :badges, dependent: :destroy
+  has_many :question_sessions, dependent: :destroy
   has_one :location, dependent: :destroy
 
   before_create :set_slug, :set_referral_code
