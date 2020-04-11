@@ -19,33 +19,6 @@ class Nudge < ApplicationRecord
   end
 
   def send_reminder
-    if nudged.confirmed
-      quick_replies = FacebookParser::QuickReplyObject.new([
-        { content_type: :text,
-          title: "Play now",
-          payload: "PLAY",
-          image_url: nudged.current_team.image
-        }
-      ]).objects
-      FacebookMessaging::Standard.deliver(
-        user: nudged,
-        message: "Hey #{nudged.first_name}, #{nudger.first_name} #{nudger.last_name} is nudging you to play!",
-        notification_type: "SILENT_PUSH",
-        quick_replies: quick_replies
-      )
-    else
-      FacebookMessaging::Standard.deliver(
-        user: nudged,
-        message: "Hey #{nudged.first_name}, #{nudger.first_name} #{nudger.last_name} is nudging you to play!",
-        notification_type: "SILENT_PUSH"
-      )
-      FacebookMessaging::Button.deliver(
-        user: user,
-        title: "Confirm your account",
-        message: "It's only a few more steps, #{nudged.first_name}!",
-        url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
-        notification_type: "NO_PUSH"
-      )
-    end
+    SendNudgeJob.perform_later(nudger_id, nudged_id)
   end
 end
