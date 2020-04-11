@@ -15,6 +15,7 @@ class User < ApplicationRecord
   belongs_to :league, foreign_key: :account_id, optional: true
   belongs_to :referred_by, class_name: "User", optional: true
   has_many :addresses, dependent: :destroy
+  has_many :user_elements, dependent: :destroy
   has_many :elements, class_name: "UserElement"
   has_many :sweeps, dependent: :destroy
   has_many :streaks, dependent: :destroy
@@ -22,12 +23,14 @@ class User < ApplicationRecord
   has_many :choices, dependent: :destroy
   has_many :events, through: :picks
   has_many :cards, dependent: :destroy
-  has_many :referrals, -> { where.not(referral_completed_at: nil).where('created_at > ?', ReferralMilestone::START_DATE) }, class_name: "User", foreign_key: :referred_by_id
+  has_many :referrals, -> { where('created_at > ?', ReferralMilestone::START_DATE) }, class_name: "User", foreign_key: :referred_by_id
   has_many :slates, through: :cards, source: :cardable, source_type: "Slate"
   has_many :quizzes, through: :cards, source: :cardable, source_type: "Quiz"
   has_many :entries, dependent: :destroy
   has_many :leaderboard_results
   has_many :leaderboards, through: :leaderboard_results, source: "leaderboard_history", dependent: :destroy
+  has_many :nudges, foreign_key: :nudger_id
+  has_many :nudged, foreign_key: :nudged_id, class_name: "Nudge"
   has_many :orders, dependent: :destroy
   has_many :promotions, foreign_key: :used_by, dependent: :destroy
   has_many :phone_numbers, dependent: :destroy
@@ -46,6 +49,8 @@ class User < ApplicationRecord
   scope :for_owner, ->(owner_id) { joins(:roles).where('roles.resource_id = ?', owner_id) }
   scope :with_source, ->(source) { where(source: source) }
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
+  scope :recent, -> { where('created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day) }
+  scope :completed, -> { where.not(referral_completed_at: nil) }
 
   validates :slug, :referral_code, uniqueness: true
 
@@ -106,6 +111,10 @@ class User < ApplicationRecord
 
   def played_for_first_time?
     cards.size == 1
+  end
+
+  def has_played?
+    cards.size >= 1
   end
 
   def won_for_first_time?

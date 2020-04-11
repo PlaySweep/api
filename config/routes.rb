@@ -34,6 +34,7 @@ Rails.application.routes.draw do
     resources :teams, only: [:index]
     resources :questions, only: [:show]
     resources :question_sessions, only: [:create, :update]
+    resources :nudges, only: [:create]
   end
   
   namespace :admin, defaults: { format: :json } do
