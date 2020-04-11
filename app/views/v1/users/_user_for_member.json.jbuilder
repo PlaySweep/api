@@ -73,7 +73,7 @@ json.links user.account.links.each do |link|
   json.url link.url
 end
 json.addresses user.addresses
-json.phone_numbers user.phone_numbers
+json.current_phone_number user.current_phone_number
 json.promotions user.promotions
 json.stats do
   json.current_pick_streak user.current_pick_streak
