@@ -1,4 +1,4 @@
-class NotifyBadgeJob < ApplicationJob
+class SendNudgeJob < ApplicationJob
   queue_as :low
 
   def perform nudger_id, nudged_id
