@@ -12,6 +12,7 @@ json.prize do
   json.product do 
     json.id quiz.prize.product.id
     json.name quiz.prize.product.name
+    json.size quiz.prize.sku.try(:size)
     json.category quiz.prize.product.category
   end
   json.date quiz.prize.date
