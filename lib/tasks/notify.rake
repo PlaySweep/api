@@ -131,8 +131,8 @@ end
 
 def announcement user:, team:
   begin
-    notification = "We have more MLB & #{team.abbreviation} Trivia available, #{user.first_name}!"
-    content = "10 questions. Get em' all right and win awesome prizes!"
+    notification = "⚾️ We have more MLB & #{team.abbreviation} Trivia available, #{user.first_name}!"
+    content = "Now you can earn a Save by referring your friends to play! This will allow you to erase a wrong answer and stay in the game."
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 
