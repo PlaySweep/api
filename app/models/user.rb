@@ -9,8 +9,6 @@ class User < ApplicationRecord
 
   rolify
 
-  store_accessor :data, :notification_preference
-
   belongs_to :account, optional: true
   belongs_to :league, foreign_key: :account_id, optional: true
   belongs_to :referred_by, class_name: "User", optional: true
