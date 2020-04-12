@@ -12,6 +12,7 @@ json.division team.division
 json.conference team.conference
 json.promoted team.promoted
 json.initials team.initials
+json.time_zone team.time_zone
 json.details do
   json.position team.try(:standing).try(:position)
   json.standing team.try(:standing).try(:records)
