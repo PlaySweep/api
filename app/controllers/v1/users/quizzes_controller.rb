@@ -3,7 +3,7 @@ class V1::Users::QuizzesController < ApplicationController
 
   def index
     @user = User.find_by(id: params[:user_id])
-    @quizzes = @user.quizzes.finished.descending.limit(5) if params[:finished]
+    @quizzes = @user.quizzes.finished.descending.limit(3) if params[:finished]
     respond_with @quizzes
   end
 
