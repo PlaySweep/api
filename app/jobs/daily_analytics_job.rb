@@ -2,7 +2,7 @@ class DailyAnalyticsJob < ApplicationJob
   queue_as :low
 
   def perform
-    # fetch_new_users(day: 1)
+    fetch_orders
   end
 
   def fetch_new_users day:
@@ -27,9 +27,9 @@ class DailyAnalyticsJob < ApplicationJob
 
   def fetch_orders
     CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_orders.csv", "wb") do |csv|
-      csv << ["Order Date", "Order Number", "Recipient Name", "Email", "Phone", "Street Line 1", "Street Line 2", "City", "State/Province", "Zip/Postal Code", "Country", "Formatted Address", "Item Title", "SKU", "Order Weight", "Order Unit", "Shipping Service"]
-      Order.pending.where('orders.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 14, DateTime.current.end_of_day).each do |order|
-        csv << [order.created_at.strftime("%m/%d/%Y"), order.id, order.user.full_name, order.user.email, order.user.phone_number, order.user.addresses.last.try(:line1), order.user.addresses.last.try(:line2), order.user.addresses.last.try(:city), order.user.addresses.last.try(:state), order.user.addresses.last.try(:postal_code), order.user.addresses.last.try(:country), order.user.addresses.last.try(:formatted_address), order.prize.try(:product).try(:name), order.prize.sku.code, order.prize.sku.weight, order.prize.sku.unit, "Endemic Labs - #{order.user.account.name}"]
+      csv << ["Order Date", "Order Number", "Recipient Name", "Email", "Phone", "Street Line 1", "Street Line 2", "City", "State/Province", "Zip/Postal Code", "Country", "Formatted Address", "Item Title", "SKU", "Size", "Order Weight", "Order Unit", "Shipping Service"]
+      Order.pending.where('orders.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day).each do |order|
+        csv << [order.created_at.strftime("%m/%d/%Y"), order.id, order.user.full_name, order.user.email, order.user.phone_number, order.user.addresses.last.try(:line1), order.user.addresses.last.try(:line2), order.user.addresses.last.try(:city), order.user.addresses.last.try(:state), order.user.addresses.last.try(:postal_code), order.user.addresses.last.try(:country), order.user.addresses.last.try(:formatted_address), order.prize.try(:product).try(:name), order.prize.sku.code, order.prize.sku.size, order.prize.sku.weight, order.prize.sku.unit, "Endemic Labs - #{order.user.account.name}"]
       end
     end
     DataMailer.orders_to(email: "budweisersweep@endemiclabs.co").deliver_now
@@ -64,7 +64,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [product.id, product.team ? product.team.name : "Global", product.name, product.category]
       end
     end
-    DataMailer.products(email: "ryan@endemiclabs.co").deliver_now
+    DataMailer.products(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
   def fetch_active_teams
@@ -75,7 +75,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [team.id, team.name]
       end
     end
-    DataMailer.teams(email: "ryan@endemiclabs.co").deliver_now
+    DataMailer.teams(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
 end

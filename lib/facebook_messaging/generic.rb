@@ -19,8 +19,9 @@ module FacebookMessaging
           template[:message][:quick_replies] = quick_replies if quick_replies
           Bot.deliver(template, access_token: ENV["ACCESS_TOKEN"])
         rescue Facebook::Messenger::FacebookError => e
-          puts "Facebook Messenger Error message\n\t#{e.inspect}"
-          puts "#{user.full_name} Not found (facebook_uuid: #{user.facebook_uuid})"     
+          puts "Deactivating #{user.id}..."
+          user.update_attributes(active: false)    
+          puts "* User DEACTIVATED: #{user.full_name} *"    
         end
       end
     end
@@ -42,8 +43,9 @@ module FacebookMessaging
           template[:message][:quick_replies] = quick_replies if quick_replies
           Bot.deliver(template, access_token: ENV["ACCESS_TOKEN"])
         rescue Facebook::Messenger::FacebookError => e
-          puts "Facebook Messenger Error message\n\t#{e.inspect}"
-          puts "#{user.full_name} Not found (facebook_uuid: #{user.facebook_uuid})"     
+          puts "Deactivating #{user.id}..."
+          user.update_attributes(active: false)    
+          puts "* User DEACTIVATED: #{user.full_name} *"    
         end
       end
     end
@@ -63,8 +65,9 @@ module FacebookMessaging
           template[:message][:quick_replies] = quick_replies if quick_replies
           Bot.deliver(template, access_token: ENV["ACCESS_TOKEN"])
         rescue Facebook::Messenger::FacebookError => e
-          puts "Facebook Messenger Error message\n\t#{e.inspect}"
-          puts "#{user.full_name} Not found (facebook_uuid: #{user.facebook_uuid})"     
+          puts "Deactivating #{user.id}..."
+          user.update_attributes(active: false)    
+          puts "* User DEACTIVATED: #{user.full_name} *"    
         end
       end
     end
@@ -83,8 +86,9 @@ module FacebookMessaging
           template[:message][:quick_replies] = quick_replies if quick_replies
           Bot.deliver(template, access_token: ENV["ACCESS_TOKEN"])
         rescue Facebook::Messenger::FacebookError => e
-          puts "Facebook Messenger Error message\n\t#{e.inspect}"
-          puts "#{user.full_name} Not found (facebook_uuid: #{user.facebook_uuid})"     
+          puts "Deactivating #{user.id}..."
+          user.update_attributes(active: false)    
+          puts "* User DEACTIVATED: #{user.full_name} *"    
         end
       end
     end

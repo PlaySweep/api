@@ -136,6 +136,35 @@ def announcement user:, team:
     FacebookMessaging::Standard.deliver(
       user: user, 
       message: notification, 
+      notification_type: "REGULAR"
+    )
+    # FacebookMessaging::Standard.deliver(
+    #   user: user, 
+    #   message: content, 
+    #   notification_type: "NO_PUSH"
+    # )
+    quick_replies = FacebookParser::QuickReplyObject.new([
+      {
+        content_type: :text,
+        title: "Share",
+        payload: "SHARE"
+      }
+    ]).objects
+    FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
+    puts "Delivered message to #{user.last_name} (#{user.id})"
+  rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
+    puts "Deactivate #{user.last_name} (#{user.id})"
+    user.update_attributes(active: false)
+  end
+end
+
+def global_announcement user:
+  begin
+    notification = "⚾️ We have more Budweiser Sweep Trivia available, #{user.first_name}!"
+    content = "Now you can earn a Save by referring your friends to play! This will allow you to erase a wrong answer and stay in the game."
+    FacebookMessaging::Standard.deliver(
+      user: user, 
+      message: notification, 
       notification_type: "SILENT_PUSH"
     )
     FacebookMessaging::Standard.deliver(
@@ -155,6 +184,28 @@ def announcement user:, team:
   rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
     puts "Deactivate #{user.last_name} (#{user.id})"
     user.update_attributes(active: false)
+  end
+end
+
+def re_engage user:
+  begin
+    notification = "⚾️ The Budweiser Sweep is back for 2020, and we’ve got trivia until the season starts!"
+    content = "Finish your account setup below and start winning Budweiser, MLB, and team swag 🍻!"
+    FacebookMessaging::Standard.deliver(
+      user: user, 
+      message: notification, 
+      notification_type: "SILENT_PUSH"
+    )
+    FacebookMessaging::Button.deliver(
+        user: user,
+        title: "Confirm your account",
+        message: content,
+        url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
+        notification_type: "NO_PUSH"
+      )
+    puts "Delivered message to #{user.last_name} (#{user.id})"
+  rescue
+    puts "😡"
   end
 end
 
