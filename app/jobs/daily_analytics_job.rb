@@ -78,4 +78,13 @@ class DailyAnalyticsJob < ApplicationJob
     DataMailer.teams(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
+  def fetch_with_source users:
+    hash = Hash.new(0)
+    users.each do |user|
+      role = user.roles.first
+      role ? hash[user.roles.first.name] += 1 : hash['global'] += 1
+    end
+    hash.keys.each { |key| puts "#{key} - #{hash[key]}"}
+  end
+
 end

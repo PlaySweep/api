@@ -218,6 +218,12 @@ class DataMigration
     end
   end
 
+  def self.upload_data
+    self.upload_quizzes
+    self.upload_questions
+    self.upload_answers
+  end
+
   def self.upload_slates team:
     csv_text = File.read(Rails.root.join('lib', 'seeds', "#{team}_slates.csv"))
     csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')

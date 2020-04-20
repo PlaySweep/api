@@ -129,9 +129,9 @@ def notify users:, week:
   end
 end
 
-def announcement user:, team:
+def announcement user:
   begin
-    notification = "⚾️ We have more MLB & #{team.abbreviation} Trivia available, #{user.first_name}!"
+    notification = "⚾️ We have more Budweiser Sweep Trivia contests available, #{user.first_name}!"
     content = "Now you can earn a Save by referring your friends to play! This will allow you to erase a wrong answer and stay in the game."
     FacebookMessaging::Standard.deliver(
       user: user, 
@@ -205,7 +205,8 @@ def re_engage user:
       )
     puts "Delivered message to #{user.last_name} (#{user.id})"
   rescue
-    puts "😡"
+    puts "Deactivate #{user.last_name} (#{user.id})"
+    user.update_attributes(active: false)
   end
 end
 
