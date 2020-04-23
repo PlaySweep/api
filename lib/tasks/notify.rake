@@ -1,9 +1,8 @@
 namespace :prod do
 
   desc "Notify Active User"
-  task :notify => :environment do
-    users = User.active
-    notify(users: users)
+  task :reminders => :environment do
+    
   end
 
   namespace :system do
@@ -84,65 +83,21 @@ def notify_drizly user:, expiration:
   FacebookMessaging::Generic::Web.deliver(user: user, quick_replies: quick_replies)
 end
 
-def notify users:, week:
-  users.each_with_index do |user, index|
-    begin
-      if user.confirmed && user.current_team.present?
-        content = "#{week} is here! Tap to play for a chance at winning more #{user.current_team.abbreviation} prizes."
-        FacebookMessaging::Standard.deliver(
-          user: user, 
-          message: content, 
-          notification_type: "SILENT_PUSH"
-        )
-        quick_replies = FacebookParser::QuickReplyObject.new([
-          {
-            content_type: :text,
-            title: "Status",
-            payload: "STATUS"
-          },
-          {
-            content_type: :text,
-            title: "Share",
-            payload: "SHARE"
-          }
-        ]).objects
-        FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
-      elsif !user.confirmed
-        content = "#{week} is here! Tap to play for a chance at winning more #{user.current_team.abbreviation} prizes."
-        FacebookMessaging::Standard.deliver(
-          user: user, 
-          message: content, 
-          notification_type: "SILENT_PUSH"
-        )
-        FacebookMessaging::Button.deliver(
-          user: user,
-          title: "Confirm account",
-          message: "Just a few more steps away...",
-          url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
-          notification_type: "NO_PUSH"
-        )
-      end
-      sleep 30 if index % 500 == 0
-    rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
-      # user.update_attributes(active: false)
-    end
-  end
+def send_reminder_notifications_for id:
+  team = Team.find(id)
+  message = team.messages.where(category: "reminders").unused.sample
+  users = User.active.confirmed.joins(:roles).where('roles.resource_id = ?', id)
+  users.each { |user| reminder_notification(user: user, message: message, team: team) }
 end
 
-def announcement user:
+def reminder_notification user:, message:, team:
   begin
-    notification = "⚾️ We have more Budweiser Sweep Trivia contests available, #{user.first_name}!"
-    content = "Now you can earn a Save by referring your friends to play! This will allow you to erase a wrong answer and stay in the game."
+    interpolated_message = message.body % { first_name: user.first_name, team_abbreviation: team.abbreviation }
     FacebookMessaging::Standard.deliver(
       user: user, 
-      message: notification, 
+      message: interpolated_message, 
       notification_type: "REGULAR"
     )
-    # FacebookMessaging::Standard.deliver(
-    #   user: user, 
-    #   message: content, 
-    #   notification_type: "NO_PUSH"
-    # )
     quick_replies = FacebookParser::QuickReplyObject.new([
       {
         content_type: :text,
@@ -151,168 +106,62 @@ def announcement user:
       }
     ]).objects
     FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
-    puts "Delivered message to #{user.last_name} (#{user.id})"
-  rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
-    puts "Deactivate #{user.last_name} (#{user.id})"
-    user.update_attributes(active: false)
+    user.notifications.create(message_id: message.id) 
+  rescue Facebook::Messenger::FacebookError => e
+    user.update_attributes(active: false)    
+    puts "* User DEACTIVATED: #{user.full_name} *"
   end
 end
 
 def global_announcement user:
-  begin
-    notification = "⚾️ We have more Budweiser Sweep Trivia available, #{user.first_name}!"
-    content = "Now you can earn a Save by referring your friends to play! This will allow you to erase a wrong answer and stay in the game."
-    FacebookMessaging::Standard.deliver(
-      user: user, 
-      message: notification, 
-      notification_type: "SILENT_PUSH"
-    )
-    FacebookMessaging::Standard.deliver(
-      user: user, 
-      message: content, 
-      notification_type: "NO_PUSH"
-    )
-    quick_replies = FacebookParser::QuickReplyObject.new([
-      {
-        content_type: :text,
-        title: "Share",
-        payload: "SHARE"
-      }
-    ]).objects
-    FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
-    puts "Delivered message to #{user.last_name} (#{user.id})"
-  rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
-    puts "Deactivate #{user.last_name} (#{user.id})"
-    user.update_attributes(active: false)
-  end
+  notification = "⚾️ We have more Budweiser Sweep Trivia available, #{user.first_name}!"
+  content = "Now you can earn a Save by referring your friends to play! This will allow you to erase a wrong answer and stay in the game."
+  FacebookMessaging::Standard.deliver(
+    user: user, 
+    message: notification, 
+    notification_type: "SILENT_PUSH"
+  )
+  FacebookMessaging::Standard.deliver(
+    user: user, 
+    message: content, 
+    notification_type: "NO_PUSH"
+  )
+  quick_replies = FacebookParser::QuickReplyObject.new([
+    {
+      content_type: :text,
+      title: "Share",
+      payload: "SHARE"
+    }
+  ]).objects
+  FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
 end
 
-def re_engage user:
+def send_engagement_notification
+  account = Account.find_by(name: "MLB")
+  message = account.messages.where(category: "engagement").unused.sample
+  users = User.active.where(confirmed: false).sample(2500)
+  users.each { |user| re_engagement_notification(user: user, message: message) }
+end
+
+def re_engagement_notification user:, message:
   begin
-    notification = "⚾️ The Budweiser Sweep is back for 2020, and we’ve got trivia until the season starts!"
-    content = "Finish your account setup below and start winning Budweiser, MLB, and team swag 🍻!"
+    content = "Finish your account setup below and start winning Budweiser, MLB, and team swag #{user.first_name} 🍻!"
     FacebookMessaging::Standard.deliver(
       user: user, 
-      message: notification, 
+      message: message.body, 
       notification_type: "SILENT_PUSH"
     )
     FacebookMessaging::Button.deliver(
-        user: user,
-        title: "Confirm your account",
-        message: content,
-        url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
-        notification_type: "NO_PUSH"
-      )
-    puts "Delivered message to #{user.last_name} (#{user.id})"
-  rescue
-    puts "Deactivate #{user.last_name} (#{user.id})"
-    user.update_attributes(active: false)
-  end
-end
-
-def targeted_messaging user: 
-  begin
-    notification = "🏈 Who's in the top 20? You are, #{user.first_name}!"
-    content = "Even if you don't get to #1, 2nd-20th place win a Sweatshirt for their favorite NFL team - so keep it up!"
-    FacebookMessaging::Standard.deliver(
-      user: user, 
-      message: notification, 
-      notification_type: "SILENT_PUSH"
-    )
-    FacebookMessaging::Standard.deliver(
-      user: user, 
-      message: content, 
+      user: user,
+      title: "Confirm your account",
+      message: content,
+      url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
       notification_type: "NO_PUSH"
     )
-    quick_replies = FacebookParser::QuickReplyObject.new([
-      {
-        content_type: :text,
-        title: "Share",
-        payload: "SHARE"
-      },
-      {
-        content_type: :text,
-        title: "Status",
-        payload: "STATUS"
-      }
-    ]).objects
-    FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
-  rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
-    
+    user.notifications.create(message_id: message.id)
+  rescue Facebook::Messenger::FacebookError => e
+    user.update_attributes(active: false)    
+    puts "* User DEACTIVATED: #{user.full_name} *"
   end
 end
 
-def notify user: 
-  begin
-    if user.confirmed && (user.current_team.abbreviation == "Chiefs" || user.current_team.abbreviation == "49ers")
-      notification = "🏈 We're so close, #{user.first_name}. Tap to find out how you can win an autographed football from the Super Bowl MVP!"
-      content = "Get all 6 questions right for the Super Bowl contest and you'll have a chance at winning a Super Bowl MVP Autographed Football!\n\nPlus, you can also win a #{user.current_team.abbreviation} Super Bowl Hoodie & Hat by taking 1st place amongst your fellow #{user.current_team.abbreviation} fans on the team leaderboard 📈"
-      FacebookMessaging::Standard.deliver(
-        user: user, 
-        message: notification, 
-        notification_type: "SILENT_PUSH"
-      )
-      FacebookMessaging::Standard.deliver(
-        user: user, 
-        message: content, 
-        notification_type: "NO_PUSH"
-      )
-      quick_replies = FacebookParser::QuickReplyObject.new([
-        {
-          content_type: :text,
-          title: "Share",
-          payload: "SHARE"
-        },
-        {
-          content_type: :text,
-          title: "Status",
-          payload: "STATUS"
-        }
-      ]).objects
-      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
-    elsif user.confirmed
-      notification = "🏈 We're so close, #{user.first_name}. Tap to find out how you can win an autographed football from the Super Bowl MVP!"
-      content = "Get all 6 questions right for the Super Bowl contest and you'll have a chance at winning a Super Bowl MVP Autographed Football!"
-      FacebookMessaging::Standard.deliver(
-        user: user, 
-        message: notification, 
-        notification_type: "SILENT_PUSH"
-      )
-      FacebookMessaging::Standard.deliver(
-        user: user, 
-        message: content, 
-        notification_type: "NO_PUSH"
-      )
-      quick_replies = FacebookParser::QuickReplyObject.new([
-        {
-          content_type: :text,
-          title: "Share",
-          payload: "SHARE"
-        },
-        {
-          content_type: :text,
-          title: "Status",
-          payload: "STATUS"
-        }
-      ]).objects
-      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
-    else
-      notification = "🏈 We're so close, #{user.first_name}. Tap to find out how you can win an autographed football from the Super Bowl MVP!"
-      content = "Get all 6 questions right for the Super Bowl contest and you'll have a chance at winning a Super Bowl MVP Autographed Football! Sign up below 👇"
-      FacebookMessaging::Standard.deliver(
-        user: user, 
-        message: notification, 
-        notification_type: "SILENT_PUSH"
-      )
-      FacebookMessaging::Button.deliver(
-        user: user,
-        title: "Let's go!",
-        message: content,
-        url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
-        notification_type: "NO_PUSH"
-      )
-    end
-  rescue Net::ReadTimeout, Facebook::Messenger::FacebookError => e
-    
-  end
-end

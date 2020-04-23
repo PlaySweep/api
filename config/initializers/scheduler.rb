@@ -26,7 +26,23 @@ if Rails.env.production?
       returned_users = User.where(id: returned_user_ids).sample(25)
       left_users = User.where(id: left_user_ids).sample(25)
       new_users = User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day - 1).sample(25)
-      WeeklyUserActivityMailer.stats_email(new_users: new_users, returned_users: returned_users, left_users: left_users).deliver_now
+      can_users = Hash.new(0)
+      User.where(source: "mlb_scan_lp").each do |user|
+        role = user.roles.first
+        role ? can_users[user.roles.first.name] += 1 : can_users['global'] += 1
+      end
+      registered_count = can_users.confirmed.size
+      unregistered_count = can_users.where(confirmed: false).size
+      phone_number_count = User.includes(:phone_numbers).where.not(phone_numbers: { user_id: nil }).size
+      WeeklyUserActivityMailer.stats_email(
+        new_users: new_users, 
+        returned_users: returned_users, 
+        left_users: left_users,
+        can_users: can_users,
+        registered_count: registered_count,
+        unregistered_count: unregistered_count,
+        phone_number_count: phone_number_count
+      ).deliver_now
     end
   end
 
@@ -34,10 +50,8 @@ if Rails.env.production?
     Apartment::Tenant.switch(tenant) { DailyAnalyticsJob.perform_later }
   end
 
-  # def fetch_weekly_analytics account:
-  #   Apartment::Tenant.switch(account.tenant) do
-  #     WeeklyAnalyticsJob.perform_later
-  #   end
+  # def fetch_weekly_analytics tenant:
+  #   Apartment::Tenant.switch(tenant) { WeeklyAnalyticsJob.perform_later }
   # end
 
   # def store_and_cleanup_leaderboard account:

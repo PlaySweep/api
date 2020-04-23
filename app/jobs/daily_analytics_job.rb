@@ -5,17 +5,6 @@ class DailyAnalyticsJob < ApplicationJob
     fetch_orders
   end
 
-  def fetch_new_users day:
-    CSV.open("#{Rails.root}/tmp/#{(DateTime.current - day).to_date}_new_users.csv", "wb") do |csv|
-      csv << ["Date", "Name", "Team", "Signed Up", "Source"]
-      users = User.where('users.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day - day)
-      users.each do |user|
-        csv << [(DateTime.current - day).to_date.strftime("%Y%m%d"), user.full_name, user.current_team.abbreviation, user.confirmed, user.source]
-      end
-    end
-    DataMailer.user_acquisition_for(day: day, email: "ben@endemiclabs.co").deliver_now
-  end
-
   def leaderboard_csv
     CSV.open("#{Rails.root}/tmp/world_series_leaderboard.csv", "wb") do |csv|
       csv << ["Rank", "Score", "Name"]
@@ -33,16 +22,6 @@ class DailyAnalyticsJob < ApplicationJob
       end
     end
     DataMailer.orders_to(email: "budweisersweep@endemiclabs.co").deliver_now
-  end
-
-  def fetch_winners day:
-    CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_winners.csv", "wb") do |csv|
-      csv << ["User ID", "Name", "Email", "Zipcode", "Prize Won", "Contest", "Contest Date"]
-      Sweep.where('sweeps.created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - day, DateTime.current.end_of_day).each do |sweep|
-        csv << [sweep.user_id, sweep.user.full_name, sweep.user.email, sweep.user.zipcode, sweep.slate.prizes.first.try(:product).try(:name), sweep.slate.name, sweep.slate.start_time.strftime("%m/%d/%Y")]
-      end
-    end
-    DataMailer.winners_to(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
   def fetch_skus
@@ -65,26 +44,6 @@ class DailyAnalyticsJob < ApplicationJob
       end
     end
     DataMailer.products(email: "budweisersweep@endemiclabs.co").deliver_now
-  end
-
-  def fetch_active_teams
-    CSV.open("#{Rails.root}/tmp/teams.csv", "wb") do |csv|
-      csv << ["ID", "Name"]
-      teams = Team.active.order(id: :asc)
-      teams.each do |team|
-        csv << [team.id, team.name]
-      end
-    end
-    DataMailer.teams(email: "budweisersweep@endemiclabs.co").deliver_now
-  end
-
-  def fetch_with_source users:
-    hash = Hash.new(0)
-    users.each do |user|
-      role = user.roles.first
-      role ? hash[user.roles.first.name] += 1 : hash['global'] += 1
-    end
-    hash.keys.each { |key| puts "#{key} - #{hash[key]}"}
   end
 
 end

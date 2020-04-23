@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="format-detection" content="telephone=no">
   <meta name="x-apple-disable-message-reformatting">
-  <title>User Feedback List</title>
+  <title>Weekly User Data</title>
 </head>
 <body>
   <h1>User Feedback Stats for <%= DateTime.current.to_date %></h1>
@@ -38,6 +38,26 @@
     <% end %>
   </ol>
   <br />
+  <br />
+
+  <h1>Budweiser MLB Can Team Breakdown</h1>
+
+  <h3>All-time</h3>
+  <ol>
+    <% @can_users.keys.each do |key| %>
+      <li><%= key %> ( <%= can_users[key] %> )</li>
+    <% end %>
+  </ol>
+  <br />
+  <br />
+
+  <h1>Budweiser Numbers</h1>
+
+  <h3>Unregistered (<%= @unregistered_count %>) </h3>
+  <br />
+  <h3>Registered (<%= @registered_count %>) </h3>
+  <br />
+  <h3>Phone numbers (<%= @phone_number_count %>) </h3>
   <br />
 
 </body>

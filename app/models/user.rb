@@ -34,6 +34,7 @@ class User < ApplicationRecord
   has_many :phone_numbers, dependent: :destroy
   has_many :badges, dependent: :destroy
   has_many :question_sessions, dependent: :destroy
+  has_many :notifications, dependent: :destroy
   has_one :location, dependent: :destroy
 
   before_create :set_slug, :set_referral_code
@@ -48,7 +49,7 @@ class User < ApplicationRecord
   scope :for_owner, ->(owner_id) { joins(:roles).where('roles.resource_id = ?', owner_id) }
   scope :with_source, ->(source) { where(source: source) }
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
-  scope :recent, -> { where('created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 7, DateTime.current.end_of_day) }
+  scope :recent, -> { where('created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 30, DateTime.current.end_of_day) }
   scope :completed, -> { where.not(referral_completed_at: nil) }
 
   validates :slug, :referral_code, uniqueness: true
