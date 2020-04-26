@@ -64,7 +64,8 @@ class Quiz < ApplicationRecord
 
   def start_winner_confirmation_window
     if complete? && saved_change_to_data?
-      SendWinnerConfirmationJob.perform_later(winner_id, prize.id) if winner_id.present? && prize
+      winners_card = cards.find_by(user_id: winner_id)
+      SendWinnerConfirmationJob.perform_later(winner_id, prize.id, winners_card.id) if winner_id.present? && prize
       HandleConfirmationWindowJob.set(wait_until: 24.hours.from_now).perform_later(id, "Quiz")
     end
   end

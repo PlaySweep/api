@@ -11,6 +11,7 @@ class Choice < ApplicationRecord
   scope :for_quiz, ->(question_id) { joins(:question).where('questions.quiz_id = ?', question_id) }
 
   around_save :catch_uniqueness_exception
+  after_update :run_results
   after_create :create_card_when_finished
 
   def create_card_when_finished
@@ -23,6 +24,12 @@ class Choice < ApplicationRecord
     yield
   rescue ActiveRecord::RecordNotUnique
     self.errors.add(:answer, :taken)
+  end
+
+  def run_results
+    if saved_change_to_status?(from: 'pending', to: 'win')
+      ContestService.new(user, resource: question.quiz).run(type: :pick)
+    end
   end
 
 end

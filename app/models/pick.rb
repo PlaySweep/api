@@ -46,7 +46,7 @@ class Pick < ApplicationRecord
   def update_user_streaks
     if saved_change_to_status?(from: 'pending', to: 'win')
       OwnerService.new(user, slate: event.slate).run(type: :pick)
-      ContestService.new(user, slate: event.slate).run(type: :pick)
+      ContestService.new(user, resource: event.slate).run(type: :pick)
       streak = user.streaks.find_or_create_by(type: "PickStreak")
       streak.update_attributes(current: streak.current += 1)
       if streak.highest < streak.current
