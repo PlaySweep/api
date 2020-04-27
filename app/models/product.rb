@@ -16,12 +16,11 @@ class Product < ApplicationRecord
   private
 
   def sku_code
-    code = self.class.filtered(owner_id).for_category(category).size + BASELINE
     if global?
-      code = Product.where(global: true).for_category(category).size + BASELINE
+      code = (Product.where(global: true).for_category(category).joins(:skus).size + 1) + BASELINE
       "GLOB#{category.first(5).upcase}-#{code}"
     else
-      code = self.class.filtered(owner_id).for_category(category).size + BASELINE
+      code = (self.class.filtered(owner_id).for_category(category).joins(:skus).size + 1) + BASELINE
       "#{team.initials}#{category.first(5).upcase}-#{code}"
     end
   end

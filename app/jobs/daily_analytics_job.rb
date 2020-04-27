@@ -26,13 +26,13 @@ class DailyAnalyticsJob < ApplicationJob
 
   def fetch_skus
     CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_skus.csv", "wb") do |csv|
-      csv << ["ID", "Product Name", "Description", "Code", "Size"]
-      skus = Sku.all
+      csv << ["Sku ID", "Team", "Category", "Product ID", "Name", "Description", "Code", "Size"]
+      skus = Sku.order(code: :asc)
       skus.each do |sku|
-        csv << [sku.id, sku.product.name, sku.product.description, sku.code, sku.size]
+        csv << [sku.id, sku.product.global? ? "Global" : sku.product.team.abbreviation, sku.product.category, sku.product_id, sku.product.name, sku.product.description, sku.code, sku.size]
       end
     end
-    DataMailer.skus(email: "budweisersweep@endemiclabs.co").deliver_now
+    DataMailer.skus(email: "ryan@endemiclabs.co").deliver_now
   end
 
   def fetch_products
@@ -43,7 +43,18 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [product.id, product.team ? product.team.name : "Global", product.name, product.category]
       end
     end
-    DataMailer.products(email: "budweisersweep@endemiclabs.co").deliver_now
+    DataMailer.products(email: "ryan@endemiclabs.co").deliver_now
+  end
+
+  def fetch_users users:
+    CSV.open("#{Rails.root}/tmp/users.csv", "wb") do |csv|
+      csv << ["FB uuid", "Name", "Email", "Phone number"]
+      
+      users.each do |user|
+        csv << [" #{user.facebook_uuid}", user.full_name, user.email, user.phone_number]
+      end
+    end
+    DataMailer.users(email: "ben@endemiclabs.co").deliver_now
   end
 
 end
