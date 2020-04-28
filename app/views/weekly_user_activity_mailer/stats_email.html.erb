@@ -45,7 +45,7 @@
   <h3>Unregistered Can Users</h3>
   <ol>
     <% @can_users.keys.each do |key| %>
-      <li><%= key %> ( <%= can_users[key] %> )</li>
+      <li><%= key %> ( <%= @can_users[key] %> )</li>
     <% end %>
   </ol>
   <br />
@@ -54,7 +54,7 @@
   <h3>Registered Can Users</h3>
   <ol>
     <% @confirmed_can_users.keys.each do |key| %>
-      <li><%= key %> ( <%= can_users[key] %> )</li>
+      <li><%= key %> ( <%= @confirmed_can_users[key] %> )</li>
     <% end %>
   </ol>
   <br />
