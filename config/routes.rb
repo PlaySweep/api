@@ -2,12 +2,14 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
+
   namespace :v1, defaults: { format: :json } do
     get 'users/show', to: 'users#fetch_by_slug'
+
     resources :users, only: [:index, :show, :create, :update] do
       scope module: :users do
         member do
-          get "roles/change_teams"
+          get 'roles/change_teams'
         end
         resources :addresses, only: [:show, :create, :update]
         resources :phone_numbers, only: [:show, :create, :update]
@@ -35,6 +37,11 @@ Rails.application.routes.draw do
     resources :questions, only: [:show]
     resources :question_sessions, only: [:create, :update]
     resources :nudges, only: [:create]
+
+    namespace :sms, default: { format: :json } do
+      get 'verify', to: 'twilio#verify'
+      get 'verify_check', to: 'twilio#verify_check'
+    end
   end
   
   namespace :admin, defaults: { format: :json } do

@@ -58,6 +58,8 @@ gem 'apartment-activejob'
 gem 'staccato'
 gem "appsignal"
 
+gem 'twilio-ruby'
+
 gem 'rails-erd', group: :development
 
 group :development, :test do
