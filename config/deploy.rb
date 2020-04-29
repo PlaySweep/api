@@ -15,7 +15,7 @@ set :rvm_ruby_version, 'ruby-2.4.1@default'      # Defaults to: 'default'
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads', 'node_modules'
 
 set :keep_releases, 8
-set :passenger_restart_with_touch, true
+set :passenger_restart_with_touch, false
 
 # Dafault to QA ENV stageless deploy
 set :stage, :beta
