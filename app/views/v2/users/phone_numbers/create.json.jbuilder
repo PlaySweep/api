@@ -1,0 +1,1 @@
+json.phone_number @phone_number, partial: 'v2/users/phone_numbers/phone_number', as: :phone_number

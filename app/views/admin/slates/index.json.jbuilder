@@ -1,1 +1,0 @@
-json.slates @slates, partial: 'v1/slates/slate_for_admin', as: :slate

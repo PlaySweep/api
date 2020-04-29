@@ -1,0 +1,1 @@
+json.slates @slates, partial: 'v2/slates/slate_for_collection', as: :slate

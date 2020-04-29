@@ -1,0 +1,1 @@
+json.event @event, partial: 'v2/events/event', as: :event

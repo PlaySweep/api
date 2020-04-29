@@ -1,1 +1,0 @@
-json.contest @contest, partial: 'v1/contests/contest', as: :contest

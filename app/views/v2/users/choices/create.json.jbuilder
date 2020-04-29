@@ -1,0 +1,1 @@
+json.choice @choice, partial: 'v2/users/choices/choice', as: :choice

@@ -1,1 +1,0 @@
-json.entry @entry, partial: 'v1/users/entries/entry', as: :entry

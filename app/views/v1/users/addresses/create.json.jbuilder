@@ -1,1 +1,0 @@
-json.address @address, partial: 'v1/users/addresses/address', as: :address

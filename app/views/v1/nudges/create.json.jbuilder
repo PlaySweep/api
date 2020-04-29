@@ -1,1 +1,0 @@
-json.nudge @nudge, partial: 'v1/nudges/nudge', as: :nudge

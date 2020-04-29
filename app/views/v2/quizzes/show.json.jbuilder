@@ -1,0 +1,1 @@
+json.quiz @quiz, partial: 'v2/quizzes/quiz', as: :quiz

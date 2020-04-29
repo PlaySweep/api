@@ -32,7 +32,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [sku.id, sku.product.global? ? "Global" : sku.product.team.abbreviation, sku.product.category, sku.product_id, sku.product.name, sku.product.description, sku.code, sku.size]
       end
     end
-    DataMailer.skus(email: "ryan@endemiclabs.co").deliver_now
+    DataMailer.skus(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
   def fetch_products

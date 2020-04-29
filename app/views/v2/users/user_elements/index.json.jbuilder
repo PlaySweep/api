@@ -1,0 +1,1 @@
+json.user_elements @user_elements, partial: 'v2/users/user_elements/user_element', as: :user_element

@@ -1,0 +1,1 @@
+json.picks @picks, partial: 'v2/users/picks/pick_for_collection', as: :pick

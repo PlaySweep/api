@@ -76,17 +76,6 @@ Rails.application.configure do
     :authentication => :plain,
     :enable_starttls_auto => true
   }
-  # config.action_mailer.default_options = {from: 'ryan@endemiclabs.co'}
-  # config.action_mailer.default_url_options = { host: 'http://endemiclabs.co' }
-  # config.action_mailer.smtp_settings = {
-  #   :user_name => ENV["SENDGRID_USERNAME"],
-  #   :password => ENV["SENDGRID_PASSWORD"],
-  #   :domain => 'endemiclabs.co',
-  #   :address => 'smtp.sendgrid.net',
-  #   :port => 587,
-  #   :authentication => :plain,
-  #   :enable_starttls_auto => true
-  # }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
@@ -95,6 +84,7 @@ Rails.application.configure do
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = [I18n.default_locale]
+  config.serve_static_files = false
 
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
@@ -105,6 +95,8 @@ Rails.application.configure do
   # Use a different logger for distributed setups.
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
+
+  config.active_record.logger = nil
 
   if ENV["RAILS_LOG_TO_STDOUT"].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
