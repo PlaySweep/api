@@ -18,8 +18,7 @@ gem 'redis-rails', '~> 5'
 gem 'connection_pool'
 gem 'sidekiq'
 # Use ActiveModel has_secure_password
-gem 'bcrypt', '~> 3.1.7'
-gem 'popcorn_notify'
+# gem 'bcrypt', '~> 3.1.7'
 
 gem 'rb-readline'
 

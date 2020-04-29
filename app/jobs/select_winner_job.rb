@@ -33,7 +33,6 @@ class SelectWinnerJob < ApplicationJob
           slate.update_attributes(winner_id: user_id, previous_user_ids: previous_user_ids)
           found_a_winner = true
         else
-          Popcorn.notify("4805227771", "No one eligible for slate: #{slate.id}")
           found_a_winner = true
         end
       end
@@ -56,7 +55,6 @@ class SelectWinnerJob < ApplicationJob
         quiz.update_attributes(winner_id: user_id)
         found_a_winner = true
       else
-        Popcorn.notify("4805227771", "No one eligible for quiz: #{quiz.id}")
         found_a_winner = true
       end
     end
