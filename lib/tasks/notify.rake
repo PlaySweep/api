@@ -83,6 +83,10 @@ def notify_drizly user:, expiration:
   FacebookMessaging::Generic::Web.deliver(user: user, quick_replies: quick_replies)
 end
 
+def fetch_ids time_zone:
+  Team.active.where('time_zone ilike ?', "%#{time_zone}%").sample(3).pluck(:id)
+end
+
 def send_reminder_notifications_for id:
   team = Team.find(id)
   message = team.messages.where(category: "reminders").unused.sample
