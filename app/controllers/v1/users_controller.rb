@@ -1,6 +1,5 @@
 class V1::UsersController < ApplicationController
   respond_to :json
-
   skip_before_action :authenticate!, only: [:create]
 
   def index
