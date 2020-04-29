@@ -11,7 +11,7 @@ class Team < Owner
                         :initials, :abbreviation, :lat, :long,
                         :division, :conference
 
-  scope :by_name, ->(team_abbreviation) { where('data @> ?', { abbreviation: team_abbreviation.split('_').map(&:capitalize).join(' ') }.to_json) }
+  scope :by_name, ->(team_abbreviation) { find_by('data @> ?', { abbreviation: team_abbreviation.split('_').map(&:capitalize).join(' ') }.to_json) }
   scope :ordered, -> { order(name: :asc) }
   scope :sponsored, -> { where('data @> ?', { sponsored: true }.to_json) }
   scope :by_division, ->(division) { where('data @> ?', { division: division }.to_json) }

@@ -9,6 +9,8 @@ class Owner < ApplicationRecord
   has_many :medias, as: :imageable
   has_many :rewards, as: :rewardable
 
+  scope :by_name, ->(abbreviation) { find_by('data @> ?', { abbreviation: abbreviation.split('_').map(&:capitalize).join(' ') }.to_json) }
+
   def active_leaderboard?
     active_reward = rewards.active.find_by(category: "Weekly Points")
     active_reward.present?

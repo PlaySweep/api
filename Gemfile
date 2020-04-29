@@ -59,6 +59,7 @@ gem 'staccato'
 gem "appsignal"
 
 gem 'twilio-ruby'
+gem 'light-service'
 
 gem 'rails-erd', group: :development
 
