@@ -9,6 +9,10 @@ class Owner < ApplicationRecord
   has_many :medias, as: :imageable
   has_many :rewards, as: :rewardable
 
+  store_accessor :data, :entry_image, :local_image, :sponsored,
+                 :initials, :abbreviation, :lat, :long,
+                 :division, :conference
+
   scope :by_name, ->(abbreviation) { find_by('data @> ?', { abbreviation: abbreviation.split('_').map(&:capitalize).join(' ') }.to_json) }
 
   def active_leaderboard?

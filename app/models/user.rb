@@ -78,11 +78,11 @@ class User < ApplicationRecord
   end
 
   def current_team
-    roles.find_by(resource_type: "Team").try(:resource) || Team.find_by(name: account.app_name)
+    roles.find_by(resource_type: "Team").try(:resource) || Owner.find_by(name: account.app_name)
   end
 
   def current_team_is_default?
-    default_team_id = Team.find_by(name: account.app_name).id
+    default_team_id = Owner.find_by(name: account.app_name).id
     current_team.id == default_team_id
   end
 

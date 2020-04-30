@@ -10,14 +10,12 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   namespace :v2, defaults: { format: :json } do
-  
     resources :contests, :slates, :quizzes, only: [:index, :show, :update]
     resources :question_sessions, only: [:create, :update]
     resources :orders, only: [:index, :create]
     resources :achievements, :teams, only: [:index]
     resources :prizes, :questions, only: [:show]
     resources :nudges, only: [:create]
-
     resources :users, only: [:show, :create, :update] do
       scope module: :users do
         resources :choices, :picks, only: [:index, :show, :create, :update]
@@ -28,7 +26,6 @@ Rails.application.routes.draw do
         resources :roles, only: [:create]
       end
     end
-
     draw :messenger
     draw :messaging
     draw :admin

@@ -3,9 +3,10 @@ class V2::Messenger::UsersController < ApplicationController
 
   def show
     @user = User.find_by(facebook_uuid: params[:facebook_uuid])
-    render json: { user: [] } if @user.nil?
-
-    respond_with @user
+    if @user
+      respond_with @user
+    else
+      render json: { user: [] }
+    end
   end
-
 end

@@ -7,10 +7,6 @@ class Team < Owner
   has_many :quizzes, foreign_key: :owner_id
   has_many :players, foreign_key: :owner_id
 
-  store_accessor :data, :entry_image, :local_image, :sponsored,
-                        :initials, :abbreviation, :lat, :long,
-                        :division, :conference
-
   scope :by_name, ->(team_abbreviation) { find_by('data @> ?', { abbreviation: team_abbreviation.split('_').map(&:capitalize).join(' ') }.to_json) }
   scope :ordered, -> { order(name: :asc) }
   scope :sponsored, -> { where('data @> ?', { sponsored: true }.to_json) }

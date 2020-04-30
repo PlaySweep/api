@@ -2,26 +2,28 @@ class V2::Messaging::VerificationController < ApplicationController
   respond_to :json
 
   def verify
-    service_url = "#{ENV["TWILIO_SMS_VERIFY_BASE_URL"]}/Service"
-    account_sid = "#{ENV["TWILIO_SMS_VERIFY_ACCOUNT_SID_PRODUCTION"]}"
-    auth_token = "#{ENV["TWILIO_SMS_VERIFY_AUTH_TOKEN_PRODUCTION"]}"
-    client = Twilio::REST::Client.new(account_sid, auth_token)
+    client = Twilio::REST::Client.new
     @verification = client.verify
-                      .services("#{ENV["TWILIO_SMS_VERIFY_BUDWEISER_SWEEP_SERVICE_ID"]}")
+                      .services("#{ENV["TWILIO_VERIFY_#{current_account.app_name.upcase.gsub(' ', '_')}_SERVICE_ID"]}")
                       .verifications
                       .create(to: "+1#{params[:phone_number]}", channel: "sms")
-    puts @verification.inspect
+    if @verification.status == "pending"
+      respond_with @verification
+    else 
+      render json: { status: "error" }
+    end
   end
 
   def verify_check
-    service_url = "#{ENV["TWILIO_SMS_VERIFY_BASE_URL"]}/Service"
-    account_sid = "#{ENV["TWILIO_SMS_VERIFY_ACCOUNT_SID_PRODUCTION"]}"
-    auth_token = "#{ENV["TWILIO_SMS_VERIFY_AUTH_TOKEN_PRODUCTION"]}"
-    client = Twilio::REST::Client.new(account_sid, auth_token)
+    client = Twilio::REST::Client.new
     @verification_check = client.verify
-                      .services("#{ENV["TWILIO_SMS_VERIFY_BUDWEISER_SWEEP_SERVICE_ID"]}")
+                      .services("#{ENV["TWILIO_VERIFY_#{current_account.app_name.upcase.gsub(' ', '_')}_SERVICE_ID"]}")
                       .verification_checks
                       .create(to: "+1#{params[:phone_number]}", code: params[:code])
-    puts @verification_check.status
+    if @verification_check.status == "approved"
+      respond_with @verification_check
+    else 
+      render json: { status: "pending" }
+    end
   end
 end

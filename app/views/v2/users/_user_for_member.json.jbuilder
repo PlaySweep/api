@@ -17,7 +17,6 @@ json.referral_code user.referral_code
 json.referral_count user.referrals.completed.size
 json.has_never_played user.has_never_played?
 json.played_for_first_time user.played_for_first_time?
-json.eligible_for_drizly user.eligible_for_drizly?
 json.location user.location
 json.current_team user.current_team, partial: 'v2/teams/team', as: :team
 json.current_team_is_default user.current_team_is_default?
