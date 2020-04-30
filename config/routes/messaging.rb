@@ -1,4 +1,4 @@
-# api.playsweep.com/v2/messaging/verify
+# api.playsweep.com/v2/messaging/verify?phone_number=4805227771
 
 namespace :messaging, default: { format: :json } do
   get 'verify', to: 'verification#verify'
