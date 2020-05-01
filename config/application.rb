@@ -58,6 +58,7 @@ module SweepApi
         origins '*'
 
         resource '*',
+         expose: ["jwt"],
          headers: :any,
          credentials: false,
          methods: %i(get post put patch delete options head)

@@ -14,11 +14,17 @@ class VerifyCodeCheck
 
   executed do |context|
     unless (context.params[:phone_number] || context.params[:code]).nil?
-      verification_check = context.client.verify
+      begin
+        verification_check = context.client.verify
         .services("#{ENV["TWILIO_VERIFY_#{context.current_account.app_name.upcase.gsub(' ', '_')}_SERVICE_ID"]}") # TODO find a way to make this dynamic, without having access to user object yet
         .verification_checks
         .create(to: "+1#{context.params[:phone_number]}", code: context.params[:code])
-      verification_check.status == 'approved'
+      unless verification_check.status == 'approved'
+        context.fail_and_return!("Failed to verify code.")
+      end
+      rescue => Twilio::REST::RestError
+        context.fail_and_return!("Failed to verify code.")
+      end
     end
   end
 end

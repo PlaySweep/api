@@ -13,7 +13,7 @@ class ApplicationController < ActionController::API
     Apartment::Tenant.switch('public') do
       tenants = Account.all.map(&:tenant)
       if tenants.include?(subdomain)
-        current_account
+        authenticate_request
       else
         render json: {error: "Subdomain does not exist"}.to_json
       end
@@ -30,5 +30,10 @@ class ApplicationController < ActionController::API
     Apartment::Tenant.switch(subdomain) do
       @current_user ||= User.find_by(id: params[:user_id])
     end
+  end
+
+  def authenticate_request
+    @current_user = AuthorizeApiRequest.call(request.headers).result
+    render json: { error: 'Not Authorized' }, status: 401 unless @current_user
   end
 end

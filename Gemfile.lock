@@ -230,6 +230,7 @@ GEM
       rack (< 2.1.0)
       rack-protection (>= 1.5.0)
       redis (>= 3.3.5, < 5)
+    simple_command (0.1.0)
     simple_service_object (0.1.0)
     spring (2.1.0)
     spring-watcher-listen (2.0.1)
@@ -288,6 +289,7 @@ DEPENDENCIES
   haversine
   jbuilder (~> 2.5)
   json
+  jwt
   leaderboard
   light-service
   listen (>= 3.0.5, < 3.2)
@@ -305,6 +307,7 @@ DEPENDENCIES
   rolify
   rufus-scheduler
   sidekiq
+  simple_command
   simple_service_object
   spring
   spring-watcher-listen (~> 2.0.0)
@@ -316,4 +319,4 @@ RUBY VERSION
    ruby 2.7.1p83
 
 BUNDLED WITH
-   1.17.3
+   2.1.4

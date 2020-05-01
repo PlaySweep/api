@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   namespace :v2, defaults: { format: :json } do
+    post 'authenticate', to: 'authentication#authenticate'
     resources :contests, :slates, :quizzes, only: [:index, :show, :update]
     resources :question_sessions, only: [:create, :update]
     resources :orders, only: [:index, :create]

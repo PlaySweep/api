@@ -20,6 +20,7 @@ gem 'sidekiq'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+gem 'jwt'
 gem 'rb-readline'
 
 gem 'rufus-scheduler'
@@ -58,7 +59,9 @@ gem 'staccato'
 gem "appsignal"
 
 gem 'twilio-ruby'
+
 gem 'light-service'
+gem 'simple_command'
 
 gem 'rails-erd', group: :development
 
