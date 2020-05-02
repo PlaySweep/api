@@ -1,7 +1,6 @@
 class V2::Messaging::VerificationController < ApplicationController
   respond_to :json
   skip_before_action :authenticate!
-  after_action :authenticate!, only: [:verify_check]
 
   def verify
     client = Twilio::REST::Client.new
