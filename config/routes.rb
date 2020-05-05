@@ -17,6 +17,11 @@ Rails.application.routes.draw do
     resources :achievements, :teams, only: [:index]
     resources :prizes, :questions, only: [:show]
     resources :nudges, only: [:create]
+    resources :quizzes, only: :show do
+      scope module: :quizzes do
+        resources :questions, only: :show, param: :order
+      end
+    end
     resources :users, only: [:show, :create, :update] do
       scope module: :users do
         resources :choices, :picks, only: [:index, :show, :create, :update]

@@ -1,0 +1,1 @@
+json.question @question, partial: 'v2/questions/question', as: :question

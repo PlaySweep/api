@@ -1,8 +1,9 @@
-class V2::QuestionsController < ApplicationController
+class V2::Quizzes::QuestionsController < ApplicationController
   respond_to :json
 
   def show
-    @question = Question.find_by(id: params[:id])
+    quiz = Quiz.find(params[:quiz_id])
+    @question = quiz.questions.find_by(order: params[:order])
     if @question
       respond_with @question
     else
