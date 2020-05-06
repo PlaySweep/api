@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   namespace :v2, defaults: { format: :json } do
     post 'authenticate', to: 'authentication#authenticate'
     resources :contests, :slates, :quizzes, only: [:index, :show, :update]
-    resources :question_sessions, only: [:create, :update]
+    resources :question_sessions, only: [:show, :create, :update]
     resources :orders, only: [:index, :create]
     resources :achievements, :teams, only: [:index]
     resources :prizes, :questions, only: [:show]
@@ -30,6 +30,9 @@ Rails.application.routes.draw do
         resources :user_elements, only: [:index, :update]
         resources :slates, :quizzes, only: [:index]
         resources :roles, only: [:create]
+        # scope module: :questions, only: :show do
+        #   resources :question_sessions, only: [:show, :create, :update]
+        # end
       end
     end
     draw :messenger

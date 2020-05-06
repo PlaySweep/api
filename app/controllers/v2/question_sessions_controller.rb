@@ -1,6 +1,15 @@
 class V2::QuestionSessionsController < ApplicationController
   respond_to :json
 
+  def show
+    @question_session = QuestionSession.find(params[:id])
+    if @question_session
+      respond_with @question_session
+    else
+      render json: { errors: @question_session.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   def create
     @question_session = QuestionSession.create(question_session_params)
     if @question_session.save

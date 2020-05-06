@@ -19,4 +19,4 @@ json.prize do
 end
 json.label "Trivia"
 json.owner_image quiz.owner ? quiz.owner.image : "https://budweiser-sweep-assets.s3.amazonaws.com/mlb_national_logo.png"
-# json.questions quiz.questions.ordered, partial: 'v2/questions/question', as: :question
+json.questions quiz.questions.ordered, partial: 'v2/questions/question', as: :question
