@@ -25,7 +25,7 @@ Rails.application.routes.draw do
     resources :users, only: [:show, :create, :update] do
       scope module: :users do
         resources :choices, :picks, only: [:index, :show, :create, :update]
-        resources :cards, only: [:index, :create, :update]
+        resources :cards, only: [:index, :show, :create, :update]
         resources :addresses, :phone_numbers, only: [:show, :create, :update]
         resources :user_elements, only: [:index, :update]
         resources :slates, :quizzes, only: [:index]

@@ -1,0 +1,1 @@
+json.card @card, partial: 'v2/users/cards/card', as: :card
