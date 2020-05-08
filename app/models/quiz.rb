@@ -48,6 +48,11 @@ class Quiz < ApplicationRecord
     cards.find_by(user_id: current_user_id, cardable_id: id).present?
   end
 
+  def still_pending_played? current_user_id
+    card = cards.find_by(user_id: current_user_id, cardable_id: id)
+    card.pending? if card.present?
+  end
+
   private
 
   def initialize_starting_process

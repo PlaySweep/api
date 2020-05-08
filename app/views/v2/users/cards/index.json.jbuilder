@@ -1,1 +1,1 @@
-json.cards @cards, partial: 'v2/users/cards/card', as: :card
+json.card @card, partial: 'v2/users/cards/card', as: :card

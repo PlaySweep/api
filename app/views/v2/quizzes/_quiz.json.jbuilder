@@ -5,6 +5,7 @@ json.status quiz.status
 json.start_time quiz.start_time
 json.end_time quiz.end_time
 json.played quiz.played?(current_user.id)
+json.still_pending_played quiz.still_pending_played?(current_user.id)
 json.owner_id quiz.owner_id
 json.winner quiz.winner, partial: 'v2/users/user_for_member', as: :user
 json.prize do

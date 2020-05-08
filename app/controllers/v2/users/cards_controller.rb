@@ -2,9 +2,9 @@ class V2::Users::CardsController < ApplicationController
   respond_to :json
 
   def index
-    @cards = Card.where(cardable_type: params[:cardable_type], cardable_id: params[:cardable_id])
-    if @cards
-      respond_with @cards
+    @card = Card.find_by(cardable_type: params[:cardable_type], cardable_id: params[:cardable_id])
+    if @card
+      respond_with @card
     else
       render json: { errors: [] }, status: :unprocessable_entity
     end
