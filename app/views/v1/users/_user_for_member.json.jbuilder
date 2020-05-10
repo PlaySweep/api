@@ -73,7 +73,7 @@ json.links user.account.links.each do |link|
   json.url link.url
 end
 json.addresses user.addresses
-json.phone_number user.phone_number, partial: 'v1/phone_numbers/phone_number', as: :phone_number
+json.phone_number user.phone_number, partial: 'v1/users/phone_numbers/phone_number', as: :phone_number
 json.promotions user.promotions
 json.stats do
   json.current_pick_streak user.current_pick_streak
