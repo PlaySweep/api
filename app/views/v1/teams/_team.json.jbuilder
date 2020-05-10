@@ -1,5 +1,5 @@
 json.id team.id
-json.league team.league.name
+json.account team.account.name
 json.name team.name
 json.abbreviation team.abbreviation
 json.image team.image
@@ -7,7 +7,6 @@ json.entry_image team.entry_image
 json.local_image team.local_image
 json.lat team.lat
 json.long team.long
-json.coordinates team.coordinates
 json.division team.division
 json.conference team.conference
 json.promoted team.promoted

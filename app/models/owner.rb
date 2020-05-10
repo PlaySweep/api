@@ -9,6 +9,10 @@ class Owner < ApplicationRecord
   has_many :medias, as: :imageable
   has_many :rewards, as: :rewardable
 
+  store_accessor :data, :entry_image, :local_image, :sponsored,
+                 :initials, :abbreviation, :lat, :long,
+                 :division, :conference
+
   def active_leaderboard?
     active_reward = rewards.active.find_by(category: "Weekly Points")
     active_reward.present?
