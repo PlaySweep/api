@@ -11,21 +11,24 @@ class WelcomeJob < ApplicationJob
       # FacebookMessaging::ImageAttachment.deliver(user: user, image_url: team.entry_image)
       team_onboarding_copy = user.account.copies.where(category: "Welcome Team Onboarding").sample.message
       team_onboarding_interpolated = team_onboarding_copy % { team_abbreviation: team.abbreviation }
-      # FacebookMessaging::Standard.deliver(
-      #   user: user,
-      #   message: "#{welcome_interpolated}\n\n#{team_onboarding_interpolated}"
-      #   notification_type: "SILENT_PUSH"
-      # )
+      FacebookMessaging::Standard.deliver(
+        user: user,
+        message: "#{welcome_interpolated}\n\n#{team_onboarding_interpolated}",
+        notification_type: "SILENT_PUSH"
+      )
       FacebookMessaging::Button.deliver(
         user: user,
         title: "Let's go!",
-        message: "#{welcome_interpolated}\n\n#{team_onboarding_interpolated}",
-        url: url,
-        notification_type: "SILENT_PUSH"
+        message: "Just tap below to get this party started 👇",
+        url: url
       )
     else
       national_onboarding_copy = user.account.copies.where(category: "Welcome National Onboarding").sample.message
-      FacebookMessaging::Standard.deliver(user: user, message: national_onboarding_copy)
+      FacebookMessaging::Standard.deliver(
+        user: user,
+        message: "#{welcome_interpolated}\n\n#{national_onboarding_copy}",
+        notification_type: "SILENT_PUSH"
+      )
       FacebookMessaging::Button.deliver(
         user: user,
         title: "Let's go!",
