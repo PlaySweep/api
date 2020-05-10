@@ -64,10 +64,6 @@ class User < ApplicationRecord
     stats_hash_key.value.to_dot
   end
 
-  def current_phone_number
-    phone_numbers.try(:last)
-  end
-
   def latest_stats
     latest_stats_list.map(&:to_dot)
   end
