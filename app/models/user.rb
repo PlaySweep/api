@@ -30,7 +30,7 @@ class User < ApplicationRecord
   has_many :nudged, foreign_key: :nudged_id, class_name: "Nudge"
   has_many :orders, dependent: :destroy
   has_many :promotions, foreign_key: :used_by, dependent: :destroy
-  has_many :phone_numbers, dependent: :destroy
+  has_one :phone_number, dependent: :destroy
   has_many :badges, dependent: :destroy
   has_many :question_sessions, dependent: :destroy
   has_many :notifications, dependent: :destroy
