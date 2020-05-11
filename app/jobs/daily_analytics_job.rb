@@ -32,7 +32,18 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [sku.id, sku.product.global? ? "Global" : sku.product.team.abbreviation, sku.product.category, sku.product_id, sku.product.name, sku.product.description, sku.code, sku.size]
       end
     end
-    DataMailer.skus(email: "ryan@endemiclabs.co").deliver_now
+    DataMailer.skus(email: "budweisersweep@endemiclabs.co").deliver_now
+  end
+
+  def fetch_teams
+    CSV.open("#{Rails.root}/tmp/teams.csv", "wb") do |csv|
+      csv << ["ID", "Name", "Abbreviation"]
+      teams = Team.active.order(name: :asc)
+      teams.each do |team|
+        csv << [team.id, team.name, team.abbreviation]
+      end
+    end
+    DataMailer.teams(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
   def fetch_products
