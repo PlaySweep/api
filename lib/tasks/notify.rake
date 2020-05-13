@@ -117,6 +117,11 @@ def reminder_notification user:, message:, team:
   end
 end
 
+def run_notifications tz:
+  ids = fetch_ids(time_zone: tz)
+  ids.each { |id| send_reminder_notifications_for(id: id) }
+end
+
 def global_announcement user:
   notification = "⚾️ We have more Budweiser Sweep Trivia available, #{user.first_name}!"
   content = "Now you can earn a Save by referring your friends to play! This will allow you to erase a wrong answer and stay in the game."

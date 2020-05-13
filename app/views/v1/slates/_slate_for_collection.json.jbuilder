@@ -45,4 +45,4 @@ json.participants slate.participants.ordered.each do |participant|
   json.player participant.player, partial: 'v1/players/player', as: :player
 end
 json.label "In-game"
-json.owner_image slate.team.image
+json.owner_image slate.team.image if slate.team
