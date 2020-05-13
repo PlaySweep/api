@@ -11,6 +11,7 @@ require "action_mailer/railtie"
 require "action_view/railtie"
 require "action_cable/engine"
 require 'facebook/messenger'
+require "active_support/core_ext/hash/keys"
 # require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
@@ -46,6 +47,7 @@ module SweepApi
     config.autoload_paths << Rails.root.join('lib/organizers/')
     config.autoload_paths << Rails.root.join('lib/organizers/*.rb')
     config.autoload_paths << Rails.root.join('app/mailers/')
+    config.eager_load_paths << Rails.root.join('jobs')
     config.eager_load_paths << Rails.root.join('lib')
     config.eager_load_paths << Rails.root.join('lib/services/')
     config.eager_load_paths << Rails.root.join('lib/services/*.rb')

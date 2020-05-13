@@ -10,7 +10,6 @@ class User < ApplicationRecord
   rolify
 
   belongs_to :account, optional: true
-  belongs_to :league, foreign_key: :account_id, optional: true
   belongs_to :referred_by, class_name: "User", optional: true
   has_many :addresses, dependent: :destroy
   has_many :user_elements, dependent: :destroy
@@ -31,7 +30,7 @@ class User < ApplicationRecord
   has_many :nudged, foreign_key: :nudged_id, class_name: "Nudge"
   has_many :orders, dependent: :destroy
   has_many :promotions, foreign_key: :used_by, dependent: :destroy
-  has_many :phone_numbers, dependent: :destroy
+  has_one :phone_number, dependent: :destroy
   has_many :badges, dependent: :destroy
   has_many :question_sessions, dependent: :destroy
   has_many :notifications, dependent: :destroy
@@ -65,10 +64,6 @@ class User < ApplicationRecord
     stats_hash_key.value.to_dot
   end
 
-  def current_phone_number
-    phone_numbers.try(:last)
-  end
-
   def latest_stats
     latest_stats_list.map(&:to_dot)
   end
@@ -78,7 +73,7 @@ class User < ApplicationRecord
   end
 
   def current_team
-    roles.find_by(resource_type: "Team").try(:resource) || Owner.find_by(name: account.app_name)
+    roles.find_by(resource_type: "Team").try(:resource) || roles.find_by(resource_type: "Owner").try(:resource) || Owner.find_by(name: account.app_name)
   end
 
   def current_team_is_default?

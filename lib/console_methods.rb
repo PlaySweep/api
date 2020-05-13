@@ -11,11 +11,11 @@ module ConsoleMethods
     Apartment::Tenant.switch!("budlight")
   end
 
-  def turner!
-    Apartment::Tenant.switch!("turner")
-  end
-
   def opry!
     Apartment::Tenant.switch!("opry")
+  end
+
+  def turner!
+    Apartment::Tenant.switch!("turner")
   end
 end
