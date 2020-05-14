@@ -1,9 +1,9 @@
 class V2::UsersController < ApplicationController
   respond_to :json
-  before_action :set_user, only: [ :show, :update ]
   skip_before_action :authenticate!, only: [ :create ]
 
   def show
+    @user = User.find(params[:id])
     respond_with @user
   end
 
@@ -19,6 +19,7 @@ class V2::UsersController < ApplicationController
   end
 
   def update
+    @user = User.find(params[:id])
     @user.update_attributes(user_params)
     service_result = UpdateUser.call(@user, params)
 
@@ -30,10 +31,6 @@ class V2::UsersController < ApplicationController
   end
 
   private
-
-  def set_user
-    @user = User.find_by(id: params[:id])
-  end
 
   def data_params
     return params[:user][:data] if params[:user][:data].nil?

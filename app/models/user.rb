@@ -41,6 +41,7 @@ class User < ApplicationRecord
   after_update :run_badge_service, :run_notification_service
 
   scope :for_account, ->(name) { joins(:account).where("accounts.name = ?", name) }
+  scope :with_phone_number, ->(phone_number) { joins(:phone_number).where("phone_numbers.number = ?", phone_number) }
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
   scope :confirmed, -> { where(confirmed: true) }

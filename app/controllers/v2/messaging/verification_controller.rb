@@ -23,4 +23,8 @@ class V2::Messaging::VerificationController < ApplicationController
       render json: { status: { code: 404 } }
     end
   end
+
+  def verify_user
+    render json: { already_exists: User.with_phone_number(params[:phone_number]).any? }
+  end
 end

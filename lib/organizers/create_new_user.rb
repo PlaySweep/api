@@ -4,6 +4,7 @@ class CreateNewUser
   def self.call(user, params)
     with(user: user, params: params).reduce(
       AssignCurrentAccount,
+      AssignPhoneNumber,
       ChecksForReferral,
       AssignOwnerRole,
       TrackNewUserEvent,
@@ -20,6 +21,18 @@ class AssignCurrentAccount
     account = Account.find_by(id: 1)
     context.user.account_id = account.id
     context.user.save
+  end
+end
+
+class AssignPhoneNumber
+  extend LightService::Action
+  expects :user, :params
+
+  executed do |context|
+    unless context.params[:phone_number].nil?
+      phone_number = PhoneNumber.create(number: context.params[:phone_number], user_id: context.user.id)
+      context.user.save
+    end
   end
 end
 
