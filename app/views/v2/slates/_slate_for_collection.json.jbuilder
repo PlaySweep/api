@@ -1,5 +1,6 @@
 json.id slate.id
 json.name slate.name
+json.type slate.type
 json.description slate.description
 json.event_size slate.events.size
 json.status slate.status
@@ -8,6 +9,7 @@ json.display_week slate.display_week
 json.local slate.local
 json.is_contest slate.contest_id?
 json.contest_id slate.contest_id
+json.contest_image slate.contest.images.first.url
 json.result slate.result
 json.score slate.score
 json.total_sweeps slate.cards.win.size
@@ -26,7 +28,7 @@ json.prize do
     json.category slate.prize.product.category
   end
   json.date slate.prize.date
-end unless slate.contest_id?
+end
 json.prizes slate.prizes.each do |prize|
   json.id prize.id
   json.sku_id prize.sku_id
@@ -45,4 +47,4 @@ json.participants slate.participants.ordered.each do |participant|
   json.player participant.player, partial: 'v2/players/player', as: :player
 end
 json.label "In-game"
-json.owner_image slate.team.image if slate.team
+json.owner_image slate.owner.image if slate.owner
