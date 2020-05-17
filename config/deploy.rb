@@ -1,5 +1,5 @@
 # config valid for current version and patch releases of Capistrano
-lock "~> 3.11.0"
+lock "~> 3.13.0"
 
 set :application, "sweep_api"
 set :repo_url, "git@github.com:ryanwaits/#{fetch :application}_V2.git"
