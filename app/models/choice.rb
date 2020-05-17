@@ -12,11 +12,6 @@ class Choice < ApplicationRecord
 
   around_save :catch_uniqueness_exception
   after_update :run_results
-  after_create :create_card_when_finished
-
-  def create_card_when_finished
-    Card.create(user_id: user_id, cardable_type: "Quiz", cardable_id: question.quiz_id) if user.completed_selections_for(resource: question.quiz)
-  end
 
   private
 

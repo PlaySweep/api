@@ -42,7 +42,7 @@ class V2::UsersController < ApplicationController
       .permit(
         :facebook_uuid, :active, :first_name, :last_name, 
         :locale, :profile_pic, :timezone, :email, 
-        :dob, :phone_number, :zipcode, :confirmed, 
+        :dob, :zipcode, :confirmed, 
         :locked, :gender, :source
       ).merge(data: data_params)
   end

@@ -14,7 +14,6 @@ class Pick < ApplicationRecord
   before_save :has_started?
   around_save :catch_uniqueness_exception
   after_update :update_user_streaks
-  after_create :create_card_when_finished
 
   scope :for_slate, ->(slate_id) { joins(:event).where('events.slate_id = ?', slate_id) }
   scope :duplicates, -> { select([:user_id, :selection_id, :event_id]).group(:user_id, :selection_id, :event_id).having("count(*) > 1").size }
@@ -37,10 +36,6 @@ class Pick < ApplicationRecord
     yield
   rescue ActiveRecord::RecordNotUnique
     self.errors.add(:selection, :taken)
-  end
-
-  def create_card_when_finished
-    Card.create(user_id: user_id, cardable_type: "Slate", cardable_id: event.slate_id) if user.completed_selections_for(resource: event.slate)
   end
 
   def update_user_streaks
