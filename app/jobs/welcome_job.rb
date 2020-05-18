@@ -12,7 +12,7 @@ class WelcomeJob < ApplicationJob
       end
       
       team_onboarding_copy = user.account.copies.where(category: "Welcome Team Onboarding").sample.message
-      team_onboarding_interpolated = team_onboarding_copy % { team_abbreviation: team.abbreviation }
+      team_onboarding_interpolated = team_onboarding_copy % { team_abbreviation: user.current_team.abbreviation }
       FacebookMessaging::Standard.deliver(
         user: user,
         message: "#{welcome_interpolated}\n\n#{team_onboarding_interpolated}",
