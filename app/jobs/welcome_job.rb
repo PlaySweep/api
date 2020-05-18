@@ -7,8 +7,10 @@ class WelcomeJob < ApplicationJob
     welcome_interpolated = welcome_copy % { first_name: user.first_name }
     url = "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}"
     if user.current_team
-      team = user.current_team
-      # FacebookMessaging::ImageAttachment.deliver(user: user, image_url: team.entry_image)
+      if user.current_team.medias.find_by(category: "Welcome")
+        FacebookMessaging::ImageAttachment.deliver(user: user, image_url: user.current_team.medias.find_by(category: "Welcome").url)  
+      end
+      
       team_onboarding_copy = user.account.copies.where(category: "Welcome Team Onboarding").sample.message
       team_onboarding_interpolated = team_onboarding_copy % { team_abbreviation: team.abbreviation }
       FacebookMessaging::Standard.deliver(
