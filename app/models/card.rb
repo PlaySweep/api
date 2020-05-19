@@ -6,14 +6,14 @@ class Card < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
-  validates :cardable_id, uniqueness: { scope: [:user_id, :cardable_type], message: "only 1 Card per Entry" }
+  validates :cardable_id, :cardable_type, uniqueness: { scope: :user_id, message: "only 1 Card per Entry" }
 
   scope :for_quizzes, -> { where(cardable_type: "Quiz").joins('INNER JOIN quizzes ON quizzes.id = cards.cardable_id') }
   scope :for_slates, -> { where(cardable_type: "Slate").joins('INNER JOIN slates ON slates.id = cards.cardable_id') }
   scope :between_days, ->(resource, from, to) { where("#{resource}.start_time BETWEEN ? AND ?", DateTime.current.beginning_of_day - from.days, DateTime.current.end_of_day - to.days) }
 
   
-  before_create :catch_uniqueness_exception
+  around_save :catch_uniqueness_exception
   after_update :handle_results
   after_create :run_services, :update_latest_contest_activity, :complete_referral!
 
