@@ -25,7 +25,7 @@ json.current_account_leaderboard user.account.active_leaderboard.present?
 json.leaderboard do
   json.account do
     json.name user.account.rewards.active.find_by(category: "Contest").description
-    json.top_scorers user.account.active_leaderboard.top(3, { with_member_data: true })
+    json.top_scorers user.account.active_leaderboard.top(10, { with_member_data: true })
     json.rank user.account.active_leaderboard.rank_for(user.id).to_i || 0
     json.score user.account.active_leaderboard.score_for(user.id).to_i || 0
     json.ordinal_position user.account.active_leaderboard.rank_for(user.id).to_i.ordinalize.last(2)
