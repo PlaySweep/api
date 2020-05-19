@@ -13,7 +13,7 @@ class Card < ApplicationRecord
   scope :between_days, ->(resource, from, to) { where("#{resource}.start_time BETWEEN ? AND ?", DateTime.current.beginning_of_day - from.days, DateTime.current.end_of_day - to.days) }
 
   
-  around_save :catch_uniqueness_exception
+  before_create :catch_uniqueness_exception
   after_update :handle_results
   after_create :run_services, :update_latest_contest_activity, :complete_referral!
 
