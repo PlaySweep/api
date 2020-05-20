@@ -121,13 +121,13 @@ class DataMigration
     count = 0
     csv.each do |row|
       slate = Slate.new
-      product = Product.first
+      sku = Sku.find_by(id: row["sku_id"])
       slate.id = row["id"]
       slate.name = row["name"]
+      slate.type = "Slate"
       slate.start_time = row["start_time"]
-      slate.owner_id = row["team_id"]
-      slate.local = row["local"]
-      slate.opponent_id = row["opponent_id"]
+      slate.contest_id = row["contest_id"]
+      slate.prizes.create(product_id: sku.product_id, sku_id: sku.id) if sku
       slate.save
     end
   end
@@ -138,10 +138,9 @@ class DataMigration
     csv.each do |row|
       event = Event.new
       event.id = row["id"]
-      event.type = row["type"]
+      event.type = "Event"
       event.description = row["description"]
       event.order = row["order"]
-      event.category = row["category"]
       event.slate_id = row["slate_id"]
       event.save
     end
@@ -155,7 +154,6 @@ class DataMigration
       selection.id = row["id"]
       selection.description = row["description"]
       selection.order = row["order"]
-      selection.category = row["category"]
       selection.event_id = row["event_id"]
       selection.save
     end

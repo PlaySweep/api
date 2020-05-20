@@ -6,7 +6,7 @@ class Card < ApplicationRecord
 
   enum status: [ :pending, :win, :loss ]
 
-  validates :cardable_id, :cardable_type, uniqueness: { scope: :user_id, message: "only 1 Card per Entry" }
+  validates :cardable_id, uniqueness: { scope: [:user_id, :cardable_type], message: "only 1 Card per Entry" }
 
   scope :for_quizzes, -> { where(cardable_type: "Quiz").joins('INNER JOIN quizzes ON quizzes.id = cards.cardable_id') }
   scope :for_slates, -> { where(cardable_type: "Slate").joins('INNER JOIN slates ON slates.id = cards.cardable_id') }
