@@ -38,7 +38,7 @@ class User < ApplicationRecord
 
   before_create :set_slug, :set_referral_code
   after_update :create_or_update_location
-  after_update :run_badge_service, :run_notification_service
+  # after_update :run_badge_service, :run_notification_service
 
   scope :for_account, ->(name) { joins(:account).where("accounts.name = ?", name) }
   scope :active, -> { where(active: true) }
