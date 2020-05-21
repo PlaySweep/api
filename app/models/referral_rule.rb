@@ -1,0 +1,3 @@
+class ReferralRule < Rule
+    
+end

@@ -38,7 +38,7 @@ class User < ApplicationRecord
 
   before_create :set_slug, :set_referral_code
   after_update :create_or_update_location
-  # after_update :run_badge_service, :run_notification_service
+  after_update :run_badge_service
 
   scope :for_account, ->(name) { joins(:account).where("accounts.name = ?", name) }
   scope :active, -> { where(active: true) }
@@ -218,14 +218,7 @@ class User < ApplicationRecord
   end
 
   def run_badge_service
-    if saved_change_to_referral_completed_at?(from: nil)
-      BadgeService::Referral.new(user: self.referred_by).run
-      self.referred_by.elements.create(element_id: 1)
-    end
-  end
-
-  def run_notification_service
-    NotifyReferrerJob.perform_later(referred_by_id, id) if saved_change_to_referral_completed_at?(from: nil)
+    ReferralService.new(user).run if saved_change_to_referral_completed_at?(from: nil)
   end
 
 end
