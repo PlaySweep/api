@@ -21,7 +21,7 @@ class ReferralService
     end
   end
 
-  def referral_reward
+  def elements_reward
     rule = ReferralRuleEvaluator.new(@user).elements_rule
     if reward_active? && rule
       self.referred_by.elements.create(element_id: 1)
