@@ -218,7 +218,7 @@ class User < ApplicationRecord
   end
 
   def run_badge_service
-    ReferralService.new(user).run if saved_change_to_referral_completed_at?(from: nil)
+    ReferralService.new(self).run if saved_change_to_referral_completed_at?(from: nil)
   end
 
 end
