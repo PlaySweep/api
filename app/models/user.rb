@@ -20,7 +20,7 @@ class User < ApplicationRecord
   has_many :choices, dependent: :destroy
   has_many :events, through: :picks
   has_many :cards, dependent: :destroy
-  has_many :referrals, -> { where('created_at > ?', ReferralMilestone::START_DATE) }, class_name: "User", foreign_key: :referred_by_id
+  has_many :referrals, class_name: "User", foreign_key: :referred_by_id
   has_many :slates, through: :cards, source: :cardable, source_type: "Slate"
   has_many :quizzes, through: :cards, source: :cardable, source_type: "Quiz"
   has_many :entries, dependent: :destroy
@@ -34,6 +34,7 @@ class User < ApplicationRecord
   has_many :badges, dependent: :destroy
   has_many :question_sessions, dependent: :destroy
   has_many :notifications, dependent: :destroy
+  has_many :rewards, through: :account
   has_one :location, dependent: :destroy
 
   before_create :set_slug, :set_referral_code
@@ -52,6 +53,10 @@ class User < ApplicationRecord
   scope :completed, -> { where.not(referral_completed_at: nil) }
 
   validates :slug, :referral_code, uniqueness: true
+
+  def active_referrals
+    self.referrals.where('created_at > ?', self.rewards.active.for_referral.pluck(:start_date))
+  end
 
   def update_latest_stats slate:
     event_ids = events.where(slate_id: slate.id).map(&:id)
@@ -218,7 +223,7 @@ class User < ApplicationRecord
   end
 
   def run_badge_service
-    ReferralService.new(user).run if saved_change_to_referral_completed_at?(from: nil)
+    ReferralService.new(self).run if saved_change_to_referral_completed_at?(from: nil)
   end
 
 end

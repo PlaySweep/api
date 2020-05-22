@@ -5,7 +5,7 @@ class NotifyReferrerJob < ApplicationJob
     referrer = User.find(referrer_id)
     referred_user = User.find(referred_id)
     referrer_notification_copy = referrer.account.copies.where(category: "Notify Referral").sample.message
-    referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.abbreviated_name, referral_count: referrer.referrals.completed.size }
+    referrer_notification_copy_interpolated = referrer_notification_copy % { referred_name: referred_user.abbreviated_name, referral_count: referrer.active_referrals.completed.size }
     quick_replies = FacebookParser::QuickReplyObject.new([
       { content_type: :text,
         title: "Play now",

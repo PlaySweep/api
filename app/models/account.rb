@@ -8,6 +8,7 @@ class Account < ApplicationRecord
   has_many :users
 
   scope :active, -> { where(active: true) }
+  scope :active_referral_rewards, -> { joins(:rewards).where("rewards.category = ?", "Referral") }
 
   def active_leaderboard?
     active_reward = rewards.active.find_by(category: "Contest")
