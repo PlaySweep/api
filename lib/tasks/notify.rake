@@ -122,6 +122,13 @@ def run_notifications tz:
   ids.each { |id| send_reminder_notifications_for(id: id) }
 end
 
+def notify_confirmed user:
+  unless user.cards.find_by(cardable_id: 5, cardable_type: "Slate")
+    FacebookMessaging::Standard.deliver(user: user, message: "We're only 1 day away from The Match, play today to rise up the leaderboard, so you can get that Michelob ULTRA hat for the Summer!", notification_type: "REGULAR")
+    FacebookMessaging::Button.deliver(user: user, title: "More contests", message: "Today's prize, a Callaway Driver!", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}", notification_type: "NO_PUSH")
+  end
+end
+
 def global_announcement user:
   notification = "⚾️ We have more Budweiser Sweep Trivia available, #{user.first_name}!"
   content = "Now you can earn a Save by referring your friends to play! This will allow you to erase a wrong answer and stay in the game."
