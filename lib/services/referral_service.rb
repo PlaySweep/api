@@ -37,7 +37,7 @@ class ReferralService
   end
 
   def notify_referrer
-    NotifyReferrerJob.perform_later(referred_by_id, id)
+    NotifyReferrerJob.perform_later(@user.referred_by_id, @user.id)
   end
 
 end
