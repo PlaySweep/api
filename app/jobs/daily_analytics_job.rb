@@ -14,6 +14,16 @@ class DailyAnalyticsJob < ApplicationJob
     end
   end
 
+  def fetch_selections
+    CSV.open("#{Rails.root}/tmp/selections.csv", "wb") do |csv|
+      csv << ["ID", "Description"]
+      Selection.all.each do |selection|
+        csv << [selection.id, selection.description]
+      end
+    end
+    DataMailer.selections_to(email: "budweisersweep@endemiclabs.co").deliver_now
+  end
+
   def fetch_orders
     CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_orders.csv", "wb") do |csv|
       csv << ["Order Date", "Order Number", "Recipient Name", "Email", "Phone", "Street Line 1", "Street Line 2", "City", "State/Province", "Zip/Postal Code", "Country", "Formatted Address", "Item Title", "SKU", "Size", "Order Weight", "Order Unit", "Shipping Service", "Source"]

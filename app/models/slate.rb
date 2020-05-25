@@ -31,7 +31,7 @@ class Slate < ApplicationRecord
   scope :total_entry_count, -> { joins(:cards).count }
   scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
   
-  after_update :change_status, :run_results, :start_winner_confirmation_window
+  after_update :change_status, :run_results
 
   accepts_nested_attributes_for :prizes
 

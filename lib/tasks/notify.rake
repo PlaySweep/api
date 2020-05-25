@@ -122,6 +122,13 @@ def run_notifications tz:
   ids.each { |id| send_reminder_notifications_for(id: id) }
 end
 
+def notify_confirmed user:
+  unless user.cards.find_by(cardable_id: 5, cardable_type: "Slate")
+    FacebookMessaging::Standard.deliver(user: user, message: "We're only 1 day away from The Match, play today to rise up the leaderboard, so you can get that Michelob ULTRA hat for the Summer!", notification_type: "REGULAR")
+    FacebookMessaging::Button.deliver(user: user, title: "More contests", message: "Today's prize, a Callaway Driver!", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}", notification_type: "NO_PUSH")
+  end
+end
+
 def global_announcement user:
   notification = "⚾️ We have more Budweiser Sweep Trivia available, #{user.first_name}!"
   content = "Now you can earn a Save by referring your friends to play! This will allow you to erase a wrong answer and stay in the game."
@@ -171,6 +178,38 @@ def re_engagement_notification user:, message:
   rescue Facebook::Messenger::FacebookError => e
     user.update_attributes(active: false)    
     puts "* User DEACTIVATED: #{user.full_name} *"
+  end
+end
+
+def notify_leaderboard_winners user:
+  rank = user.account.active_leaderboard.rank_for(user.id).to_i
+  ordinal = user.account.active_leaderboard.rank_for(user.id).to_i.ordinalize.last(2)
+  score = user.account.active_leaderboard.score_for(user.id).to_i
+  prize_id = 9
+  FacebookMessaging::Standard.deliver(
+    user: user,
+    message: "#{user.first_name}, you finished in #{rank}#{ordinal} place with #{score} points and won a Michelob ULTRA hat!",
+    notification_type: "REGULAR"
+  )
+  FacebookMessaging::Button.deliver(
+    user: user,
+    title: "Confirm Now",
+    message: "Click here to submit your address, so we can ship that hat out to you.",
+    url: "#{ENV["WEBVIEW_URL"]}/prize_confirmation/#{prize_id}/#{user.slug}",
+    notification_type: "NO_PUSH"
+  )
+end
+
+def copy_quiz quiz:
+  name = quiz.name
+  start_time = DateTime.current.beginning_of_day
+  end_time = DateTime.current.end_of_day + 2.days
+  q = Quiz.create(name: name, start_time: start_time, end_time: end_time)
+  quiz.questions.order(order: :asc).each do |question|
+    qs = q.questions.create(order: question.order, description: question.description)
+    question.answers.each do |answer|
+      qs.answers.create(order: answer.order, description: answer.description, status: answer.status)
+    end
   end
 end
 
