@@ -39,7 +39,7 @@ class User < ApplicationRecord
 
   before_create :set_slug, :set_referral_code
   after_update :create_or_update_location
-  after_update :run_badge_service
+  after_update :run_services
 
   scope :for_account, ->(name) { joins(:account).where("accounts.name = ?", name) }
   scope :active, -> { where(active: true) }
@@ -222,7 +222,7 @@ class User < ApplicationRecord
     end
   end
 
-  def run_badge_service
+  def run_services
     ReferralService.new(self).run if saved_change_to_referral_completed_at?(from: nil)
   end
 

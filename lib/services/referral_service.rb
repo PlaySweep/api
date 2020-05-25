@@ -16,7 +16,7 @@ class ReferralService
   def referral_reward
     rule = ReferralRuleEvaluator.new(@user).referral_rule
     if reward_active? && rule
-      BadgeService::Referral.new(user: self.referred_by).run
+      BadgeService::Referral.new(user: @user.referred_by).run
       notify_referrer
     end
   end
@@ -24,8 +24,16 @@ class ReferralService
   def elements_reward
     rule = ReferralRuleEvaluator.new(@user).elements_rule
     if reward_active? && rule
-      self.referred_by.elements.create(element_id: 1)
+      case @user.active_referrals.completed.size
+      when 1
+        add_eraser
+      end
     end
+  end
+
+  def add_eraser
+    element = Element.find_by(category: "Eraser")
+    @user.referred_by.elements.create(element_id: element.id)
   end
 
   def notify_referrer
