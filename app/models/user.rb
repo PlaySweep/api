@@ -55,7 +55,7 @@ class User < ApplicationRecord
   validates :slug, :referral_code, uniqueness: true
 
   def active_referrals
-    self.referrals.where.not(referral_completed_at: nil).where('referral_completed_at IS NULL AND created_at > ?', self.rewards.active.for_referral.pluck(:start_date))
+    self.referrals.where.not(referral_completed_at: nil).where('created_at > ?', self.rewards.active.for_referral.pluck(:start_date))
   end
 
   def update_latest_stats slate:
