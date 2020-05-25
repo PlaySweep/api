@@ -181,3 +181,35 @@ def re_engagement_notification user:, message:
   end
 end
 
+def notify_leaderboard_winners user:
+  rank = user.account.active_leaderboard.rank_for(user.id).to_i
+  ordinal = user.account.active_leaderboard.rank_for(user.id).to_i.ordinalize.last(2)
+  score = user.account.active_leaderboard.score_for(user.id).to_i
+  prize_id = 9
+  FacebookMessaging::Standard.deliver(
+    user: user,
+    message: "#{user.first_name}, you finished in #{rank}#{ordinal} place with #{score} points and won a Michelob ULTRA hat!",
+    notification_type: "REGULAR"
+  )
+  FacebookMessaging::Button.deliver(
+    user: user,
+    title: "Confirm Now",
+    message: "Click here to submit your address, so we can ship that hat out to you.",
+    url: "#{ENV["WEBVIEW_URL"]}/prize_confirmation/#{prize_id}/#{user.slug}",
+    notification_type: "NO_PUSH"
+  )
+end
+
+def copy_quiz quiz:
+  name = quiz.name
+  start_time = DateTime.current.beginning_of_day
+  end_time = DateTime.current.end_of_day + 2.days
+  q = Quiz.create(name: name, start_time: start_time, end_time: end_time)
+  quiz.questions.order(order: :asc).each do |question|
+    qs = q.questions.create(order: question.order, description: question.description)
+    question.answers.each do |answer|
+      qs.answers.create(order: answer.order, description: answer.description, status: answer.status)
+    end
+  end
+end
+
