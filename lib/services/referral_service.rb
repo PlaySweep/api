@@ -24,7 +24,7 @@ class ReferralService
   def elements_reward
     rule = ReferralRuleEvaluator.new(@user).elements_rule
     if reward_active? && rule
-      case @user.active_referrals.completed.size
+      case  @user.referred_by.active_referrals.completed.size
       when 1
         add_eraser
       end
