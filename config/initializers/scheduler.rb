@@ -39,7 +39,7 @@ if Rails.env.production?
       end
       registered_count = confirmed_can_users.size
       unregistered_count = can_users.size
-      phone_number_count = User.includes(:phone_numbers).where.not(phone_numbers: { user_id: nil }).size
+      phone_number_count = PhoneNumber.all.size
       WeeklyUserActivityMailer.stats_email(
         new_users: new_users, 
         returned_users: returned_users, 

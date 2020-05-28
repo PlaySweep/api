@@ -96,21 +96,23 @@ end
 
 def reminder_notification user:, message:, team:
   begin
-    interpolated_message = message.body % { first_name: user.first_name, team_abbreviation: team.abbreviation }
-    FacebookMessaging::Standard.deliver(
-      user: user, 
-      message: interpolated_message, 
-      notification_type: "REGULAR"
-    )
-    quick_replies = FacebookParser::QuickReplyObject.new([
-      {
-        content_type: :text,
-        title: "Share",
-        payload: "SHARE"
-      }
-    ]).objects
-    FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
-    user.notifications.create(message_id: message.id) 
+    if user.cards.empty? || user.cards.last.created_at < DateTime.current.beginning_of_day
+      interpolated_message = message.body % { first_name: user.first_name, team_abbreviation: team.abbreviation }
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: interpolated_message, 
+        notification_type: "REGULAR"
+      )
+      quick_replies = FacebookParser::QuickReplyObject.new([
+        {
+          content_type: :text,
+          title: "Share",
+          payload: "SHARE"
+        }
+      ]).objects
+      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
+      user.notifications.create(message_id: message.id) 
+    end
   rescue Facebook::Messenger::FacebookError => e
     user.update_attributes(active: false)    
     puts "* User DEACTIVATED: #{user.full_name} *"

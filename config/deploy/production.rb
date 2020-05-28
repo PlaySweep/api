@@ -1,6 +1,6 @@
 # config/deploy/production.rb
 
-server 'opry', user: 'ubuntu', roles: %w{ app db web }
+server 'budlight', user: 'ubuntu', roles: %w{ app db web }
 set :deploy_to, "/var/www/sweep_api"
 set :tmp_dir, '/home/deploy/tmp'
 

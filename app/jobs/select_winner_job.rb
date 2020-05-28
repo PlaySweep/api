@@ -18,6 +18,8 @@ class SelectWinnerJob < ApplicationJob
       loser_collection = loser_collection.select { |card| card.user.eligible_for_prize?(slate: slate) }
     end
 
+    loser_collection = loser_collection.reject { |card| Order.find_by(user_id: card.user_id) }
+
     if previous_user_ids.size >= 2
       slate.update_attributes(winner_id: 1)
     else
@@ -45,6 +47,8 @@ class SelectWinnerJob < ApplicationJob
     winner_collection = quiz.cards.win
     loser_collection = quiz.cards.loss
     found_a_winner = false
+
+    loser_collection = loser_collection.reject { |card| Order.find_by(user_id: card.user_id) }
 
     until found_a_winner
       if winner_collection.any?
