@@ -8,6 +8,7 @@ class Badge < ApplicationRecord
   before_create :reset_statuses
   after_create :notify_badge
 
+  scope :active, -> { where(active: true) }
   scope :for_referral_milestones, -> { joins(:achievement).where("achievements.type = ?", "ReferralMilestone") }
 
   def self.current
