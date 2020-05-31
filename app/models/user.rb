@@ -97,6 +97,10 @@ class User < ApplicationRecord
     distance <= 75
   end
 
+  def eligible_to_win?
+    orders.last.created_at <= 2.weeks.ago if orders.any?
+  end
+
   def coordinates
     if location
       [location.lat, location.long].map(&:to_f)

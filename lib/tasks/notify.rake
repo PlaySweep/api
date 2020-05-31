@@ -83,6 +83,38 @@ def notify_drizly user:, expiration:
   FacebookMessaging::Generic::Web.deliver(user: user, quick_replies: quick_replies)
 end
 
+def send_announcement user:
+  begin
+      message = user.current_team.messages.unused.find_by(category: "announcement")
+      if user.cards.empty? || user.cards.last.created_at < DateTime.current.beginning_of_day
+        if user.confirmed
+          FacebookMessaging::Standard.deliver(
+            user: user, 
+            message: "We've got a show for you today, #{user.first_name} 🎸!", 
+            notification_type: "SILENT_PUSH"
+          )
+          FacebookMessaging::Standard.deliver(
+            user: user, 
+            message: message.body, 
+            notification_type: "NO_PUSH"
+          )
+          quick_replies = FacebookParser::QuickReplyObject.new([
+            {
+              content_type: :text,
+              title: "Share",
+              payload: "SHARE"
+            }
+          ]).objects
+          FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
+          user.notifications.create(message_id: message.id) 
+        end
+      end
+  rescue
+    user.update_attributes(active: false)    
+    puts "* User DEACTIVATED: #{user.full_name} *"
+  end
+end
+
 def fetch_ids time_zone:
   Team.active.where('time_zone ilike ?', "%#{time_zone}%").sample(3).pluck(:id)
 end
