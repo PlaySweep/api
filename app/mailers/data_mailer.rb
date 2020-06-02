@@ -260,7 +260,7 @@ class DataMailer < ApplicationMailer
     attachments["#{Rails.root}/tmp/users.csv"] = { mime_type: 'text/csv', content: users_csv }
     mail(
       to: email,
-      subject: "#{account.friendly_name} #{account.name} 5k Users #{DateTime.current.to_date}",
+      subject: "#{account.friendly_name} #{account.name} Users #{DateTime.current.to_date}",
       body: "Attached below."
     )
   end

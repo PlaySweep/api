@@ -70,9 +70,8 @@ class DailyAnalyticsJob < ApplicationJob
   def fetch_users users:
     CSV.open("#{Rails.root}/tmp/users.csv", "wb") do |csv|
       csv << ["FB uuid", "Name", "Email", "Phone number"]
-      
       users.each do |user|
-        csv << [" #{user.facebook_uuid}", user.full_name, user.email, user.phone_number]
+        csv << [" #{user.facebook_uuid}", user.full_name, user.email, user.phone_number.nil? ? "" : user.phone_number.number]
       end
     end
     DataMailer.users(email: "ben@endemiclabs.co").deliver_now
