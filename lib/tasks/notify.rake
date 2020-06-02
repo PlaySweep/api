@@ -85,30 +85,29 @@ end
 
 def send_announcement user:
   begin
+    if user.cards.empty? || user.cards.last.created_at < DateTime.current.beginning_of_day
       message = user.current_team.messages.unused.find_by(category: "announcement")
-      if user.cards.empty? || user.cards.last.created_at < DateTime.current.beginning_of_day
-        if user.confirmed
-          FacebookMessaging::Standard.deliver(
-            user: user, 
-            message: "We've got a show for you today, #{user.first_name} 🎸!", 
-            notification_type: "SILENT_PUSH"
-          )
-          FacebookMessaging::Standard.deliver(
-            user: user, 
-            message: message.body, 
-            notification_type: "NO_PUSH"
-          )
-          quick_replies = FacebookParser::QuickReplyObject.new([
-            {
-              content_type: :text,
-              title: "Share",
-              payload: "SHARE"
-            }
-          ]).objects
-          FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
-          user.notifications.create(message_id: message.id) 
-        end
-      end
+      interpolated_message = message.body % { first_name: user.first_name }
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: "We're back, #{user.first_name}! Tap to play 49ers trivia 🏈", 
+        notification_type: "SILENT_PUSH"
+      )
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: interpolated_message, 
+        notification_type: "NO_PUSH"
+      )
+      quick_replies = FacebookParser::QuickReplyObject.new([
+        {
+          content_type: :text,
+          title: "Share",
+          payload: "SHARE"
+        }
+      ]).objects
+      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
+      user.notifications.create(message_id: message.id) 
+    end
   rescue
     user.update_attributes(active: false)    
     puts "* User DEACTIVATED: #{user.full_name} *"
