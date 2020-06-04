@@ -17,6 +17,8 @@ class SelectWinnerJob < ApplicationJob
       winner_collection = winner_collection.select { |card| card.user.eligible_for_prize?(slate: slate) }
       loser_collection = loser_collection.select { |card| card.user.eligible_for_prize?(slate: slate) }
     end
+    winner_collection = winner_collection.select { |card| card.user.eligible_to_win? }
+    loser_collection = loser_collection.reject { |card| Order.find_by(user_id: card.user_id) }
 
     if previous_user_ids.size >= 2
       slate.update_attributes(winner_id: 1)
@@ -33,6 +35,8 @@ class SelectWinnerJob < ApplicationJob
           slate.update_attributes(winner_id: user_id, previous_user_ids: previous_user_ids)
           found_a_winner = true
         else
+          admin = User.find_by(first_name: "Ryan", last_name: "Waits")
+          slate.update_attributes(winner_id: admin.id)
           found_a_winner = true
         end
       end
@@ -45,6 +49,9 @@ class SelectWinnerJob < ApplicationJob
     loser_collection = quiz.cards.loss
     found_a_winner = false
 
+    winner_collection = winner_collection.select { |card| card.user.eligible_to_win? }
+    loser_collection = loser_collection.reject { |card| Order.find_by(user_id: card.user_id) }
+
     until found_a_winner
       if winner_collection.any?
         user_id = winner_collection.sample.user_id
@@ -55,6 +62,8 @@ class SelectWinnerJob < ApplicationJob
         quiz.update_attributes(winner_id: user_id)
         found_a_winner = true
       else
+        admin = User.find_by(first_name: "Ryan", last_name: "Waits")
+        quiz.update_attributes(winner_id: admin.id)
         found_a_winner = true
       end
     end

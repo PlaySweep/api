@@ -5,7 +5,7 @@ module BadgeService
     end
 
     def run
-      case @user.referrals.completed.size
+      case @user.active_referrals.completed.size
       when 1
         achievement(level: 1)
       when 5

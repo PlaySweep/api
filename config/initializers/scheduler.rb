@@ -7,18 +7,23 @@ if Rails.env.development?
 end
 
 if Rails.env.production?
-  # @accounts = Account.active
-
   scheduler.cron '0 6 * * 1' do
-    fetch_player_activity(tenant: "budweiser") 
+    Account.active.pluck(:tenant).each do |tenant|
+      Apartment::Tenant.switch(tenant) do
+        fetch_player_activity
+      end
+    end
   end
 
   scheduler.cron '0 12 * * *' do
-    fetch_daily_analytics(tenant: "budweiser")
+    Account.active.pluck(:tenant).each do |tenant|
+      Apartment::Tenant.switch(tenant) do
+        fetch_daily_analytics
+      end
+    end
   end
 
-  def fetch_player_activity tenant:
-    Apartment::Tenant.switch(tenant) do
+  def fetch_player_activity
       unique_ids_two_weeks_ago = Card.for_quizzes.between_days('quizzes', 14, 8).select(:user_id).distinct.pluck(:user_id)
       unique_ids_one_week_ago = Card.for_quizzes.between_days('quizzes', 7, 1).select(:user_id).distinct.pluck(:user_id)
       returned_user_ids = unique_ids_two_weeks_ago.select { |id| unique_ids_one_week_ago.include?(id) }
@@ -39,7 +44,7 @@ if Rails.env.production?
       end
       registered_count = confirmed_can_users.size
       unregistered_count = can_users.size
-      phone_number_count = User.includes(:phone_numbers).where.not(phone_numbers: { user_id: nil }).size
+      phone_number_count = PhoneNumber.all.size
       WeeklyUserActivityMailer.stats_email(
         new_users: new_users, 
         returned_users: returned_users, 
@@ -51,11 +56,10 @@ if Rails.env.production?
         unregistered_count: unregistered_count,
         phone_number_count: phone_number_count
       ).deliver_now
-    end
   end
 
-  def fetch_daily_analytics tenant:
-    Apartment::Tenant.switch(tenant) { DailyAnalyticsJob.perform_later }
+  def fetch_daily_analytics
+    DailyAnalyticsJob.perform_later
   end
 
   # def fetch_weekly_analytics tenant:

@@ -20,7 +20,7 @@ class User < ApplicationRecord
   has_many :choices, dependent: :destroy
   has_many :events, through: :picks
   has_many :cards, dependent: :destroy
-  has_many :referrals, -> { where('created_at > ?', ReferralMilestone::START_DATE) }, class_name: "User", foreign_key: :referred_by_id
+  has_many :referrals, class_name: "User", foreign_key: :referred_by_id
   has_many :slates, through: :cards, source: :cardable, source_type: "Slate"
   has_many :quizzes, through: :cards, source: :cardable, source_type: "Quiz"
   has_many :entries, dependent: :destroy
@@ -34,11 +34,12 @@ class User < ApplicationRecord
   has_many :badges, dependent: :destroy
   has_many :question_sessions, dependent: :destroy
   has_many :notifications, dependent: :destroy
+  has_many :rewards, through: :account
   has_one :location, dependent: :destroy
 
   before_create :set_slug, :set_referral_code
   after_update :create_or_update_location
-  after_update :run_badge_service, :run_notification_service
+  after_update :run_services
 
   scope :for_account, ->(name) { joins(:account).where("accounts.name = ?", name) }
   scope :with_phone_number, ->(phone_number) { joins(:phone_number).where("phone_numbers.number = ?", phone_number) }
@@ -53,6 +54,10 @@ class User < ApplicationRecord
   scope :completed, -> { where.not(referral_completed_at: nil) }
 
   validates :slug, :referral_code, uniqueness: true
+
+  def active_referrals
+    self.referrals.where.not(referral_completed_at: nil).where('created_at > ?', self.rewards.active.for_referral.pluck(:start_date))
+  end
 
   def update_latest_stats slate:
     event_ids = events.where(slate_id: slate.id).map(&:id)
@@ -91,6 +96,10 @@ class User < ApplicationRecord
   def eligible_for_prize? slate:
     distance = Haversine.distance(slate.team.coordinates, coordinates).to_miles
     distance <= 75
+  end
+
+  def eligible_to_win?
+    orders.last.created_at <= 2.weeks.ago if orders.any?
   end
 
   def coordinates
@@ -218,15 +227,8 @@ class User < ApplicationRecord
     end
   end
 
-  def run_badge_service
-    if saved_change_to_referral_completed_at?(from: nil)
-      BadgeService::Referral.new(user: self.referred_by).run
-      self.referred_by.elements.create(element_id: 1)
-    end
-  end
-
-  def run_notification_service
-    NotifyReferrerJob.perform_later(referred_by_id, id) if saved_change_to_referral_completed_at?(from: nil)
+  def run_services
+    ReferralService.new(self).run if saved_change_to_referral_completed_at?(from: nil)
   end
 
 end

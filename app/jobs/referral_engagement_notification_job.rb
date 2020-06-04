@@ -3,9 +3,9 @@ class ReferralEngagementNotificationJob < ApplicationJob
   
     def perform referrer_id
       referrer = User.find(referrer_id)
-      if referrer.referrals.completed.size.include?(User::REFERRAL_THRESHOLD)
+      if referrer.active_referrals.completed.size.include?(User::REFERRAL_THRESHOLD)
         referrer_notification_copy = referrer.account.copies.where(category: "Referral Engagement Notification").sample.message
-        referrer_notification_copy_interpolated = referrer_notification_copy % { first_name: referrer.first_name, referral_count: referrer.referrals.completed.size }
+        referrer_notification_copy_interpolated = referrer_notification_copy % { first_name: referrer.first_name, referral_count: referrer.active_referrals.completed.size }
         quick_replies = FacebookParser::QuickReplyObject.new([
           { content_type: :text,
             title: "Play now",

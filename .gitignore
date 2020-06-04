@@ -22,6 +22,7 @@
 
 dump.rdb
 /*.rdb
+erd.pdf
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key

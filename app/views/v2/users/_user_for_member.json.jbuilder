@@ -13,7 +13,7 @@ json.confirmed user.confirmed
 json.locked user.locked
 json.slug user.slug
 json.referral_code user.referral_code
-json.referral_count user.referrals.completed.size
+json.referral_count user.active_referrals.completed.size
 json.has_never_played user.has_never_played?
 json.played_for_first_time user.played_for_first_time?
 json.location user.location
@@ -78,8 +78,8 @@ json.stats do
 end
 json.latest_stats user.latest_stats
 json.latest_contest_activity user.latest_contest_activity
-json.recent_orders user.orders.recent, partial: 'v2/orders/order', as: :order
-json.current_badge user.badges.for_referral_milestones.current, partial: "v2/badges/badge", as: :badge
-json.current_badge_exist user.badges.for_referral_milestones.current.present?
-json.badges user.badges, partial: "v2/badges/badge", as: :badge
-json.referrals user.referrals.recent, partial: "v2/users/referral", as: :referral
+json.recent_orders user.orders.recent, partial: 'v1/orders/order', as: :order
+json.current_badge user.badges.active.for_referral_milestones.current, partial: "v1/badges/badge", as: :badge
+json.current_badge_exist user.badges.active.for_referral_milestones.current.present?
+json.badges user.badges, partial: "v1/badges/badge", as: :badge
+json.referrals user.active_referrals.recent, partial: "v1/users/referral", as: :referral

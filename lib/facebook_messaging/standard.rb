@@ -17,6 +17,7 @@ module FacebookMessaging
         puts "Deactivating #{user.id}..."
         user.update_attributes(active: false)    
         puts "* User DEACTIVATED: #{user.full_name} *"
+        puts "#{e.inspect}"
       end
     end
   end

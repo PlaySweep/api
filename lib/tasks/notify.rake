@@ -83,6 +83,37 @@ def notify_drizly user:, expiration:
   FacebookMessaging::Generic::Web.deliver(user: user, quick_replies: quick_replies)
 end
 
+def send_announcement user:
+  begin
+    if user.cards.empty? || user.cards.last.created_at < DateTime.current.beginning_of_day
+      message = user.current_team.messages.unused.find_by(category: "announcement")
+      interpolated_message = message.body % { first_name: user.first_name }
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: "We're back, #{user.first_name}! Tap to play 49ers trivia 🏈", 
+        notification_type: "SILENT_PUSH"
+      )
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: interpolated_message, 
+        notification_type: "NO_PUSH"
+      )
+      quick_replies = FacebookParser::QuickReplyObject.new([
+        {
+          content_type: :text,
+          title: "Share",
+          payload: "SHARE"
+        }
+      ]).objects
+      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
+      user.notifications.create(message_id: message.id) 
+    end
+  rescue
+    user.update_attributes(active: false)    
+    puts "* User DEACTIVATED: #{user.full_name} *"
+  end
+end
+
 def fetch_ids time_zone:
   Team.active.where('time_zone ilike ?', "%#{time_zone}%").sample(3).pluck(:id)
 end
@@ -96,21 +127,23 @@ end
 
 def reminder_notification user:, message:, team:
   begin
-    interpolated_message = message.body % { first_name: user.first_name, team_abbreviation: team.abbreviation }
-    FacebookMessaging::Standard.deliver(
-      user: user, 
-      message: interpolated_message, 
-      notification_type: "REGULAR"
-    )
-    quick_replies = FacebookParser::QuickReplyObject.new([
-      {
-        content_type: :text,
-        title: "Share",
-        payload: "SHARE"
-      }
-    ]).objects
-    FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
-    user.notifications.create(message_id: message.id) 
+    if user.cards.empty? || user.cards.last.created_at < DateTime.current.beginning_of_day
+      interpolated_message = message.body % { first_name: user.first_name, team_abbreviation: team.abbreviation }
+      FacebookMessaging::Standard.deliver(
+        user: user, 
+        message: interpolated_message, 
+        notification_type: "REGULAR"
+      )
+      quick_replies = FacebookParser::QuickReplyObject.new([
+        {
+          content_type: :text,
+          title: "Share",
+          payload: "SHARE"
+        }
+      ]).objects
+      FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
+      user.notifications.create(message_id: message.id) 
+    end
   rescue Facebook::Messenger::FacebookError => e
     user.update_attributes(active: false)    
     puts "* User DEACTIVATED: #{user.full_name} *"
@@ -120,6 +153,13 @@ end
 def run_notifications tz:
   ids = fetch_ids(time_zone: tz)
   ids.each { |id| send_reminder_notifications_for(id: id) }
+end
+
+def notify_confirmed user:
+  unless user.cards.find_by(cardable_id: 5, cardable_type: "Slate")
+    FacebookMessaging::Standard.deliver(user: user, message: "We're only 1 day away from The Match, play today to rise up the leaderboard, so you can get that Michelob ULTRA hat for the Summer!", notification_type: "REGULAR")
+    FacebookMessaging::Button.deliver(user: user, title: "More contests", message: "Today's prize, a Callaway Driver!", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}", notification_type: "NO_PUSH")
+  end
 end
 
 def global_announcement user:
@@ -171,6 +211,38 @@ def re_engagement_notification user:, message:
   rescue Facebook::Messenger::FacebookError => e
     user.update_attributes(active: false)    
     puts "* User DEACTIVATED: #{user.full_name} *"
+  end
+end
+
+def notify_leaderboard_winners user:
+  rank = user.account.active_leaderboard.rank_for(user.id).to_i
+  ordinal = user.account.active_leaderboard.rank_for(user.id).to_i.ordinalize.last(2)
+  score = user.account.active_leaderboard.score_for(user.id).to_i
+  prize_id = 9
+  FacebookMessaging::Standard.deliver(
+    user: user,
+    message: "#{user.first_name}, you finished in #{rank}#{ordinal} place with #{score} points and won a Michelob ULTRA hat!",
+    notification_type: "REGULAR"
+  )
+  FacebookMessaging::Button.deliver(
+    user: user,
+    title: "Confirm Now",
+    message: "Click here to submit your address, so we can ship that hat out to you.",
+    url: "#{ENV["WEBVIEW_URL"]}/prize_confirmation/#{prize_id}/#{user.slug}",
+    notification_type: "NO_PUSH"
+  )
+end
+
+def copy_quiz quiz:
+  name = quiz.name
+  start_time = DateTime.current.beginning_of_day
+  end_time = DateTime.current.end_of_day + 2.days
+  q = Quiz.create(name: name, start_time: start_time, end_time: end_time)
+  quiz.questions.order(order: :asc).each do |question|
+    qs = q.questions.create(order: question.order, description: question.description)
+    question.answers.each do |answer|
+      qs.answers.create(order: answer.order, description: answer.description, status: answer.status)
+    end
   end
 end
 

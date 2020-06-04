@@ -35,7 +35,7 @@ class SendLosingSlateMessageJob < ApplicationJob
       #   notification_type: "NO_PUSH"
       # )
       # FacebookMessaging::Generic::Contest.deliver(user: user, quick_replies: quick_replies)
-      message = "#{slate.name} results inside: #{slate.score}"
+      message = "Hey #{user.first_name}, you can now view your results for #{slate.contest.name} - #{slate.name} ⛳️"
       FacebookMessaging::Standard.deliver(
         user: user,
         message: message,

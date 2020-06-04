@@ -14,9 +14,7 @@ module FacebookMessaging
         template[:message][:quick_replies] = quick_replies if quick_replies
         Bot.deliver(template, access_token: ENV["ACCESS_TOKEN"])
       rescue Facebook::Messenger::FacebookError => e
-        puts "Deactivating #{user.id}..."
-        user.update_attributes(active: false)    
-        puts "* User DEACTIVATED: #{user.full_name} *"     
+        puts "error => #{e.inspect}"     
       end
       
     end

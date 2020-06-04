@@ -14,6 +14,16 @@ class DailyAnalyticsJob < ApplicationJob
     end
   end
 
+  def fetch_selections
+    CSV.open("#{Rails.root}/tmp/selections.csv", "wb") do |csv|
+      csv << ["ID", "Description"]
+      Selection.all.each do |selection|
+        csv << [selection.id, selection.description]
+      end
+    end
+    DataMailer.selections_to(email: "budweisersweep@endemiclabs.co").deliver_now
+  end
+
   def fetch_orders
     CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_orders.csv", "wb") do |csv|
       csv << ["Order Date", "Order Number", "Recipient Name", "Email", "Phone", "Street Line 1", "Street Line 2", "City", "State/Province", "Zip/Postal Code", "Country", "Formatted Address", "Item Title", "SKU", "Size", "Order Weight", "Order Unit", "Shipping Service", "Source"]
@@ -60,9 +70,8 @@ class DailyAnalyticsJob < ApplicationJob
   def fetch_users users:
     CSV.open("#{Rails.root}/tmp/users.csv", "wb") do |csv|
       csv << ["FB uuid", "Name", "Email", "Phone number"]
-      
       users.each do |user|
-        csv << [" #{user.facebook_uuid}", user.full_name, user.email, user.phone_number]
+        csv << [" #{user.facebook_uuid}", user.full_name, user.email, user.phone_number.nil? ? "" : user.phone_number.number]
       end
     end
     DataMailer.users(email: "ben@endemiclabs.co").deliver_now

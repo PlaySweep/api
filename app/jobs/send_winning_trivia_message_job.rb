@@ -18,6 +18,9 @@ class SendWinningTriviaMessageJob < ApplicationJob
     ]).objects
     winning_quiz_copy = user.account.copies.where(category: "Winning Quiz").sample.message
     interpolated_winning_quiz_copy = winning_quiz_copy % { first_name: user.first_name, drawing_prize_name: quiz.prize.product.name }
+    if user.current_team.medias.find_by(category: "Winning Quiz")
+      FacebookMessaging::ImageAttachment.deliver(user: user, image_url: user.current_team.medias.find_by(category: "Winning Quiz").url)  
+    end
     FacebookMessaging::Standard.deliver(
       user: user,
       message: interpolated_winning_quiz_copy,
