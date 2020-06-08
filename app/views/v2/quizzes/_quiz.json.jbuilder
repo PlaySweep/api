@@ -1,6 +1,7 @@
 json.id quiz.id
 json.name quiz.name
 json.description quiz.description
+json.type quiz.type
 json.status quiz.status
 json.start_time quiz.start_time
 json.end_time quiz.end_time

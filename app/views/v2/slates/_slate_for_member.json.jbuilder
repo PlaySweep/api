@@ -1,6 +1,7 @@
 json.id slate.id
 json.name slate.name
 json.description slate.description
+json.type slate.type
 json.events slate.events.ordered, partial: 'v2/events/event', as: :event
 json.status slate.status
 json.start_time slate.start_time

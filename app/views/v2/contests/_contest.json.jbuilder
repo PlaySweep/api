@@ -12,4 +12,4 @@ json.prize do
   json.date contest.prize.date
 end if contest.prize?
 json.images contest.images
-json.slates contest.slates.ascending.pending, partial: 'v1/slates/slate_for_collection', as: :slate
+json.slates contest.slates.ascending.pending, partial: 'v2/slates/slate_for_collection', as: :slate

@@ -78,8 +78,8 @@ json.stats do
 end
 json.latest_stats user.latest_stats
 json.latest_contest_activity user.latest_contest_activity
-json.recent_orders user.orders.recent, partial: 'v1/orders/order', as: :order
-json.current_badge user.badges.active.for_referral_milestones.current, partial: "v1/badges/badge", as: :badge
+json.recent_orders user.orders.recent, partial: 'v2/orders/order', as: :order
+json.current_badge user.badges.active.for_referral_milestones.current, partial: "v2/badges/badge", as: :badge
 json.current_badge_exist user.badges.active.for_referral_milestones.current.present?
-json.badges user.badges, partial: "v1/badges/badge", as: :badge
-json.referrals user.active_referrals.recent, partial: "v1/users/referral", as: :referral
+json.badges user.badges, partial: "v2/badges/badge", as: :badge
+json.referrals user.active_referrals.recent, partial: "v2/users/referral", as: :referral
