@@ -1,6 +1,7 @@
 class Product < ApplicationRecord
   BASELINE = 100
   has_many :skus
+  belongs_to :owner, optional: true
   belongs_to :team, foreign_key: :owner_id, optional: true
 
   scope :active, -> { where(active: true) }
@@ -16,13 +17,8 @@ class Product < ApplicationRecord
   private
 
   def sku_code
-    if global?
-      code = (Product.where(global: true).for_category(category).joins(:skus).size + 1) + BASELINE
-      "GLOB#{category.first(5).upcase}-#{code}"
-    else
-      code = (self.class.filtered(owner_id).for_category(category).joins(:skus).size + 1) + BASELINE
-      "#{team.initials}#{category.first(5).upcase}-#{code}"
-    end
+    code = (self.class.filtered(owner_id).for_category(category).joins(:skus).size + 1) + BASELINE
+    owner_id ? "#{owner.account.code_prefix}#{owner.initials.upcase}#{category.first(5).upcase}-#{code}" : "#{owner.account.code_prefix}GLOB#{category.first(5).upcase}-#{code}"
   end
 
   def create_sku

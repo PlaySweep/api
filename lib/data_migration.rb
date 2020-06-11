@@ -1,4 +1,13 @@
 class DataMigration
+
+  def self.update_skus
+    Sku.all.each do |sku|
+      code = sku.product.owner_id ? "#{sku.product.owner.account.code_prefix}#{sku.code}" : "#{Account.first.code_prefix}#{sku.code}"
+      sku.code = code
+      sku.save
+    end
+  end
+
   def self.upload_copy category:, message:
     tenants = %w[budweiser budlight]
     tenants.each do |tenant|
