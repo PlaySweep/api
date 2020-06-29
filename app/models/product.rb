@@ -19,7 +19,7 @@ class Product < ApplicationRecord
 
   def sku_code
     code = (self.class.filtered(owner_id).for_category(category).joins(:skus).size + 1) + BASELINE
-    owner_id ? "#{owner.account.code_prefix}#{owner.initials.upcase}#{category.first(5).upcase}-#{code}" : "#{owner.account.code_prefix}GLOB#{category.first(5).upcase}-#{code}"
+    owner_id ? "#{owner.account.code_prefix}-#{owner.initials.upcase}#{category.first(5).upcase}-#{code}" : "#{account.code_prefix}-GLOB#{category.first(5).upcase}-#{code}"
   end
 
   def create_sku
