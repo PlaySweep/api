@@ -6,6 +6,7 @@ class Account < ApplicationRecord
   has_many :links
   has_many :rewards, as: :rewardable
   has_many :users
+  has_many :products
 
   scope :active, -> { where(active: true) }
   scope :active_referral_rewards, -> { joins(:rewards).where("rewards.category = ?", "Referral") }

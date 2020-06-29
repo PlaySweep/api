@@ -1,6 +1,7 @@
 class Product < ApplicationRecord
   BASELINE = 100
   has_many :skus
+  belongs_to :account
   belongs_to :owner, optional: true
   belongs_to :team, foreign_key: :owner_id, optional: true
 
