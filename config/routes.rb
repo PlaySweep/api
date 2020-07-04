@@ -3,6 +3,9 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
   namespace :v1, defaults: { format: :json } do
+    namespace :admin do
+      post 'authenticate', to: 'authentication#authenticate'
+    end
     get 'users/show', to: 'users#fetch_by_slug'
     resources :users, only: [:index, :show, :create, :update] do
       scope module: :users do
