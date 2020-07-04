@@ -2,7 +2,7 @@ class V1::Admin::AuthenticationController < ApplicationController
   skip_before_action :authenticate!
  
   def authenticate
-    command = AuthenticateAdminUser.call(params[:id])
+    command = AuthenticateAdminUser.call(params[:username], params[:password])
  
     if command.success?
       render json: { auth_token: command.result }

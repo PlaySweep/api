@@ -1,8 +1,9 @@
 class AuthenticateAdminUser
   prepend SimpleCommand
 
-  def initialize(id)
-    @id = id
+  def initialize(username, password)
+    @username = username
+    @password = password
   end
 
   def call
@@ -15,7 +16,7 @@ class AuthenticateAdminUser
 
   def user
     user = Admin.find_by(id: id)
-    return user if user
+    return user if user && user.authenticate(@password)
 
     errors.add :user_authentication, 'invalid credentials'
     nil
