@@ -14,7 +14,7 @@ class AuthenticateAdminUser
   attr_accessor :id
 
   def user
-    user = User.find_by(id: id)
+    user = Admin.find_by(id: id)
     return user if user
 
     errors.add :user_authentication, 'invalid credentials'
