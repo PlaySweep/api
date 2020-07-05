@@ -55,6 +55,7 @@ GEM
     appsignal (2.10.6)
       rack
     arel (9.0.0)
+    bcrypt (3.1.13)
     bootsnap (1.4.6)
       msgpack (~> 1.0)
     builder (3.2.4)
@@ -269,6 +270,7 @@ DEPENDENCIES
   apartment
   apartment-activejob
   appsignal
+  bcrypt (~> 3.1.7)
   bootsnap (>= 1.1.0)
   byebug
   capistrano (~> 3.10)
