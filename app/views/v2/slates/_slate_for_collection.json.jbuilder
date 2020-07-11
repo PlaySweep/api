@@ -7,8 +7,7 @@ json.status slate.status
 json.start_time slate.start_time
 json.local slate.local
 json.is_contest slate.contest_id?
-json.contest_id slate.contest_id
-json.contest_image slate.contest.images.find_by(category: "Image").try(:url)
+json.contest slate.contest, partial: 'v2/contests/contest', as: :contest
 json.result slate.result
 json.score slate.score
 json.total_sweeps slate.cards.win.size

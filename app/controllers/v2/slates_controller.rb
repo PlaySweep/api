@@ -4,8 +4,8 @@ class V2::SlatesController < ApplicationController
   def index
     user = User.find_by(id: params[:user_id])
     if user
-      @slates = Slate.filtered(user.filtered_ids).ascending.available
-      @slates = Slate.filtered(user.filtered_ids).ascending.inactive if params[:inactive]
+      @slates = Slate.unfiltered.or(Slate.filtered(user.filtered_ids)).ascending.available
+      @slates = Slate.unfiltered.or(Slate.filtered(user.filtered_ids)).ascending.inactive if params[:inactive]
       respond_with @slates
     else
       render json: { errors: [] }, status: :unprocessable_entity
