@@ -5,7 +5,7 @@ class Team < Owner
   has_many :products, foreign_key: :owner_id
   has_many :slates, foreign_key: :owner_id
   has_many :quizzes, foreign_key: :owner_id
-  has_many :players, foreign_key: :owner_id
+  has_many :profiles, foreign_key: :owner_id
 
   scope :by_name, ->(team_abbreviation) { find_by('data @> ?', { abbreviation: team_abbreviation.split('_').map(&:capitalize).join(' ') }.to_json) }
   scope :ordered, -> { order(name: :asc) }

@@ -38,11 +38,11 @@ json.prizes slate.prizes.each do |prize|
   json.category prize.product.category
   json.date prize.date
 end
+json.label "In-game"
+json.owner_image slate.owner.image if slate.owner
 json.participants slate.participants.ordered.each do |participant|
   json.id participant.id
   json.field participant.field
   json.team participant.team, partial: 'v2/teams/team', as: :team
-  json.player participant.player, partial: 'v2/players/player', as: :player
+  json.profile participant.player.profile, partial: 'v2/profiles/profile', as: :profile
 end
-json.label "In-game"
-json.owner_image slate.owner.image if slate.owner

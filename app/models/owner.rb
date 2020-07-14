@@ -8,6 +8,7 @@ class Owner < ApplicationRecord
   has_many :messages, as: :messageable
   has_many :medias, as: :imageable
   has_many :rewards, as: :rewardable
+  has_many :profiles
 
   store_accessor :data, :entry_image, :local_image, :sponsored,
                  :initials, :abbreviation, :lat, :long,
