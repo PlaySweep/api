@@ -1,4 +1,4 @@
-class V2::Admin::EventsController < ApplicationController
+class V2::Admin::EventsController < BasicAuthenticationController
   respond_to :json
 
   def show

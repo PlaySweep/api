@@ -1,30 +1,8 @@
-class V2::Admin::SlatesController < ApplicationController
+class V2::Admin::SlatesController < BasicAuthenticationController
   respond_to :json
 
-  def index
-    if params[:global]
-      @slates = Slate.unfiltered.for_admin
-      respond_with @slates
-    else
-      team = Team.find(params[:team_id])
-      @slates = team.slates.for_admin.descending
-      respond_with @slates
-    end
-  end
-
   def show
-    if params[:global]
-      @slate = Slate.find(params[:id])
-      respond_with @slate
-    else
-      team = Team.find(params[:team_id])
-      @slate = team.slates.find(params[:id])
-      respond_with @slate
-    end
-  end
-
-  def create
-    @slate = Slate.create(slate_params)
+    @slate = Slate.find(params[:id])
     respond_with @slate
   end
 
