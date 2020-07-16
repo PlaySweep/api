@@ -1,4 +1,8 @@
-class BasicAuthenticationController < ApplicationController
+class BasicAuthenticationController < ActionController::API
+  include ActionController::Helpers
+  include ActionController::Caching
+  include ActionController::HttpAuthentication::Basic::ControllerMethods
+
   before_action :http_basic_authenticate
 
   def http_basic_authenticate

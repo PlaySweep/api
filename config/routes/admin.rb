@@ -1,11 +1,9 @@
-# api.playsweep.com/v2/admin/leagues
+# api.playsweep.com/v2/admin
 
 namespace :admin, defaults: { format: :json } do
   post 'authenticate', to: 'authentication#authenticate'
-  resources :leagues, only: [:index]
-  resources :teams, only: [:index, :show]
-  resources :slates, only: [:index, :show, :create, :update, :destroy] do
-    resources :events, only: [:create, :show, :update, :destroy]
+  resources :slates, only: [:show, :update, :destroy] do
+    resources :events, only: [:show, :update, :destroy]
   end
   resources :products, only: [:index, :show, :create]
 end

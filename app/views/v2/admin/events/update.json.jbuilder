@@ -1,1 +1,5 @@
-json.event @event, partial: 'admin/events/event_for_admin', as: :event
+json.event do
+  json.id @event.id
+  json.description @event.description
+  json.status @event.status
+end
