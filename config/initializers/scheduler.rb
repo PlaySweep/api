@@ -62,10 +62,6 @@ if Rails.env.production?
     DailyAnalyticsJob.perform_later
   end
 
-  # def fetch_weekly_analytics tenant:
-  #   Apartment::Tenant.switch(tenant) { WeeklyAnalyticsJob.perform_later }
-  # end
-
   # def store_and_cleanup_leaderboard account:
   #   Apartment::Tenant.switch(account.tenant) do
   #     date = DateTime.current.beginning_of_day

@@ -94,7 +94,7 @@ class User < ApplicationRecord
   end
 
   def eligible_for_prize? slate:
-    distance = Haversine.distance(slate.team.coordinates, coordinates).to_miles
+    distance = Haversine.distance(slate.owner.coordinates, coordinates).to_miles
     distance <= 75
   end
 

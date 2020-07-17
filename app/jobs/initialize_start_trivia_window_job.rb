@@ -4,10 +4,11 @@ class InitializeStartTriviaWindowJob < ApplicationJob
   def perform quiz_id
     quiz = Quiz.find_by(id: quiz_id)
     quiz.pending! unless quiz.nil? || quiz.complete?
-    if quiz.team.nil?
+    if quiz.owner_id?
+      quiz.owner.quizzes.inactive.ascending.first.upcoming! if quiz.owner.quizzes.inactive.ascending.first
       Quiz.unfiltered.ascending.inactive.first.try(:upcoming!)
     else
-      quiz.team.quizzes.inactive.ascending.first.upcoming! if quiz.team.quizzes.inactive.ascending.first
+      Quiz.unfiltered.ascending.inactive.first.try(:upcoming!)
     end
   end
 end
