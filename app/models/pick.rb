@@ -13,7 +13,7 @@ class Pick < ApplicationRecord
 
   before_save :is_locked?
   around_save :catch_uniqueness_exception
-  after_update :update_user_streaks
+  after_update :update_streaks, :reset_streaks
 
   scope :for_slate, ->(slate_id) { joins(:event).where('events.slate_id = ?', slate_id) }
   scope :duplicates, -> { select([:user_id, :selection_id, :event_id]).group(:user_id, :selection_id, :event_id).having("count(*) > 1").size }
@@ -38,18 +38,12 @@ class Pick < ApplicationRecord
     self.errors.add(:selection, :taken)
   end
 
-  def update_user_streaks
-    if saved_change_to_status?(from: 'pending', to: 'win')
-      OwnerService.new(user, slate: event.slate).run(type: :pick)
-      ContestService.new(user, resource: event.slate).run(type: :pick)
-      streak = user.streaks.find_or_create_by(type: "PickStreak")
-      streak.update_attributes(current: streak.current += 1)
-      if streak.highest < streak.current
-        streak.update_attributes(highest: streak.current)
-      end
-    elsif saved_change_to_status?(from: 'pending', to: 'loss')
-      user.streaks.find_or_create_by(type: "PickStreak").update_attributes(current: 0)
-    end
+  def update_streaks
+    UpdateStreakJob.perform_later(id) if saved_change_to_status?(from: 'pending', to: 'win')
+  end
+
+  def reset_streaks
+    ResetStreakJob.perform_later(id) if saved_change_to_status?(from: 'pending', to: 'loss')
   end
 
 end

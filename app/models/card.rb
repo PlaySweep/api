@@ -33,15 +33,11 @@ class Card < ApplicationRecord
   end
 
   def update_sweep_streak
-    if saved_change_to_status?(from: 'pending', to: 'win')
-      streak = user.streaks.find_or_create_by(type: "SweepStreak")
-      streak.update_attributes(current: streak.current += 1)
-      if streak.highest < streak.current
-        streak.update_attributes(highest: streak.current)
-      end
-    elsif saved_change_to_status?(from: 'pending', to: 'loss')
-      user.streaks.find_or_create_by(type: "SweepStreak").update_attributes(current: 0)
-    end
+    UpdateSweepStreakJob.perform_later(id) if saved_change_to_status?(from: 'pending', to: 'win')
+  end
+
+  def reset_sweep_streak
+    ResetSweepStreakJob.perform_later(id) if saved_change_to_status?(from: 'pending', to: 'win')
   end
 
   def update_latest_contest_activity
