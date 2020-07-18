@@ -1,5 +1,7 @@
 class Slate < ApplicationRecord
-  INACTIVE, PENDING, STARTED, COMPLETE, DONE, POSTPONED = 0, 1, 2, 3, 4, 5
+  INACTIVE, PENDING, STARTED = 0, 1, 2
+  READY, COMPLETE, DONE = 3, 4, 5
+  POSTPONED, DEACTIVATED = 6, 7
 
   resourcify
 
@@ -16,7 +18,7 @@ class Slate < ApplicationRecord
                         :opponent_id, :previous_user_ids,
                         :result, :score, :team_id
 
-  enum status: [ :inactive, :pending, :started, :complete, :done, :postponed ]
+  enum status: [ :inactive, :pending, :started, :ready, :complete, :done, :postponed, :deactivated ]
 
   scope :for_admin, -> { where(status: [0, 1, 2]) }
   scope :available, -> { where(status: [1, 2]) }
@@ -74,10 +76,6 @@ class Slate < ApplicationRecord
 
   def user_sweeped?(user_id)
     cards.win.find_by(user_id: user_id).present?
-  end
-
-  def events_are_completed?
-    events.size == events.where(status: 1).size
   end
 
   def winners
@@ -140,7 +138,7 @@ class Slate < ApplicationRecord
   private
 
   def run_results
-    ResultCardsJob.perform_later(id) if saved_change_to_status?(from: 'started', to: 'complete') and events_are_completed?
+    ResultCardsJob.perform_later(id) if saved_change_to_status?(from: 'ready', to: 'complete')
     initialize_select_winner_process unless prizes.empty?
   end
 

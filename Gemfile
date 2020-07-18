@@ -55,6 +55,8 @@ gem 'facebook-messenger'
 gem 'apartment'
 gem 'apartment-activejob'
 
+gem 'sendgrid-ruby'
+
 gem 'staccato'
 gem "appsignal"
 

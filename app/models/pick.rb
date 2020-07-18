@@ -11,7 +11,7 @@ class Pick < ApplicationRecord
 
   validates :selection_id, :event_id, uniqueness: { scope: :user_id, message: "only 1 per event" }
 
-  before_save :has_started?
+  before_save :is_locked?
   around_save :catch_uniqueness_exception
   after_update :update_user_streaks
 
@@ -28,7 +28,7 @@ class Pick < ApplicationRecord
 
   private
 
-  def has_started?
+  def is_locked?
     restore_attributes if event.slate.started? and selection_id_changed?
   end
 

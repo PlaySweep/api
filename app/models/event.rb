@@ -1,5 +1,5 @@
 class Event < ApplicationRecord
-  INCOMPLETE, COMPLETE = 0, 1
+  INCOMPLETE, COMPLETE, CLOSED = 0, 1, 2
 
   belongs_to :slate
   has_many :cards, as: :cardable, through: :slate
@@ -9,7 +9,7 @@ class Event < ApplicationRecord
 
   accepts_nested_attributes_for :selections
 
-  enum status: [ :incomplete, :complete ]
+  enum status: [ :incomplete, :complete, :closed ]
 
   after_update :update_picks
 
@@ -18,6 +18,8 @@ class Event < ApplicationRecord
   scope :most_recent, -> { order(order: :desc) }
   scope :descending, -> { joins(:slate).merge(Slate.descending) }
   scope :unfiltered, -> { joins(:slate).merge(Slate.unfiltered) }
+  scope :incomplete, -> { where(status: INCOMPLETE) }
+  scope :closed, -> { where(status: CLOSED) }
 
   store_accessor :data, :category
 
@@ -37,15 +39,18 @@ class Event < ApplicationRecord
     selections.losers
   end
 
+  def last?
+    slate.events.ordered.last.id == id
+  end
+
   private
 
   def update_picks
-    if saved_change_to_status?(from: 'incomplete', to: 'complete') and winner_ids.any?
-      picks.where(selection_id: winner_ids).map(&:win!)
-      picks.where(selection_id: loser_ids).map(&:loss!)
-    elsif saved_change_to_status?(from: 'complete', to: 'incomplete')
-      picks.map(&:pending!)
-    end
+    CompletePicksJob.perform_later(id) if saved_change_to_status?(from: 'incomplete', to: 'complete') and winner_ids.any?
   end
+
+  # def revert_picks
+  #   picks.map(&:pending!) if saved_change_to_status?(from: 'closed', to: 'incomplete')
+  # end
 
 end

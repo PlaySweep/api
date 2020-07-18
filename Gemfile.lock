@@ -224,8 +224,11 @@ GEM
     ruby-graphviz (1.2.5)
       rexml
     ruby_dep (1.5.0)
+    ruby_http_client (3.5.0)
     rufus-scheduler (3.6.0)
       fugit (~> 1.1, >= 1.1.6)
+    sendgrid-ruby (6.3.2)
+      ruby_http_client (~> 3.4)
     sidekiq (5.2.8)
       connection_pool (~> 2.2, >= 2.2.2)
       rack (< 2.1.0)
@@ -308,6 +311,7 @@ DEPENDENCIES
   responders
   rolify
   rufus-scheduler
+  sendgrid-ruby
   sidekiq
   simple_command
   simple_service_object
