@@ -43,5 +43,5 @@ json.participants slate.participants.ordered.each do |participant|
   json.id participant.id
   json.field participant.field
   json.team participant.team, partial: 'v2/teams/team', as: :team
-  json.profile participant.player.profile, partial: 'v2/profiles/profile', as: :profile
+  json.profile participant.player.try(:profile), partial: 'v2/profiles/profile', as: :profile
 end
