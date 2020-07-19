@@ -148,7 +148,7 @@ end
 def notify_confirmed user:
   unless user.cards.find_by(cardable_id: 5, cardable_type: "Slate")
     FacebookMessaging::Standard.deliver(user: user, message: "We're only 1 day away from The Match, play today to rise up the leaderboard, so you can get that Michelob ULTRA hat for the Summer!", notification_type: "REGULAR")
-    FacebookMessaging::Button.deliver(user: user, title: "More contests", message: "Today's prize, a Callaway Driver!", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}", notification_type: "NO_PUSH")
+    FacebookMessaging::Button.deliver(user: user, title: "View contests", message: "Today's prize, a Callaway Driver!", url: "#{ENV["WEBVIEW_URL"]}/messenger/#{user.facebook_uuid}", notification_type: "NO_PUSH")
   end
 end
 

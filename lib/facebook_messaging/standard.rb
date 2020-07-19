@@ -16,6 +16,7 @@ module FacebookMessaging
       rescue Facebook::Messenger::FacebookError => e
         puts "Deactivating #{user.id}..."
         user.update_attributes(active: false)    
+        puts "Error => #{e.inspect}" 
         puts "* User DEACTIVATED: #{user.full_name} *"
         puts "#{e.inspect}"
       end

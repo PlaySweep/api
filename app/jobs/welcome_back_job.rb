@@ -22,7 +22,7 @@ class WelcomeBackJob < ApplicationJob
         user: user,
         title: "Play now",
         message: "There are more contests to play!",
-        url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}",
+        url: "#{ENV["WEBVIEW_URL"]}/messenger/#{user.facebook_uuid}",
         quick_replies: quick_replies,
         notification_type: "NO_PUSH"
       )

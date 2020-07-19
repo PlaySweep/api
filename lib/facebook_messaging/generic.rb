@@ -13,7 +13,7 @@ module FacebookMessaging
             title: "#{user.current_team.abbreviation.possessive} Trivia Contests",
             image_url: user.current_team.entry_image,
             subtitle: interpolated_contest_copy,
-            buttons: [{title: "More contests", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}"}],
+            buttons: [{title: "View contests", url: "#{ENV["WEBVIEW_URL"]}/messenger/#{user.facebook_uuid}"}],
             notification_type: notification_type
           }).payload
           template[:message][:quick_replies] = quick_replies if quick_replies
@@ -37,7 +37,7 @@ module FacebookMessaging
             title: "#{user.account.friendly_name} Featured Game",
             image_url: user.account.images.find_by(category: "Account Lockup").url, # Make selections for the #{user.account.friendly_name.capitalize} Featured Game and win awesome prizes!
             subtitle: interpolated_contest_copy,
-            buttons: [{title: "More contests", url: "#{ENV["WEBVIEW_URL"]}/dashboard/#{user.slug}"}],
+            buttons: [{title: "View contests", url: "#{ENV["WEBVIEW_URL"]}/messenger/#{user.facebook_uuid}"}],
             notification_type: notification_type
           }).payload
           template[:message][:quick_replies] = quick_replies if quick_replies

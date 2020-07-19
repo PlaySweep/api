@@ -5,7 +5,7 @@ class WelcomeJob < ApplicationJob
     user = User.find(user_id)
     welcome_copy = user.account.copies.where(category: "Welcome").sample.message
     welcome_interpolated = welcome_copy % { first_name: user.first_name }
-    url = "#{ENV['WEBVIEW_URL']}/messenger/#{sweepy.facebook_uuid}"
+    url = "#{ENV['WEBVIEW_URL']}/messenger/#{user.facebook_uuid}"
     quick_replies = FacebookParser::QuickReplyObject.new([
       {
         content_type: :text,
@@ -35,7 +35,7 @@ class WelcomeJob < ApplicationJob
         title: "Let's go!",
         message: "#{welcome_interpolated}\n\n#{team_onboarding_interpolated}",
         quick_replies: quick_replies,
-        url: url
+        notification_type: "NO_PUSH"
       )
     end
   end
