@@ -1,0 +1,97 @@
+id,description,event_id,order,category
+16743,"Yes, the Reds will record 3 or more extra base hits",8368,1,Positive
+16744,No,8368,2,Negative
+16745,"Yes, the Reds hitters will record 8 or more hits",8369,1,Positive
+16746,No,8369,2,Negative
+16747,"Yes, the Reds will win",8370,1,Positive
+16748,No,8370,2,Negative
+16749,"Yes, the Rays will record 3 or more extra base hits",8371,1,Positive
+16750,No,8371,2,Negative
+16751,"Yes, the Rays hitters will record 8 or more hits",8372,1,Positive
+16752,No,8372,2,Negative
+16753,"Yes, the Rays will win",8373,1,Positive
+16754,No,8373,2,Negative
+16755,"Yes, the Marlins will record 3 or more extra base hits",8374,1,Positive
+16756,No,8374,2,Negative
+16757,"Yes, the Marlins hitters will record 8 or more hits",8375,1,Positive
+16758,No,8375,2,Negative
+16759,"Yes, the Marlins will win",8376,1,Positive
+16760,No,8376,2,Negative
+16761,"Yes, the Phillies will record 3 or more extra base hits",8377,1,Positive
+16762,No,8377,2,Negative
+16763,"Yes, the Phillies hitters will record 8 or more hits",8378,1,Positive
+16764,No,8378,2,Negative
+16765,"Yes, the Phillies will win",8379,1,Positive
+16766,No,8379,2,Negative
+16767,"Yes, the Cubs will record 3 or more extra base hits",8380,1,Positive
+16768,No,8380,2,Negative
+16769,"Yes, the Cubs hitters will record 8 or more hits",8381,1,Positive
+16770,No,8381,2,Negative
+16771,"Yes, the Cubs will win",8382,1,Positive
+16772,No,8382,2,Negative
+16773,"Yes, the Orioles will record 3 or more extra base hits",8383,1,Positive
+16774,No,8383,2,Negative
+16775,"Yes, the Orioles hitters will record 8 or more hits",8384,1,Positive
+16776,No,8384,2,Negative
+16777,"Yes, the Orioles will win",8385,1,Positive
+16778,No,8385,2,Negative
+16779,"Yes, the Rangers will record 3 or more extra base hits",8386,1,Positive
+16780,No,8386,2,Negative
+16781,"Yes, the Rangers hitters will record 8 or more hits",8387,1,Positive
+16782,No,8387,2,Negative
+16783,"Yes, the Rangers will win",8388,1,Positive
+16784,No,8388,2,Negative
+16785,"Yes, the Twins will record 3 or more extra base hits",8389,1,Positive
+16786,No,8389,2,Negative
+16787,"Yes, the Twins hitters will record 8 or more hits",8390,1,Positive
+16788,No,8390,2,Negative
+16789,"Yes, the Twins will win",8391,1,Positive
+16790,No,8391,2,Negative
+16791,"Yes, the White Sox will record 3 or more extra base hits",8392,1,Positive
+16792,No,8392,2,Negative
+16793,"Yes, the White Sox hitters will record 8 or more hits",8393,1,Positive
+16794,No,8393,2,Negative
+16795,"Yes, the White Sox will win",8394,1,Positive
+16796,No,8394,2,Negative
+16797,"Yes, the Cardinals will record 3 or more extra base hits",8395,1,Positive
+16798,No,8395,2,Negative
+16799,"Yes, the Cardinals hitters will record 8 or more hits",8396,1,Positive
+16800,No,8396,2,Negative
+16801,"Yes, the Cardinals will win",8397,1,Positive
+16802,No,8397,2,Negative
+16803,"Yes, the Astros will record 3 or more extra base hits",8398,1,Positive
+16804,No,8398,2,Negative
+16805,"Yes, the Astros hitters will record 8 or more hits",8399,1,Positive
+16806,No,8399,2,Negative
+16807,"Yes, the Astros will win",8400,1,Positive
+16808,No,8400,2,Negative
+16809,"Yes, the Diamondbacks will record 3 or more extra base hits",8401,1,Positive
+16810,No,8401,2,Negative
+16811,"Yes, the Diamondbacks hitters will record 8 or more hits",8402,1,Positive
+16812,No,8402,2,Negative
+16813,"Yes, the Diamondbacks will win",8403,1,Positive
+16814,No,8403,2,Negative
+16815,"Yes, the Padres will record 3 or more extra base hits",8404,1,Positive
+16816,No,8404,2,Negative
+16817,"Yes, the Padres hitters will record 8 or more hits",8405,1,Positive
+16818,No,8405,2,Negative
+16819,"Yes, the Padres will win",8406,1,Positive
+16820,No,8406,2,Negative
+16821,"Yes, the Dodgers pitching staff will combine to give up less than 4 earned runs",8407,1,Positive
+16822,No,8407,2,Negative
+16823,"Yes, the Dodgers pitching staff will record a save",8408,1,Positive
+16824,No,8408,2,Negative
+16825,"Yes, the Dodgers will win",8409,1,Positive
+16826,No,8409,2,Negative
+16827,"Yes, the Angels will record 3 or more extra base hits",8410,1,Positive
+16828,No,8410,2,Negative
+16829,"Yes, the Angels hitters will record 8 or more hits",8411,1,Positive
+16830,No,8411,2,Negative
+16831,"Yes, the Angels will win",8412,1,Positive
+16832,No,8412,2,Negative
+16833,"Yes, the Athletics will record 3 or more extra base hits",8413,1,Positive
+16834,No,8413,2,Negative
+16835,"Yes, the Athletics hitters will record 8 or more hits",8414,1,Positive
+16836,No,8414,2,Negative
+16837,"Yes, the Athletics will win",8415,1,Positive
+16838,No,8415,2,Negative

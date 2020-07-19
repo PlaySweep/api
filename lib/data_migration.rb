@@ -1,5 +1,21 @@
 class DataMigration
 
+  def create_owner_contests
+    ids = [11, 16, 13, 2]
+    owners = Team.active.where.not id: ids
+    owners.each do |owner|
+      contest = Contest.new
+      contest_name = owner.name.split(' ')[-1]
+      contest.name = contest_name
+      contest.account_id = 1
+      contest.status = 1
+      contest.save
+      image_name = owner.name.split(' ').map(&:downcase!).join('_')
+      image_url = "https://budweiser-sweep-assets.s3.amazonaws.com/#{image_name}_bud_entry.png"
+      contest.images.create(description: "Default Lockup", category: "Default", url: image_url)
+    end
+  end
+
   def self.update_skus
     Sku.all.each do |sku|
       code = sku.product.owner_id ? "#{sku.product.owner.account.code_prefix}#{sku.code}" : "#{Account.first.code_prefix}#{sku.code}"
@@ -124,6 +140,19 @@ class DataMigration
     self.upload_answers
   end
 
+  def self.upload_profiles
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "profiles.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    count = 0
+    csv.each do |row|
+      profile = Profile.new
+      profile.first_name = row["first_name"]
+      profile.last_name = row["last_name"]
+      profile.owner_id = row["owner_id"]
+      profile.save
+    end
+  end
+
   def self.upload_slates
     csv_text = File.read(Rails.root.join('lib', 'seeds', "slates.csv"))
     csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
@@ -135,9 +164,24 @@ class DataMigration
       slate.name = row["name"]
       slate.type = "Slate"
       slate.start_time = row["start_time"]
+      slate.owner_id = row["owner_id"]
       slate.contest_id = row["contest_id"]
-      slate.prizes.create(product_id: sku.product_id, sku_id: sku.id) if sku
       slate.save
+      slate.prizes.create(product_id: sku.product_id, sku_id: sku.id) if sku
+    end
+  end
+
+  def self.upload_participants
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "participants.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    count = 0
+    csv.each do |row|
+      participant = Participant.new
+      participant.id = row["id"]
+      participant.slate_id = row["slate_id"]
+      participant.owner_id = row["owner_id"]
+      participant.field = row["field"]
+      participant.save
     end
   end
 
@@ -149,6 +193,8 @@ class DataMigration
       event.id = row["id"]
       event.type = "Event"
       event.description = row["description"]
+      event.details = row["details"]
+      event.category = row["category"]
       event.order = row["order"]
       event.slate_id = row["slate_id"]
       event.save
@@ -164,6 +210,7 @@ class DataMigration
       selection.description = row["description"]
       selection.order = row["order"]
       selection.event_id = row["event_id"]
+      selection.category = row["category"]
       selection.save
     end
   end

@@ -1,0 +1,49 @@
+id,description,details,slate_id,type,order,category
+8368,Will the Reds record 3 or more extra base hits?,The Reds averaged 3 extra base hits per game during the 2019 season.,2836,Event,1,Offense
+8369,Will the Reds hitters record 8 or more hits?,The Reds top hitter recorded 156 hits during the 2019 season.,2836,Event,2,Offense 
+8370,Will the Reds win? ,The Reds were 75-87 last season.,2836,Event,3,Outcome
+8371,Will the Rays record 3 or more extra base hits?,The Rays averaged 3.3 extra base hits per game during the 2019 season.,2837,Event,1,Offense
+8372,Will the Rays hitters record 8 or more hits?,The Rays top hitter recorded 155 hits during the 2019 season.,2837,Event,2,Offense 
+8373,Will the Rays win? ,The Rays were 96-66 last season.,2837,Event,3,Outcome
+8374,Will the Marlins record 3 or more extra base hits?,The Marlins averaged 2.6 extra base hits per game during the 2019 season.,2838,Event,1,Offense
+8375,Will the Marlins hitters record 8 or more hits?,The Marlins top hitter recorded 172 hits during the 2019 season.,2838,Event,2,Offense 
+8376,Will the Marlins win? ,The Marlins were 57-105 last season.,2838,Event,3,Outcome
+8377,Will the Phillies record 3 or more extra base hits?,The Phillies averaged 3.4 extra base hits per game during the 2019 season.,2839,Event,1,Offense
+8378,Will the Phillies hitters record 8 or more hits?,The Phillies top hitter recorded 171 hits during the 2019 season.,2839,Event,2,Offense 
+8379,Will the Phillies win? ,The Phillies were 81-81 last season.,2839,Event,3,Outcome
+8380,Will the Cubs record 3 or more extra base hits?,The Cubs averaged 3.4 extra base hits per game during the 2019 season.,2840,Event,1,Offense
+8381,Will the Cubs hitters record 8 or more hits?,The Cubs top hitter recorded 153 hits during the 2019 season.,2840,Event,2,Offense 
+8382,Will the Cubs win? ,The Cubs were 84-78 last season.,2840,Event,3,Outcome
+8383,Will the Orioles record 3 or more extra base hits?,The Orioles averaged 3 extra base hits per game during the 2019 season.,2841,Event,1,Offense
+8384,Will the Orioles hitters record 8 or more hits?,The Orioles top hitter recorded 176 hits during the 2019 season.,2841,Event,2,Offense 
+8385,Will the Orioles win? ,The Orioles were 54-108 last season.,2841,Event,3,Outcome
+8386,Will the Rangers record 3 or more extra base hits?,The Rangers averaged 3.4 extra base hits per game during the 2019 season.,2842,Event,1,Offense
+8387,Will the Rangers hitters record 8 or more hits?,The Rangers top hitter recorded 165 hits during the 2019 season.,2842,Event,2,Offense 
+8388,Will the Rangers win? ,The Rangers were 78-84 last season.,2842,Event,3,Outcome
+8389,Will the Twins record 3 or more extra base hits?,The Twins averaged 4 extra base hits per game during the 2019 season.,2843,Event,1,Offense
+8390,Will the Twins hitters record 8 or more hits?,The Twins top hitter recorded 186 hits during the 2019 season.,2843,Event,2,Offense 
+8391,Will the Twins win? ,The Twins were 101-61 last season.,2843,Event,3,Outcome
+8392,Will the White Sox record 3 or more extra base hits?,The White Sox averaged 2.6 extra base hits per game during the 2019 season.,2844,Event,1,Offense
+8393,Will the White Sox hitters record 8 or more hits?,The White Sox top hitter recorded 180 hits during the 2019 season.,2844,Event,2,Offense 
+8394,Will the White Sox win? ,The White Sox were 72-89 last season.,2844,Event,3,Outcome
+8395,Will the Cardinals record 3 or more extra base hits?,The Cardinals averaged 3 extra base hits per game during the 2019 season.,2845,Event,1,Offense
+8396,Will the Cardinals hitters record 8 or more hits?,The Cardinals top hitter recorded 155 hits during the 2019 season.,2845,Event,2,Offense 
+8397,Will the Cardinals win? ,The Cardinals were 91-71 last season.,2845,Event,3,Outcome
+8398,Will the Astros record 3 or more extra base hits?,The Astros averaged 3.9 extra base hits per game during the 2019 season.,2846,Event,1,Offense
+8399,Will the Astros hitters record 8 or more hits?,The Astros top hitter recorded 179 hits during the 2019 season.,2846,Event,2,Offense 
+8400,Will the Astros win? ,The Astros were 107-55 last season.,2846,Event,3,Outcome
+8401,Will the Diamondbacks record 3 or more extra base hits?,The Diamondbacks averaged 3.4 extra base hits per game during the 2019 season.,2847,Event,1,Offense
+8402,Will the Diamondbacks hitters record 8 or more hits?,The Diamondbacks top hitter recorded 187 hits during the 2019 season.,2847,Event,2,Offense 
+8403,Will the Diamondbacks win? ,The Diamondbacks were 85-77 last season.,2847,Event,3,Outcome
+8404,Will the Padres record 3 or more extra base hits?,The Padres averaged 2.9 extra base hits per game during the 2019 season.,2848,Event,1,Offense
+8405,Will the Padres hitters record 8 or more hits?,The Padres top hitter recorded 164 hits during the 2019 season.,2848,Event,2,Offense 
+8406,Will the Padres win? ,The Padres were 70-92 last season.,2848,Event,3,Outcome
+8407,Will the Dodgers pitching staff combine to give up less than 4 earned runs?,The Dodgers had a team ERA of 3.37 during the 2019 season.,2849,Event,1,Defense
+8408,Will the Cardinals pitching staff record a save?,The Dodgers pitching staff recorded 44 saves last season.,2849,Event,2,Defense
+8409,Will the Dodgers win? ,The Dodgers were 106-56 last season.,2849,Event,3,Outcome
+8410,Will the Angels record 3 or more extra base hits?,The Angels averaged 3.1 extra base hits per game during the 2019 season.,2850,Event,1,Offense
+8411,Will the Angels hitters record 8 or more hits?,The Angels top hitter recorded 173 hits during the 2019 season.,2850,Event,2,Offense 
+8412,Will the Angels win? ,The Angels were 72-90 last season.,2850,Event,3,Outcome
+8413,Will the Athletics record 3 or more extra base hits?,The Athletics averaged 3.5 extra base hits per game during the 2019 season.,2851,Event,1,Offense
+8414,Will the Athletics hitters record 8 or more hits?,The Athletics top hitter recorded 187 hits during the 2019 season.,2851,Event,2,Offense 
+8415,Will the Athletics win? ,The Athletics were 97-65 last season.,2851,Event,3,Outcome
