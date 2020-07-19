@@ -60,12 +60,3 @@ class DeactivateUser
     end
   end
 end
-
-class SendWelcomeMessage
-  extend LightService::Action
-  expects :user, :params
-
-  executed do |context|
-    WelcomeJob.perform_later(context.user.id) if context.params[:onboard]
-  end
-end
