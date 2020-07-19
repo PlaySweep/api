@@ -9,11 +9,6 @@ class WelcomeBackJob < ApplicationJob
       quick_replies = FacebookParser::QuickReplyObject.new([
         {
           content_type: :text,
-          title: "Status",
-          payload: "STATUS"
-        },
-        {
-          content_type: :text,
           title: "Share",
           payload: "SHARE"
         }

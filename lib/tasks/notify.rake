@@ -29,11 +29,6 @@ def re_engage_drizly user:
     notification_type: "NO_PUSH"
   )
   quick_replies = FacebookParser::QuickReplyObject.new([
-    {
-      content_type: :text,
-      title: "Status",
-      payload: "STATUS"
-    },
     { 
       content_type: :text,
       title: "Play again",
@@ -63,11 +58,6 @@ def notify_drizly user:, expiration:
     notification_type: "NO_PUSH"
   )
   quick_replies = FacebookParser::QuickReplyObject.new([
-    {
-      content_type: :text,
-      title: "Status",
-      payload: "STATUS"
-    },
     { 
       content_type: :text,
       title: "Play again",

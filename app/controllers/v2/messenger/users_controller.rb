@@ -3,6 +3,7 @@ class V2::Messenger::UsersController < ApplicationController
 
   def show
     @user = User.find_by(facebook_uuid: params[:facebook_uuid])
+    WelcomeBackJob.perform_later(@user.id) if params[:onboard]
     if @user
       respond_with @user
     else
