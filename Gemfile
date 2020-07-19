@@ -58,7 +58,6 @@ gem 'apartment-activejob'
 gem 'sendgrid-ruby'
 
 gem 'staccato'
-gem "appsignal"
 
 gem 'twilio-ruby'
 
