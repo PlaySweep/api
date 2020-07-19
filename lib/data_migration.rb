@@ -395,4 +395,21 @@ class DataMigration
       slate.participants.create(owner_id: slate.owner_id, slate_id: slate.id)
     end
   end
+
+  def manual_upload
+    slate = Slate.create(name: "Los Angeles Dodgers", contest_id: 4, owner_id: 2, start_time: DateTime.current + 5.days)
+
+    e1 = slate.events.create(order: 1, description: "Will the Dodgers record three or more extra-base hits?", category: "Offense")
+    e2 = slate.events.create(order: 2, description: "Will the Dodgers hitters record 8 or more hits?", category: "Offense")
+    e3 = slate.events.create(order: 3, description: "Will the Dodgers win?", category: "Outcome")
+    
+    e1.selections.create(order: 1, description: "Yes, the Dodgers will record three or more extra-base hits", category: "Positive")
+    e1.selections.create(order: 2, description: "No", category: "Negative")
+    
+    e2.selections.create(order: 1, description: "Yes, the Dodgers hitters will record 8 or more hits", category: "Positive")
+    e2.selections.create(order: 2, description: "No", category: "Negative")
+    
+    e3.selections.create(order: 1, description: "Yes, the Dodgers will win", category: "Positive")
+    e3.selections.create(order: 2, description: "No", category: "Negative")
+  end
 end

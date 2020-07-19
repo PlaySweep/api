@@ -15,6 +15,7 @@ json.time_zone team.time_zone
 json.details do
   json.position team.try(:standing).try(:position)
   json.standing team.try(:standing).try(:records)
+  json.league team.try(:standing).try(:league)
   json.division team.try(:standing).try(:division)
 end
 json.images team.images.each do |image|
