@@ -9,18 +9,13 @@ class WelcomeJob < ApplicationJob
     quick_replies = FacebookParser::QuickReplyObject.new([
       {
         content_type: :text,
-        title: "Ready to play?",
+        title: "I'm ready!",
         payload: "PLAY READY"
       },
       {
         content_type: :text,
-        title: "HOW TO PLAY START",
-        payload: "HELP"
-      },
-      {
-        content_type: :text,
-        title: "Help",
-        payload: "HELP"
+        title: "How to play",
+        payload: "HOW TO PLAY START"
       }
     ]).objects
     if user.current_team
