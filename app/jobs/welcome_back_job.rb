@@ -3,7 +3,7 @@ class WelcomeBackJob < ApplicationJob
 
   def perform user_id
     user = User.find(user_id)
-    welcome_back_copy = user.account.copies.where(category: "Welcome Back").sample.message
+    welcome_back_copy = user.account.copies.active.where(category: "Welcome Back").sample.message
     welcome_back_interpolated = welcome_back_copy % { account_name: user.account.app_name, first_name: user.first_name }
     if user.confirmed
       quick_replies = FacebookParser::QuickReplyObject.new([

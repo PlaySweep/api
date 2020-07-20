@@ -6,7 +6,7 @@ module FacebookMessaging
       include Facebook::Messenger
       def self.deliver user:, quick_replies: nil, notification_type: "NO_PUSH"
         begin
-          contest_copy = user.account.copies.where(category: "Contest Subtitle").sample.message
+          contest_copy = user.account.copies.active.where(category: "Contest Subtitle").sample.message
           interpolated_contest_copy = contest_copy % { team_abbreviation: user.current_team.abbreviation }
           template = FacebookParser::TemplateObject.new({
             facebook_uuid: user.facebook_uuid,
@@ -30,7 +30,7 @@ module FacebookMessaging
       include Facebook::Messenger
       def self.deliver user:, quick_replies: nil, notification_type: "NO_PUSH"
         begin
-          contest_copy = user.account.copies.where(category: "Global Contest Subtitle").sample.message
+          contest_copy = user.account.copies.active.where(category: "Global Contest Subtitle").sample.message
           interpolated_contest_copy = contest_copy
           template = FacebookParser::TemplateObject.new({
             facebook_uuid: user.facebook_uuid,

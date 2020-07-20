@@ -3,7 +3,7 @@ class WelcomeJob < ApplicationJob
 
   def perform user_id
     user = User.find(user_id)
-    welcome_copy = user.account.copies.where(category: "Welcome").sample.message
+    welcome_copy = user.account.copies.active.where(category: "Welcome").sample.message
     welcome_interpolated = welcome_copy % { first_name: user.first_name }
     url = "#{ENV['WEBVIEW_URL']}/messenger/#{user.facebook_uuid}"
     quick_replies = FacebookParser::QuickReplyObject.new([
@@ -23,7 +23,7 @@ class WelcomeJob < ApplicationJob
         FacebookMessaging::ImageAttachment.deliver(user: user, image_url: user.current_team.medias.find_by(category: "Welcome").url)  
       end
       
-      team_onboarding_copy = user.account.copies.where(category: "Welcome Team Onboarding").sample.message
+      team_onboarding_copy = user.account.copies.active.where(category: "Welcome Team Onboarding").sample.message
       team_onboarding_interpolated = team_onboarding_copy % { team_abbreviation: user.current_team.abbreviation }
       FacebookMessaging::Button.deliver(
         user: user,

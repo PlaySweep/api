@@ -55,7 +55,7 @@ json.account do
   end
   json.display_week user.account.display_week
 end
-json.copies user.account.copies.each do |copy|
+json.copies user.account.copies.active.each do |copy|
   json.id copy.id
   json.category copy.category
   json.message copy.message
