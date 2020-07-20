@@ -1,4 +1,4 @@
-class V2::Admin::AuthenticationController < ApplicationController
+class V1::Admin::AuthenticationController < ApplicationController
   skip_before_action :authenticate!
  
   def authenticate
