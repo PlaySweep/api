@@ -36,7 +36,7 @@ class WelcomeBackJob < ApplicationJob
         user: user,
         title: "Confirm account",
         message: "Just tap below to finish up a few quick details and get started winning prizes 👇",
-        url: "#{ENV["WEBVIEW_URL"]}/confirmation/#{user.slug}",
+        url: "#{ENV["WEBVIEW_URL"]}/messenger/#{user.facebook_uuid}",
         notification_type: "NO_PUSH"
       )
     end
