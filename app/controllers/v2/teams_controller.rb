@@ -15,7 +15,7 @@ class V2::TeamsController < ApplicationController
     teams_with_distance = Team.active.map do |team|
       { id: team.id, name: team.name, abbreviation: team.abbreviation, initials: team.initials, image: team.image, distance: Haversine.distance(team.coordinates, user.coordinates).to_miles }
     end
-    teams_with_distance.sort_by { |team| team[:distance] }.first(3).map(&:to_dot).map(&:id)
+    teams_with_distance.sort_by { |team| team[:distance] }.map(&:to_dot).map(&:id)
   end
 
 end

@@ -23,12 +23,10 @@ class WelcomeJob < ApplicationJob
         FacebookMessaging::ImageAttachment.deliver(user: user, image_url: user.current_team.medias.find_by(category: "Welcome").url)  
       end
       
-      team_onboarding_copy = user.account.copies.active.where(category: "Welcome Team Onboarding").sample.message
-      team_onboarding_interpolated = team_onboarding_copy % { team_abbreviation: user.current_team.abbreviation }
       FacebookMessaging::Button.deliver(
         user: user,
         title: "Let's go!",
-        message: "#{welcome_interpolated}\n\n#{team_onboarding_interpolated}",
+        message: "#{welcome_interpolated}",
         quick_replies: quick_replies,
         notification_type: "NO_PUSH"
       )
