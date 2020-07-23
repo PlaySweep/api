@@ -30,8 +30,10 @@ class RemovePreviousOwnerRole
   executed do |context|
     unless context.params[:team].nil?
       role = context.user.roles.find_by(resource_type: "Team")
-      symbolized_role = role.resource.name.downcase.split(' ').join('_').to_sym
-      context.user.remove_role(symbolized_role, role.resource)
+      if role
+        symbolized_role = role.resource.name.downcase.split(' ').join('_').to_sym
+        context.user.remove_role(symbolized_role, role.resource)
+      end
     end
   end
 end
