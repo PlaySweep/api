@@ -5,5 +5,6 @@ namespace :admin, defaults: { format: :json } do
   resources :slates, only: [:show, :update, :destroy] do
     resources :events, only: [:show, :update, :destroy]
   end
+  resources :teams, only: [:index]
   resources :products, only: [:index, :show, :create]
 end
