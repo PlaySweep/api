@@ -8,6 +8,7 @@ class Team < Owner
   has_many :profiles, foreign_key: :owner_id
 
   scope :by_name, ->(team_abbreviation) { find_by('data @> ?', { abbreviation: team_abbreviation.split('_').map(&:capitalize).join(' ') }.to_json) }
+  scope :by_initials, ->(initials) { find_by('data @> ?', { initials: initials }.to_json ) }
   scope :ordered, -> { order(name: :asc) }
   scope :sponsored, -> { where('data @> ?', { sponsored: true }.to_json) }
   scope :by_division, ->(division) { where('data @> ?', { division: division }.to_json) }

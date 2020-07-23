@@ -14,7 +14,8 @@ class Owner < ApplicationRecord
                  :initials, :abbreviation, :lat, :long,
                  :division, :conference
 
-  scope :by_name, ->(abbreviation) { find_by('data @> ?', { abbreviation: abbreviation.split('_').map(&:capitalize).join(' ') }.to_json) }
+  scope :by_name, ->(abbreviation) { find_by('data @> ?', { abbreviation: abbreviation.map(&:capitalize).join(' ') }.to_json) }
+  scope :by_initials, ->(initials) { find_by('data @> ?', { initials: initials }.to_json ) }
 
   def active_leaderboard?
     active_reward = rewards.active.find_by(category: "Weekly Points")

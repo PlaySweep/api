@@ -44,7 +44,7 @@ class AssignNewOwnerRole
 
   executed do |context|
     unless context.params[:team].nil?
-      role = Owner.by_name(context.params[:team])
+      role = Owner.by_initials(context.params[:team])
       symbolized_role_name = role.name.downcase.split(' ').join('_').to_sym
       context.user.add_role(symbolized_role_name, role)
     end
