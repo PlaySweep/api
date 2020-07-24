@@ -21,7 +21,7 @@ class Slate < ApplicationRecord
   enum status: [ :inactive, :pending, :started, :ready, :complete, :done, :postponed, :deactivated ]
 
   scope :for_admin, -> { where(status: [0, 1, 2]) }
-  scope :available, -> { where(status: [1, 2]) }
+  scope :available, -> { where(status: [1]) }
   scope :finished, -> { where(status: [3, 4]) }
   scope :ascending, -> { order(start_time: :asc) }
   scope :descending, -> { order(start_time: :desc) }
