@@ -4,7 +4,7 @@ class Sweep < ApplicationRecord
 
   store_accessor :data, :pick_ids
 
-  after_create :run_services, :add_elements
+  after_create :run_services
 
   def picks
     Pick.where(id: pick_ids)
@@ -26,6 +26,7 @@ class Sweep < ApplicationRecord
     DrizlyService.new(user, sweepable).run(type: :sweep)
   end
 
+  # TODO figure out elements issue
   def add_elements
     user.elements.create(element_id: 1)
   end
