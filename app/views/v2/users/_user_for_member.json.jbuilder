@@ -71,6 +71,7 @@ json.links user.account.links.each do |link|
   json.url link.url
 end
 json.addresses user.addresses
+json.primary_address user.primary_address
 json.phone_number user.phone_number
 json.promotions user.promotions
 json.stats do

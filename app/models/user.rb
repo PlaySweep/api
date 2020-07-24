@@ -66,6 +66,11 @@ class User < ApplicationRecord
     latest_stats_list << { slate_id: slate.id, wins: wins, losses: losses }
   end
 
+  def primary_address
+    address = addresses.order(created_at: :desc).try(:first)
+    address.line2.empty? ? "#{address.line1} #{address.city}, #{address.state} #{address.postal_code} #{address.country}" : "#{address.line1}, #{address.line2} #{address.city}, #{address.state} #{address.postal_code} #{address.country}"
+  end
+
   def stats
     stats_hash_key.value.to_dot
   end
