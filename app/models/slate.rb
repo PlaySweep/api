@@ -22,7 +22,7 @@ class Slate < ApplicationRecord
 
   scope :for_admin, -> { where(status: [0, 1, 2]) }
   scope :available, -> { where(status: [1]) }
-  scope :finished, -> { where(status: [3, 4]) }
+  scope :finished, -> { where(status: [4, 5]) }
   scope :ascending, -> { order(start_time: :asc) }
   scope :descending, -> { order(start_time: :desc) }
   scope :since_last_week, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 10, DateTime.current.end_of_day) }
