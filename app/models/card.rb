@@ -52,8 +52,6 @@ class Card < ApplicationRecord
     update_sweep_streak
     if saved_change_to_status?(from: 'pending', to: 'win')
       create_sweep_records
-    elsif saved_change_to_status?(from: 'pending', to: 'loss')
-      handle_losers
     end
     update_latest_stats
   end
@@ -61,11 +59,6 @@ class Card < ApplicationRecord
   def create_sweep_records
     user.sweeps.create(sweepable_id: cardable_id, sweepable_type: "Slate", pick_ids: user.picks.for_slate(cardable_id).map(&:id)) if cardable.class.name == "Slate"
     user.sweeps.create(sweepable_id: cardable_id, sweepable_type: "Quiz", pick_ids: user.choices.for_quiz(cardable_id).map(&:id)) if cardable.class.name == "Quiz"
-  end
-
-  def handle_losers
-    SendLosingSlateMessageJob.perform_later(user_id, cardable_id) if cardable.class.name == "Slate"
-    SendLosingTriviaMessageJob.perform_later(user_id, cardable_id) if cardable.class.name == "Quiz"
   end
 
   def complete_referral!
