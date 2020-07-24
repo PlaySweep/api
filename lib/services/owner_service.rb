@@ -68,16 +68,15 @@ class OwnerService
         )
         current_score = leaderboard.score_for(member) || 0
         leaderboard.rank_member(member, current_score += sweep_rule.level)
-      end
-
-      if @user.referred_by_id?
-        member = "week_#{@slate.current_week}_user_#{@user.referred_by_id}"
-        leaderboard_name = "#{@user.current_team.leaderboard_prefix}_week_#{@slate.current_week}"
-        leaderboard = Board.fetch(
-          leaderboard: leaderboard_name
-        )
-        current_score = leaderboard.score_for(member) || 0
-        leaderboard.rank_member(member, current_score += sweep_rule.level)
+        if @user.referred_by_id?
+          member = "week_#{@slate.current_week}_user_#{@user.referred_by_id}"
+          leaderboard_name = "#{@user.current_team.leaderboard_prefix}_week_#{@slate.current_week}"
+          leaderboard = Board.fetch(
+            leaderboard: leaderboard_name
+          )
+          current_score = leaderboard.score_for(member) || 0
+          leaderboard.rank_member(member, current_score += sweep_rule.level)
+        end
       end
     end
 
