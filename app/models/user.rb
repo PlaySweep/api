@@ -68,7 +68,9 @@ class User < ApplicationRecord
 
   def primary_address
     address = addresses.order(created_at: :desc).try(:first)
-    address.line2.empty? ? "#{address.line1} #{address.city}, #{address.state} #{address.postal_code} #{address.country}" : "#{address.line1}, #{address.line2} #{address.city}, #{address.state} #{address.postal_code} #{address.country}"
+    if address
+      address.line2.empty? ? "#{address.line1} #{address.city}, #{address.state} #{address.postal_code} #{address.country}" : "#{address.line1}, #{address.line2} #{address.city}, #{address.state} #{address.postal_code} #{address.country}"
+    end
   end
 
   def stats
