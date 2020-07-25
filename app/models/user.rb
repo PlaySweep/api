@@ -40,6 +40,7 @@ class User < ApplicationRecord
   before_create :set_slug, :set_referral_code
   after_update :create_or_update_location
   after_update :run_services
+  # around_save :catch_uniqueness_exception
 
   scope :for_account, ->(name) { joins(:account).where("accounts.name = ?", name) }
   scope :with_phone_number, ->(phone_number) { joins(:phone_number).where("phone_numbers.number = ?", phone_number) }
@@ -53,6 +54,7 @@ class User < ApplicationRecord
   scope :recent, -> { where('created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 30, DateTime.current.end_of_day) }
   scope :completed, -> { where.not(referral_completed_at: nil) }
 
+  # validates :slug, :referral_code, :facebook_uuid, uniqueness: true
   validates :slug, :referral_code, uniqueness: true
 
   def active_referrals
@@ -67,9 +69,9 @@ class User < ApplicationRecord
   end
 
   def primary_address
-    address = addresses.order(created_at: :desc).try(:first)
-    if address
-      address.line2.empty? ? "#{address.line1} #{address.city}, #{address.state} #{address.postal_code} #{address.country}" : "#{address.line1}, #{address.line2} #{address.city}, #{address.state} #{address.postal_code} #{address.country}"
+    if addresses.any?
+      address = addresses.order(created_at: :desc).try(:first)
+      "#{address.line1}, #{address.line2} #{address.city}, #{address.state} #{address.postal_code} #{address.country}"
     end
   end
 
@@ -198,6 +200,12 @@ class User < ApplicationRecord
   end
 
   private
+
+  def catch_uniqueness_exception
+    yield
+  rescue ActiveRecord::RecordNotUnique
+    self.errors.add(:user, :taken)
+  end
 
   def set_slug
     loop do
