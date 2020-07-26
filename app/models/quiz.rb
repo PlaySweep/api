@@ -16,7 +16,7 @@ class Quiz < ApplicationRecord
   scope :since_last_week, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 10, DateTime.current.end_of_day) }
   scope :unfiltered, -> { where(owner_id: nil) } 
 
-  after_update :initialize_starting_process, :initialize_closing_process, :initialize_select_winner_process, :start_winner_confirmation_window
+  after_update :initialize_starting_process, :initialize_closing_process, :initialize_select_winner_process
   
   def winner
     User.find_by(id: winner_id)

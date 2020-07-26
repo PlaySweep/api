@@ -25,6 +25,7 @@ class Slate < ApplicationRecord
   scope :finished, -> { where(status: [4, 5]) }
   scope :ascending, -> { order(start_time: :asc) }
   scope :descending, -> { order(start_time: :desc) }
+  scope :recent, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 2, DateTime.current.end_of_day) }
   scope :since_last_week, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 10, DateTime.current.end_of_day) }
   scope :for_the_month, -> { where('start_time BETWEEN ? AND ?', DateTime.current.beginning_of_day - 30, DateTime.current.end_of_day) }
   scope :filtered, ->(role_ids) { where(owner_id: role_ids) } 
@@ -151,7 +152,7 @@ class Slate < ApplicationRecord
   end
 
   def start_winner_confirmation_window
-    if complete? && saved_change_to_winner_id?
+    if saved_change_to_winner_id?
       winners_card = cards.find_by(user_id: winner_id)
       SendWinnerConfirmationJob.perform_later(winner_id, prize.id, winners_card.id) if winner_id? && prize
       HandleConfirmationWindowJob.set(wait_until: 24.hours.from_now).perform_later(id, "Slate")
