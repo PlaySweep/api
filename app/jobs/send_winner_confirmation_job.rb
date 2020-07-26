@@ -21,7 +21,7 @@ class SendWinnerConfirmationJob < ApplicationJob
       user: user,
       title: "Confirm Now",
       message: confirmation_action_copy,
-      url: "#{ENV["WEBVIEW_URL"]}/prize/confirmation/#{prize_id}",
+      url: "#{ENV["WEBVIEW_URL"]}/messenger/#{user.facebook_uuid}/#{prize_id}-prize",
       notification_type: "NO_PUSH"
     )
   end
