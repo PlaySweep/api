@@ -29,6 +29,7 @@ class Card < ApplicationRecord
     OwnerService.new(user, slate: cardable).run(type: :playing)
     ContestService.new(user, resource: cardable).run(type: :playing)
     DrizlyService.new(user, cardable).run(type: :playing)
+    NotificationService.new(user).run(type: :playing)
     IndicativeTrackEventPlayedContestJob.perform_later(user_id)
   end
 
