@@ -2,7 +2,8 @@ class V2::Admin::PlayersController < BasicAuthenticationController
   respond_to :json
 
   def index
-    @players = Player.all
+    @players = Player.recent
+    @players = @players.where(participant_id: params[:participant_id]) if params[:participant_id]
     respond_with @players
   end
 
