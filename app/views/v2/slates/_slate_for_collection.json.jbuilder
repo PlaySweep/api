@@ -5,7 +5,6 @@ json.description slate.description
 json.event_size slate.events.size
 json.status slate.status
 json.start_time slate.start_time
-json.local slate.local
 json.is_contest slate.contest_id?
 json.contest slate.contest, partial: 'v2/contests/contest', as: :contest
 json.result slate.result
