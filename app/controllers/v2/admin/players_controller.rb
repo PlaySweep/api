@@ -1,4 +1,4 @@
-class V2::Admin::PlayersController < ApplicationController
+class V2::Admin::PlayersController < BasicAuthenticationController
   respond_to :json
 
   def show
