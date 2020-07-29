@@ -148,8 +148,8 @@ class Slate < ApplicationRecord
 
   def start_winner_confirmation_window
     if saved_change_to_current_winner_id?
-      winners_card = cards.find_by(user_id: winner_id)
-      SendWinnerConfirmationJob.perform_later(winner_id, prize.id, winners_card.id) if current_winner_id? && prize
+      winners_card = cards.find_by(user_id: current_winner_id)
+      SendWinnerConfirmationJob.perform_later(current_winner_id, prize.id, winners_card.try(:id)) if current_winner_id? && prize
       HandleConfirmationWindowJob.set(wait_until: 24.hours.from_now).perform_later(id, "Slate")
     end
   end
