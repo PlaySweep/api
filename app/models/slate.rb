@@ -6,6 +6,7 @@ class Slate < ApplicationRecord
   resourcify
 
   belongs_to :contest, optional: true
+  belongs_to :winner, class_name: "User", foreign_key: :current_winner_id, optional: true
   has_many :events, dependent: :destroy
   has_many :entries, dependent: :destroy
   has_many :users, through: :events
@@ -14,9 +15,7 @@ class Slate < ApplicationRecord
   has_many :prizes, as: :prizeable, dependent: :destroy
   has_many :participants, dependent: :destroy
 
-  store_accessor :data, :winner_id, :local, :field,
-                        :opponent_id, :previous_user_ids,
-                        :result, :score, :team_id
+  store_accessor :data, :previous_user_ids, :result, :score
 
   enum status: [ :inactive, :pending, :started, :ready, :complete, :done, :postponed, :deactivated ]
 
@@ -65,10 +64,6 @@ class Slate < ApplicationRecord
       end
       data.win.count
     end
-  end
-
-  def winner
-    User.find_by(id: winner_id)
   end
 
   def has_winner?
@@ -152,9 +147,9 @@ class Slate < ApplicationRecord
   end
 
   def start_winner_confirmation_window
-    if saved_change_to_winner_id?
+    if saved_change_to_current_winner_id?
       winners_card = cards.find_by(user_id: winner_id)
-      SendWinnerConfirmationJob.perform_later(winner_id, prize.id, winners_card.id) if winner_id? && prize
+      SendWinnerConfirmationJob.perform_later(winner_id, prize.id, winners_card.id) if current_winner_id? && prize
       HandleConfirmationWindowJob.set(wait_until: 24.hours.from_now).perform_later(id, "Slate")
     end
   end

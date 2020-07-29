@@ -3,7 +3,7 @@ class StartSlateJob < ApplicationJob
 
   def perform slate_id
     slate = Slate.find_by(id: slate_id)
-    slate.started! unless slate.nil? || slate.complete? || slate.done?
+    slate.started! if slate.pending?
     if slate.owner_id?
       slate.owner.slates.inactive.ascending.first.pending! if slate.owner.slates.inactive.ascending.first
     else
