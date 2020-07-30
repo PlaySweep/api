@@ -3,13 +3,13 @@ class V2::Admin::PicksController < BasicAuthenticationController
 
   def update
     @pick = Pick.find(params[:id])
-    @pick.update_attributes(event_params)
+    @pick.update_attributes(pick_params)
     respond_with @pick
   end
 
   private
 
-  def event_params
-    params.require(:event).permit(:id, :status)
+  def pick_params
+    params.require(:pick).permit(:id, :status)
   end
 end

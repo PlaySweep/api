@@ -1,0 +1,1 @@
+json.partial! @player, partial: 'v2/players/player', as: :player

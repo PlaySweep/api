@@ -9,5 +9,5 @@ namespace :admin, defaults: { format: :json } do
   resources :picks, only: [:update]
   resources :teams, only: [:index]
   resources :products, only: [:index, :show, :create]
-  resources :players, only: [:index, :show]
+  resources :players, only: [:index, :show, :create]
 end
