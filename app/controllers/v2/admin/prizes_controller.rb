@@ -24,6 +24,6 @@ class V2::Admin::PrizesController < BasicAuthenticationController
   private
 
   def prize_params
-    params.require(:player).permit(:id, :product_id, :sku_id, :prizeable_type, :prizeable_id)
+    params.require(:prize).permit(:id, :product_id, :sku_id, :prizeable_type, :prizeable_id)
   end
 end
