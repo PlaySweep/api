@@ -1,5 +1,5 @@
 class Event < ApplicationRecord
-  INCOMPLETE, COMPLETE, CLOSED = 0, 1, 2
+  INCOMPLETE, READY, COMPLETE, CLOSED = 0, 1, 2, 3
 
   belongs_to :slate
   has_many :cards, as: :cardable, through: :slate
@@ -9,7 +9,7 @@ class Event < ApplicationRecord
 
   accepts_nested_attributes_for :selections
 
-  enum status: [ :incomplete, :complete, :closed ]
+  enum status: [ :incomplete, :ready, :complete, :closed ]
 
   after_update :update_picks
 
@@ -46,7 +46,7 @@ class Event < ApplicationRecord
   private
 
   def update_picks
-    CompletePicksJob.perform_later(id) if saved_change_to_status?(from: 'incomplete', to: 'complete') and winner_ids.any?
+    CompletePicksJob.perform_later(id) if saved_change_to_status?(from: 'ready', to: 'complete') and winner_ids.any?
   end
 
   # def revert_picks

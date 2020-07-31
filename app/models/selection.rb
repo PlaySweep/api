@@ -3,6 +3,7 @@ class Selection < ApplicationRecord
   belongs_to :event
 
   before_destroy :destroy_associated_picks
+  after_update :check_associated_event_status
 
   scope :winners, -> { where(status: WINNER) }
   scope :losers, -> { where(status: LOSER) }
@@ -20,5 +21,13 @@ class Selection < ApplicationRecord
 
   def destroy_associated_picks
     Pick.where(selection_id: id).destroy_all
+  end
+
+  def check_associated_event_status
+    if event.selections.pending.empty?
+      self.event.ready!
+    else
+      self.event.incomplete! unless event.incomplete?
+    end
   end
 end

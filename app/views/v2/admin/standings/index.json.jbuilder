@@ -1,0 +1,1 @@
+json.array! @standings, partial: 'v2/admin/standings/standing', as: :standing
