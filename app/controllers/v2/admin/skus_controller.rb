@@ -3,7 +3,7 @@ class V2::Admin::SkusController < BasicAuthenticationController
 
   def index
     @skus = Sku.all
-    @skus = @skus.filtered(params[:product_id]) if params[:product_id]
+    @skus = @skus.filtered(params[:owner_id]) if params[:owner_id]
     respond_with @skus
   end
 

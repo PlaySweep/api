@@ -5,5 +5,5 @@ class Sku < ApplicationRecord
                         :gender, :replacement_value,
                         :packaging_type, :color
 
-  scope :filtered, ->(product_id) { where(product_id: product_id) }
+  scope :filtered, ->(product_id) { joins(:product).where('products.owner_id = ?', product_id) }
 end
