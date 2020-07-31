@@ -2,14 +2,9 @@ class V2::Admin::ProductsController < ApplicationController
   respond_to :json
 
   def index
-    if params[:global]
-      @products = Product.where(global: true)
-      respond_with @products
-    else
-      team = Team.find(params[:team_id])
-      @products = team.products
-      respond_with @products
-    end
+    @products = Product.all
+    @products = @products.filtered(params[:owner_id]) if params[:owner_id]
+    respond_with @products
   end
 
   def show

@@ -6,7 +6,7 @@ class Product < ApplicationRecord
   belongs_to :team, foreign_key: :owner_id, optional: true
 
   scope :active, -> { where(active: true) }
-  scope :filtered, ->(owner_id) { where(owner_id: owner_id) }
+  scope :filtered, ->(owner_id) { where(owner_id: [nil, owner_id]) }
   scope :for_category, ->(category) { where(category: category) }
 
   after_create :create_sku

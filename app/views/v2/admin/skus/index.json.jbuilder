@@ -1,0 +1,1 @@
+json.array! @skus, partial: 'v2/admin/skus/sku', as: :sku

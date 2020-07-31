@@ -1,4 +1,6 @@
 class Event < ApplicationRecord
+  include ActiveModel::Dirty
+
   INCOMPLETE, READY, COMPLETE, CLOSED = 0, 1, 2, 3
 
   belongs_to :slate
@@ -41,6 +43,10 @@ class Event < ApplicationRecord
 
   def last?
     slate.events.ordered.last.id == id
+  end
+
+  def category_is_outcome?
+    category == "Outcome"
   end
 
   private
