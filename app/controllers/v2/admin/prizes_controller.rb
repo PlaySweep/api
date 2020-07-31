@@ -2,8 +2,8 @@ class V2::Admin::PrizesController < BasicAuthenticationController
   respond_to :json
 
   def index
-    @prizes = Prize.all
-    @prizes = @prizes.filtered_by_slate(params[:prizeable_id]) if params[:prizeable_id]
+    @prizes = Prize.recent
+    @prizes = Prize.filtered_by_slate(params[:prizeable_id]) if params[:prizeable_id]
     respond_with @prizes
   end
 
