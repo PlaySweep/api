@@ -1,1 +1,1 @@
-json.array! @players, partial: 'v2/players/player', as: :player
+json.array! @players, partial: 'v2/admin/players/player', as: :player

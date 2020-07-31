@@ -10,4 +10,5 @@ namespace :admin, defaults: { format: :json } do
   resources :teams, only: [:index]
   resources :products, only: [:index, :show, :create]
   resources :players, only: [:index, :show, :create]
+  resources :users, only: [:index, :show, :destroy]
 end

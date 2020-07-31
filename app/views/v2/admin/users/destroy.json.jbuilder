@@ -1,0 +1,1 @@
+json.partial! @user, partial: 'v2/admin/users/users', as: :user

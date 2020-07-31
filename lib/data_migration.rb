@@ -153,6 +153,13 @@ class DataMigration
     end
   end
 
+  def self.upload_prediction_data
+    self.upload_slates
+    self.upload_participants
+    self.upload_events
+    self.upload_selections
+  end
+
   def self.upload_slates
     csv_text = File.read(Rails.root.join('lib', 'seeds', "slates.csv"))
     csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
@@ -169,6 +176,7 @@ class DataMigration
       slate.save
       slate.prizes.create(product_id: sku.product_id, sku_id: sku.id) if sku
     end
+    ActiveRecord::Base.connection.reset_pk_sequence!('slates')
   end
 
   def self.upload_participants
@@ -183,6 +191,7 @@ class DataMigration
       participant.field = row["field"]
       participant.save
     end
+    ActiveRecord::Base.connection.reset_pk_sequence!('participants')
   end
 
   def self.upload_events
@@ -199,6 +208,7 @@ class DataMigration
       event.slate_id = row["slate_id"]
       event.save
     end
+    ActiveRecord::Base.connection.reset_pk_sequence!('events')
   end
 
   def self.upload_selections
@@ -213,6 +223,7 @@ class DataMigration
       selection.category = row["category"]
       selection.save
     end
+    ActiveRecord::Base.connection.reset_pk_sequence!('selections')
   end
 
   def self.upload_drizly_promotions name:, category:, value:, level:

@@ -43,6 +43,7 @@ class User < ApplicationRecord
   # around_save :catch_uniqueness_exception
 
   scope :for_account, ->(name) { joins(:account).where("accounts.name = ?", name) }
+  scope :for_admin, -> { where(is_admin: true) }
   scope :with_phone_number, ->(phone_number) { joins(:phone_number).where("phone_numbers.number = ?", phone_number) }
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
