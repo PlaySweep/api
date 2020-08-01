@@ -1,6 +1,7 @@
 class ReferralService
-  def initialize user
+  def initialize user, reward
     @user = user
+    @reward = reward
   end
 
   def run
@@ -9,7 +10,6 @@ class ReferralService
   end
 
   def reward_active?
-    @reward = @user.account.rewards.active.find_by(category: "Referral")
     @reward.present?
   end
 
@@ -17,7 +17,6 @@ class ReferralService
     rule = ReferralRuleEvaluator.new(@user).referral_rule
     if reward_active? && rule
       BadgeService::Referral.new(user: @user.referred_by).run
-      notify_referrer
     end
   end
 

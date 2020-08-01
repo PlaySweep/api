@@ -12,18 +12,14 @@ class DrizlyService
     end
   end
 
-  def playing_reward_active?
-    @user.account.rewards.active.find_by(name: "Drizly", category: "Playing").present?
-  end
-
-  def sweep_reward_active?
-    @user.account.rewards.active.find_by(name: "Drizly", category: "Sweep").present?
+  def reward_active?
+    @user.account.rewards.active.find_by(category: "Drizly").present?
   end
 
   def for_playing
     playing_rule = DrizlyRuleEvaluator.new(@user).playing_rule
     if @resource.class.name == "Slate"
-      if @user.played_for_first_time? && playing_rule && playing_reward_active?
+      if @user.played_for_first_time? && playing_rule && reward_active?
         if promotion = DrizlyPromotion.find_by(category: "Playing", used: false, level: playing_rule.level)
           promotion.update_attributes(used_by: @user.id, slate_id: @resource.id, used: true)
           DrizlyPlayMailer.notify(@user, promotion).deliver_later
@@ -34,7 +30,7 @@ class DrizlyService
 
   def for_sweep
     sweep_rule = DrizlyRuleEvaluator.new(@user).sweep_rule
-    if sweep_rule && sweep_reward_active? && @user.won_for_first_time?
+    if sweep_rule && reward_active? && @user.won_for_first_time?
       if promotion = DrizlyPromotion.find_by(category: "Sweep", used: false, level: sweep_rule.level)
         promotion.update_attributes(used_by: @user.id, slate_id: @resource.id, used: true)
       end

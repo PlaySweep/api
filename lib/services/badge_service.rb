@@ -8,12 +8,14 @@ module BadgeService
       case @user.active_referrals.completed.size
       when 1
         achievement(level: 1)
-      when 5
+      when 10
         achievement(level: 2)
-      when 15
+      when 20
         achievement(level: 3)
-      when 75
+      when 100
         achievement(level: 4)
+      when 500
+        achievement(level: 5)
       end
     end
   

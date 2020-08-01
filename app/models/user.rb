@@ -244,7 +244,10 @@ class User < ApplicationRecord
   end
 
   def run_services
-    ReferralService.new(self).run if saved_change_to_referral_completed_at?(from: nil)
+    if saved_change_to_referral_completed_at?(from: nil)
+      reward = account.rewards.active.find_by(category: "Referral")
+      ReferralService.new(self, reward).run
+    end
   end
 
 end
