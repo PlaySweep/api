@@ -10,10 +10,6 @@ class NotificationService
     end
   end
 
-  # def playing_reward_active?
-  #   @user.account.rewards.active.find_by(name: "Drizly", category: "Playing").present?
-  # end
-
   # def sweep_reward_active?
   #   @user.account.rewards.active.find_by(name: "Drizly", category: "Sweep").present?
   # end

@@ -1,0 +1,3 @@
+class SlateElement < Element
+  
+end

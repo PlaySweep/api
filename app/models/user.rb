@@ -1,6 +1,5 @@
 class User < ApplicationRecord
   SWEEP = :sweep
-  REFERRAL_THRESHOLD = [3, 10, 50]
   include Redis::Objects
 
   hash_key :stats_hash_key
@@ -23,7 +22,6 @@ class User < ApplicationRecord
   has_many :referrals, class_name: "User", foreign_key: :referred_by_id
   has_many :slates, through: :cards, source: :cardable, source_type: "Slate"
   has_many :quizzes, through: :cards, source: :cardable, source_type: "Quiz"
-  has_many :entries, dependent: :destroy
   has_many :leaderboard_results
   has_many :leaderboards, through: :leaderboard_results, source: "leaderboard_history", dependent: :destroy
   has_many :nudges, foreign_key: :nudger_id
@@ -36,11 +34,6 @@ class User < ApplicationRecord
   has_many :notifications, dependent: :destroy
   has_many :rewards, through: :account
   has_one :location, dependent: :destroy
-
-  before_create :set_slug, :set_referral_code
-  after_update :create_or_update_location
-  after_update :run_services
-  # around_save :catch_uniqueness_exception
 
   scope :for_account, ->(name) { joins(:account).where("accounts.name = ?", name) }
   scope :for_admin, -> { where(is_admin: true) }
@@ -55,8 +48,12 @@ class User < ApplicationRecord
   scope :recent, -> { where('created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 30, DateTime.current.end_of_day) }
   scope :completed, -> { where.not(referral_completed_at: nil) }
 
-  # validates :slug, :referral_code, :facebook_uuid, uniqueness: true
-  validates :slug, :referral_code, uniqueness: true
+  validates :slug, :referral_code, :facebook_uuid, uniqueness: true
+
+  before_create :set_slug, :set_referral_code
+  after_update :create_or_update_location
+  after_update :run_services
+  around_save :catch_uniqueness_exception
 
   def active_referrals
     self.referrals.where.not(referral_completed_at: nil).where('created_at > ?', self.rewards.active.for_referral.pluck(:start_date))
@@ -205,7 +202,7 @@ class User < ApplicationRecord
   def catch_uniqueness_exception
     yield
   rescue ActiveRecord::RecordNotUnique
-    self.errors.add(:user, :taken)
+    self.errors.add(:uuid, :taken)
   end
 
   def set_slug
@@ -245,8 +242,7 @@ class User < ApplicationRecord
 
   def run_services
     if saved_change_to_referral_completed_at?(from: nil)
-      reward = account.rewards.active.find_by(category: "Referral")
-      ReferralService.new(self, reward).run
+      ReferralService.new(user: self).run
     end
   end
 

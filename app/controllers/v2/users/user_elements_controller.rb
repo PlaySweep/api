@@ -2,7 +2,7 @@ class V2::Users::UserElementsController < ApplicationController
   respond_to :json
 
   def index
-    @user_elements = current_user.elements.for_saves
+    @user_elements = current_user.elements.for_erasers
     respond_with @user_elements
   end
 

@@ -1,0 +1,1 @@
+json.array! @slates, partial: 'v2/admin/slates/slate', as: :slate

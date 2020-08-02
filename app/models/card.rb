@@ -26,9 +26,8 @@ class Card < ApplicationRecord
   end
 
   def run_services
-    OwnerService.new(user, slate: cardable).run(type: :playing)
-    ContestService.new(user, resource: cardable).run(type: :playing)
-    DrizlyService.new(user, cardable).run(type: :playing)
+    OwnerService.new(user: user, slate: cardable).run(type: :playing)
+    ContestService.new(user: user, contest: cardable.contest).run(type: :playing)
     NotificationService.new(user).run(type: :playing)
     IndicativeTrackEventPlayedContestJob.perform_later(user_id)
   end
@@ -65,8 +64,8 @@ class Card < ApplicationRecord
   def complete_referral!
     if user.referred_by_id? && user.played_for_first_time?
       user.update_attributes(referral_completed_at: Time.zone.now)
-      OwnerService.new(user).run(type: :referral)
-      ContestService.new(user).run(type: :referral)
+      OwnerService.new(user: user).run(type: :referral)
+      ContestService.new(user: user, contest: cardable.contest).run(type: :referral)
     end
   end
 

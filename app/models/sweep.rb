@@ -21,14 +21,8 @@ class Sweep < ApplicationRecord
   private
 
   def run_services
-    OwnerService.new(user, slate: sweepable).run(type: :sweep)
-    ContestService.new(user, resource: sweepable).run(type: :sweep)
-    DrizlyService.new(user, sweepable).run(type: :sweep)
-  end
-
-  # TODO figure out elements issue
-  def add_elements
-    user.elements.create(element_id: 1)
+    OwnerService.new(user: user, slate: sweepable).run(type: :sweep)
+    ContestService.new(user: user, contest: sweepable.contest).run(type: :sweep)
   end
 
 end

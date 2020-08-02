@@ -6,6 +6,8 @@ class UserElement < ApplicationRecord
 
   scope :used, -> { where(used: true) }
   scope :unused, -> { where(used: false) }
-  scope :for_saves, -> { joins(:element).merge(Element.saves) }
+
+  scope :for_entries, -> { joins(:element).merge(Element.with_entries) }
+  scope :for_erasers, -> { joins(:element).merge(Element.erasers) }
 
 end

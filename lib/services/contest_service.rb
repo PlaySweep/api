@@ -1,64 +1,70 @@
 class ContestService
-  def initialize user, resource: nil
-    @user, @resource = user, resource
+  def initialize user:, contest:
+    @user = user
+    @contest = contest
   end
 
   def run type: 
     send("#{type}_reward".to_sym)
   end
 
+  def reward
+    @contest && @contest.rewards.active.find_by(category: "Leaderboard")
+  end
+
   def reward_active?
-    @reward = @user.account.rewards.active.find_by(category: "Contest")
-    @reward.present?
+    reward.present?
   end
 
   def playing_reward
-    playing_rule = ContestRuleEvaluator.new(@user).playing_rule
-    if reward_active? && playing_rule && @resource.try(:contest_id?)
-      leaderboard = Board.fetch(
-        leaderboard: "contest_#{@reward.name}"
-      )
-      current_score = leaderboard.score_for(@user.id) || 0
-      leaderboard.rank_member(@user.id, current_score += playing_rule.level, { username: @user.abbreviated_name }.to_json)
+    if reward_active?
+      if reward.rules.for_contests.by_playing.eligible.any?
+        leaderboard = Board.fetch(
+          leaderboard: "contest_#{@reward.name}"
+        )
+        current_score = leaderboard.score_for(@user.id) || 0
+        leaderboard.rank_member(@user.id, current_score += playing_rule.level, { username: @user.abbreviated_name }.to_json)
+      end
     end
   end
 
   def referral_reward
-    referral_rule = ContestRuleEvaluator.new(@user.referred_by).referral_rule
-    if reward_active? && referral_rule
-      leaderboard = Board.fetch(
-        leaderboard: "contest_#{@reward.name}"
-      )
-      current_score = leaderboard.score_for(@user.referred_by_id) || 0
-      leaderboard.rank_member(@user.referred_by_id, current_score += referral_rule.level, { username: @user.abbreviated_name }.to_json)
+    if reward_active?
+      if reward.rules.for_contests.by_referring.eligible.any?
+        leaderboard = Board.fetch(
+          leaderboard: "contest_#{@reward.name}"
+        )
+        current_score = leaderboard.score_for(@user.referred_by_id) || 0
+        leaderboard.rank_member(@user.referred_by_id, current_score += referral_rule.level, { username: @user.abbreviated_name }.to_json)
+      end
     end
   end
 
   def pick_reward
-    pick_rule = ContestRuleEvaluator.new(@user).pick_rule
-    if reward_active? && pick_rule && @resource.try(:contest_id?)
-      leaderboard = Board.fetch(
-        leaderboard: "contest_#{@reward.name}"
-      )
-      current_score = leaderboard.score_for(@user.id) || 0
-      leaderboard.rank_member(@user.id, current_score += pick_rule.level, { username: @user.abbreviated_name }.to_json)
+    if reward_active?
+      if reward.rules.for_contests.by_picking.eligible.any?
+        leaderboard = Board.fetch(
+          leaderboard: "contest_#{@reward.name}"
+        )
+        current_score = leaderboard.score_for(@user.id) || 0
+        leaderboard.rank_member(@user.id, current_score += pick_rule.level, { username: @user.abbreviated_name }.to_json)
+      end
     end
   end
 
   def sweep_reward
-    sweep_rule = ContestRuleEvaluator.new(@user).sweep_rule
-    if reward_active? && sweep_rule && @resource.try(:contest_id?)
-      leaderboard = Board.fetch(
-        leaderboard: "contest_#{@reward.name}"
-      )
-      current_score = leaderboard.score_for(@user.id) || 0
-      leaderboard.rank_member(@user.id, current_score += sweep_rule.level, { username: @user.abbreviated_name }.to_json)
-      
-      if @user.referred_by_id?
+    if reward_active?
+      if reward.rules.for_contests.by_sweep.eligible.any?
+        leaderboard = Board.fetch(
+          leaderboard: "contest_#{@reward.name}"
+        )
+        current_score = leaderboard.score_for(@user.id) || 0
+        leaderboard.rank_member(@user.id, current_score += sweep_rule.level, { username: @user.abbreviated_name }.to_json)
+      end  
+      if reward.rules.for_contests.by_referral_sweep.eligible.any? && @user.referred_by_id?
         current_referrer_score = leaderboard.score_for(@user.referred_by_id) || 0
         leaderboard.rank_member(@user.referred_by_id, current_referrer_score += sweep_rule.level, { username: @user.referred_by.abbreviated_name }.to_json)
       end
-      
     end
   end
 

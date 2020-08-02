@@ -13,6 +13,7 @@ namespace :admin, defaults: { format: :json } do
   resources :prizes, only: [:index, :show, :create]
   resources :selections, only: [:update]
   resources :skus, only: [:index, :show]
+  resources :slates, only: [:index, :show, :update]
   resources :standings, only: [:index, :show]
   resources :users, only: [:index, :show, :update, :destroy]
 end

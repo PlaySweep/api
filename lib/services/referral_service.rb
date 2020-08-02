@@ -1,7 +1,6 @@
 class ReferralService
-  def initialize user, reward
+  def initialize user:
     @user = user
-    @reward = reward
   end
 
   def run
@@ -9,34 +8,29 @@ class ReferralService
     elements_reward
   end
 
+  def reward
+    @user.account.rewards.active.find_by(category: "Referral")
+  end
+
   def reward_active?
-    @reward.present?
+    reward.present?
   end
 
   def referral_reward
-    rule = ReferralRuleEvaluator.new(@user).referral_rule
-    if reward_active? && rule
-      BadgeService::Referral.new(user: @user.referred_by).run
-    end
-  end
-
-  def elements_reward
-    rule = ReferralRuleEvaluator.new(@user).elements_rule
-    if reward_active? && rule
-      case  @user.referred_by.active_referrals.completed.size
-      when 1
-        add_eraser
+    if reward_active?
+      if reward.rules.for_referrals.by_milestones.eligible.any?
+        puts "Run Badge Service for Milestones..."
+        BadgeService::Referral.new(user: @user.referred_by).run
       end
     end
   end
 
-  def add_eraser
-    element = Element.find_by(category: "Eraser")
-    @user.referred_by.elements.create(element_id: element.id)
+  def elements_reward
+    if reward_active?
+      if reward.rules.for_referrals.by_elements.eligible.any?
+        puts "Run Element Service for Entries..."
+        ElementService::Referral.new(user: @user).run
+      end
+    end
   end
-
-  def notify_referrer
-    NotifyReferrerJob.perform_later(@user.referred_by_id, @user.id)
-  end
-
 end

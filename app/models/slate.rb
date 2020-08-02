@@ -8,7 +8,6 @@ class Slate < ApplicationRecord
   belongs_to :contest, optional: true
   belongs_to :winner, class_name: "User", foreign_key: :current_winner_id, optional: true
   has_many :events, dependent: :destroy
-  has_many :entries, dependent: :destroy
   has_many :users, through: :events
   has_many :picks, through: :users
   has_many :cards, as: :cardable, dependent: :destroy

@@ -1,5 +1,1 @@
-json.slate do
-  json.id @slate.id
-  json.name @slate.name
-  json.status @slate.status
-end
+json.partial! @slate, partial: 'v2/admin/slates/slate', as: :slate
