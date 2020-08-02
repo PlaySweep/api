@@ -14,6 +14,6 @@ namespace :admin, defaults: { format: :json } do
   resources :selections, only: [:update]
   resources :skus, only: [:index, :show]
   resources :slates, only: [:index, :show, :update]
-  resources :standings, only: [:index, :show]
+  resources :standings, only: [:index, :show, :update]
   resources :users, only: [:index, :show, :update, :destroy]
 end
