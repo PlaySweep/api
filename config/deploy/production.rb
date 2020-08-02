@@ -1,10 +1,10 @@
 # config/deploy/production.rb
 
-server 'budv2', user: 'ubuntu', roles: %w{ app db web }
+server 'budweiserv2', user: 'ubuntu', roles: %w{ app db web }
 set :deploy_to, "/var/www/sweep_api"
 set :tmp_dir, '/home/deploy/tmp'
 
-set :branch, 'release20200501'
+set :branch, 'master'
 set :rails_env, 'production'
 
 set :linked_files, %w{config/database.yml config/master.key config/locales/en.yml}
