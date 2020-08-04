@@ -33,7 +33,7 @@ class Slate < ApplicationRecord
   scope :total_entry_count, -> { joins(:cards).count }
   scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
   
-  after_update :change_status, :run_results
+  after_update :set_background_job, :clear_background_job, :update_background_job, :run_results
 
   accepts_nested_attributes_for :prizes
 
@@ -138,8 +138,30 @@ class Slate < ApplicationRecord
     initialize_select_winner_process unless prizes.empty?
   end
 
-  def change_status
-    StartSlateJob.set(wait_until: start_time.to_datetime).perform_later(id) if saved_change_to_status?(from: 'inactive', to: 'pending')
+  def set_background_job
+    if saved_change_to_status?(from: 'inactive', to: 'pending')
+      scheduled_job = StartSlateJob.set(wait_until: start_time.to_datetime).perform_later(id)
+      BackgroundJob.create(job_name: "StartSlateJob", job_id: scheduled_job.job_id, resource: "Slate", resource_id: id)
+    end
+  end
+
+  def clear_background_job
+    if saved_change_to_status?(from: 'pending', to: 'inactive')
+      background_job = BackgroundJob.queued.find_by(resource_id: id)
+      queued_status = ActiveJob::Status.get(background_job.job_id)
+      queued_status.update({ cancelled: true })
+    end
+  end
+
+  def update_background_job
+    if pending? && saved_change_to_start_time?
+      background_job = BackgroundJob.queued.find_by(resource_id: id)
+      queued_status = ActiveJob::Status.get(background_job.job_id)
+      queued_status.update({ cancelled: true })
+
+      scheduled_job = StartSlateJob.set(wait_until: start_time.to_datetime).perform_later(id)
+      BackgroundJob.create(job_name: "StartSlateJob", job_id: scheduled_job.job_id, resource: "Slate", resource_id: id)
+    end
   end
 
   def initialize_select_winner_process
