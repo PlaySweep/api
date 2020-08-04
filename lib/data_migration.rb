@@ -89,6 +89,26 @@ class DataMigration
     end
   end
 
+  def self.fetch_metrics_for_completed_dob
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "completed_dob.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    user_ids = []
+    csv.each do |row|
+      user_ids << row["user_id"]
+    end
+    User.where(id: user_ids)
+  end
+
+  def self.fetch_metrics_for_completed_zip
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "completed_zip.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    user_ids = []
+    csv.each do |row|
+      user_ids << row["user_id"]
+    end
+    User.where(id: user_ids)
+  end
+
   def self.upload_quizzes
     csv_text = File.read(Rails.root.join('lib', 'seeds', "quizzes.csv"))
     csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')

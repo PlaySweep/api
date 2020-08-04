@@ -1,4 +1,5 @@
 class Contest < ApplicationRecord
+  belongs_to :account
   has_many :slates
   has_many :images, as: :imageable
   has_many :rewards, as: :rewardable

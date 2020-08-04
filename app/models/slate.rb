@@ -33,7 +33,8 @@ class Slate < ApplicationRecord
   scope :total_entry_count, -> { joins(:cards).count }
   scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
   
-  after_update :set_background_job, :clear_background_job, :update_background_job, :run_results
+  after_update :set_background_job, :clear_background_job, :update_background_job, 
+               :run_results, :start_winner_confirmation_window
 
   accepts_nested_attributes_for :prizes
 
@@ -165,14 +166,14 @@ class Slate < ApplicationRecord
   end
 
   def initialize_select_winner_process
-    SelectWinnerJob.set(wait_until: 2.hours.from_now).perform_later(id, "Slate") if saved_change_to_status?(from: 'ready', to: 'complete')
+    SelectWinnerJob.set(wait_until: 30.minutes.from_now).perform_later(id, "Slate") if saved_change_to_status?(from: 'ready', to: 'complete')
   end
 
   def start_winner_confirmation_window
     if saved_change_to_current_winner_id?
       winners_card = cards.find_by(user_id: current_winner_id)
       SendWinnerConfirmationJob.perform_later(current_winner_id, prize.id, winners_card.try(:id)) if current_winner_id? && prize
-      HandleConfirmationWindowJob.set(wait_until: 24.hours.from_now).perform_later(id, "Slate")
+      # HandleConfirmationWindowJob.set(wait_until: 48.hours.from_now).perform_later(id, "Slate")
     end
   end
 
