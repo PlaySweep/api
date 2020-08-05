@@ -36,7 +36,7 @@ class V2::Admin::TemplatesController < BasicAuthenticationController
       slate.participants.create(owner_id: owner.id, field: params[:field])
     end
     template.items.ordered.each do |item|
-      event = slate.events.create(order: item.order, description: item.description, category: item.category)
+      event = slate.events.create(order: item.order, description: item.description, details: item.details, category: item.category)
       item.options.ordered.each do |option|
         event.selections.create(order: option.order, description: option.description, category: option.category)
       end
