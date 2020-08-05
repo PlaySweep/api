@@ -8,7 +8,8 @@ class CreateNewUser
       ChecksForReferral,
       AssignOwnerRole,
       TrackNewUserEvent,
-      SendWelcomeMessage
+      SendWelcomeMessage,
+      TriggerRegistrationReminder
     )
   end
 end
@@ -78,5 +79,14 @@ class SendWelcomeMessage
 
   executed do |context|
     WelcomeJob.perform_later(context.user.id) if context.params[:onboard]
+  end
+end
+
+class TriggerRegistrationReminder
+  extend LightService::Action
+  expects :user, :params
+
+  executed do |context|
+    RegistrationReminderJob.set(wait_until: 90.minutes.from_now).perform_later(context.user.id) if context.params[:onboard]
   end
 end

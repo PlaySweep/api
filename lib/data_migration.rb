@@ -94,9 +94,9 @@ class DataMigration
     csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
     user_ids = []
     csv.each do |row|
-      user_ids << row["user_id"]
+      user_ids << row["UserID"]
     end
-    User.where(id: user_ids)
+    user_ids
   end
 
   def self.fetch_metrics_for_completed_zip
@@ -104,9 +104,29 @@ class DataMigration
     csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
     user_ids = []
     csv.each do |row|
-      user_ids << row["user_id"]
+      user_ids << row["UserID"]
     end
-    User.where(id: user_ids)
+    user_ids
+  end
+
+  def self.fetch_metrics_for_completed_name
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "completed_name.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    user_ids = []
+    csv.each do |row|
+      user_ids << row["UserID"]
+    end
+    user_ids
+  end
+
+  def self.fetch_metrics_for_completed_email
+    csv_text = File.read(Rails.root.join('lib', 'seeds', "completed_email.csv"))
+    csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+    user_ids = []
+    csv.each do |row|
+      user_ids << row["UserID"]
+    end
+    user_ids
   end
 
   def self.upload_quizzes

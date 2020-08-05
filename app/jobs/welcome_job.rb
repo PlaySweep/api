@@ -12,13 +12,13 @@ class WelcomeJob < ApplicationJob
       quick_replies = FacebookParser::QuickReplyObject.new([
         {
           content_type: :text,
-          title: "I'm ready!",
-          payload: "PLAY READY"
+          title: "How to play",
+          payload: "HOW TO PLAY START"
         },
         {
           content_type: :text,
-          title: "How to play",
-          payload: "HOW TO PLAY START"
+          title: "Help",
+          payload: "HELP"
         }
       ]).objects
       if user.current_team
@@ -34,7 +34,7 @@ class WelcomeJob < ApplicationJob
   
         FacebookMessaging::Button.deliver(
           user: user,
-          title: "Let's go!",
+          title: "Start playing now!",
           message: welcome_onboarding_interpolated,
           quick_replies: quick_replies,
           notification_type: "NO_PUSH"
