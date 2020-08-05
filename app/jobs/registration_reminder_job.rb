@@ -21,7 +21,7 @@ class RegistrationReminderJob < ApplicationJob
       if next_game.present?
         current_prize = "a #{next_game.prize.product.name}"
       else
-        current_prize = "winning cool #{user.account.name} and #{user.account.friendly_name}"
+        current_prize = "winning cool #{user.account.name} and #{user.account.friendly_name} prizes"
       end
       registration_engagement_prompt_copy_interpolated = registration_engagement_prompt_copy % { current_prize: current_prize }
       url = "#{ENV['WEBVIEW_URL']}/messenger/#{user.facebook_uuid}"
