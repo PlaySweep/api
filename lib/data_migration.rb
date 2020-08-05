@@ -1,5 +1,43 @@
 class DataMigration
 
+  def copy_and_create_template old_template:, themes:
+    new_template = old_template.deep_clone include: { items: :options }
+    new_template.name = name
+    new_template.category = category
+    new_template.active = false
+    new_template.save
+  end
+
+  def copy_template old_template:, new_owner:
+    new_template = old_template.deep_clone include: { items: :options }
+    new_template.owner_id = new_owner.id
+    replace_item_details(old_template.owner.abbreviation, new_template)
+    new_template.save
+  end
+
+  def replace_item_details old_abbreviation, template
+    template.items.each do |item|
+      abbreviation = template.owner.abbreviation
+      description = item.description.gsub!(old_abbreviation, abbreviation)
+      details = item.details.gsub!(old_abbreviation, abbreviation)
+      item.description = description
+      item.details = details
+      replace_option_details(old_abbreviation, item)
+    end
+  end
+
+  def replace_option_details old_abbreviation, item
+    item.options.each do |option|
+      abbreviation = item.template.owner.abbreviation
+      if option.description.include?(old_abbreviation)
+        description = option.description.gsub!(old_abbreviation, abbreviation)
+      else
+        description = option.description
+      end    
+      option.description = description
+    end
+  end
+
   def create_owner_contests
     ids = [11, 16, 13, 2]
     owners = Team.active.where.not id: ids

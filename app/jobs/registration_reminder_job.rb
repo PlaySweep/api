@@ -6,7 +6,7 @@ class RegistrationReminderJob < ApplicationJob
     unless user.confirmed
       # Notification Message
       registration_engagement_notification_copy = user.account.copies.active.where(category: "Registration Reminder Notification").sample.message
-      next_game = Slate.filtered(user.current_team.id).descending.first
+      next_game = Slate.filtered(user.current_team.id).ascending.first
       if next_game.present?
         seconds = (next_game.start_time.in_time_zone - Time.now.in_time_zone).to_i
         hours = (seconds / 3600)
