@@ -28,6 +28,7 @@ gem 'rufus-scheduler'
 
 gem 'geocoder'
 gem 'haversine'
+gem 'deep_cloneable', '~> 3.0.0'
 
 gem 'leaderboard'
 

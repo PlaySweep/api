@@ -91,6 +91,8 @@ GEM
     concurrent-ruby (1.1.6)
     connection_pool (2.2.2)
     crass (1.0.6)
+    deep_cloneable (3.0.0)
+      activerecord (>= 3.1.0, < 7)
     erubi (1.9.0)
     et-orbi (1.2.4)
       tzinfo
@@ -287,6 +289,7 @@ DEPENDENCIES
   capistrano-rvm
   capistrano-sidekiq
   connection_pool
+  deep_cloneable (~> 3.0.0)
   facebook-messenger
   faraday
   friendly_id (~> 5.2.4)
