@@ -9,6 +9,7 @@ class Owner < ApplicationRecord
   has_many :medias, as: :imageable
   has_many :rewards, as: :rewardable
   has_many :profiles
+  has_many :templates
 
   store_accessor :data, :entry_image, :local_image, :sponsored,
                  :initials, :abbreviation, :lat, :long,
