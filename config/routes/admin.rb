@@ -15,7 +15,7 @@ namespace :admin, defaults: { format: :json } do
   resources :skus, only: [:index, :show]
   resources :slates, only: [:index, :show, :update]
   resources :standings, only: [:index, :show, :update]
-  resources :templates, only: :index
+  resources :templates, only: [:index, :show]
   post 'templates/build', to: 'templates#build'
   resources :users, only: [:index, :show, :update, :destroy]
 end

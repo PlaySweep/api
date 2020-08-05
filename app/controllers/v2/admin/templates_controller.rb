@@ -7,6 +7,11 @@ class V2::Admin::TemplatesController < BasicAuthenticationController
     respond_with @templates
   end
 
+  def show
+    @template = Template.find(params[:id])
+    respond_with @template
+  end
+
   def build
     template = Template.find(params[:template_id])
     owner = Owner.find(template.owner_id)
