@@ -1,6 +1,59 @@
 class DataMigration
 
-  def copy_and_create_template old_template:, themes:
+  def run owners:, old_templates:
+    owners.each do |new_owner|
+      old_templates.each do |old_template| 
+        puts "Creating a #{old_template.name} for #{new_owner.abbreviation}..."
+        copy_template(old_template: old_template, new_owner: new_owner)
+      end
+    end
+  end
+
+  def items_data
+    item1 = template.items.first
+    item1.update_attributes(
+      description: "Will the Cardinals hitters record 2 or more doubles?", 
+      details: "The Cardinals leader has _ doubles this season.",
+      category: "Offense"
+    )
+    item2 = template.items.second
+    item2.update_attributes(
+      description: "Will a Cardinals hitter record 1 or more triples?", 
+      details: "The Cardinals leader has _ triples this season.",
+      category: "Offense"
+    )
+    item3 = template.items.third
+    item3.update_attributes(
+      description: "Will the Cardinals win?", 
+      details: "The Cardinals are _ this season.",
+      category: "Outcome"
+    )
+  end
+
+  def options_data
+    item1.options.first.update_attributes(
+      description: "Yes, the Cardinals hitters will record 2 or more doubles", 
+    )
+    item1.options.second.update_attributes(
+      description: "Nope", 
+    )
+
+    item2.options.first.update_attributes(
+      description: "Yes, a Cardinals hitter will record 1 or more triples", 
+    )
+    item2.options.second.update_attributes(
+      description: "Nope", 
+    )
+
+    item3.options.first.update_attributes(
+      description: "Yes, the Cardinals will win", 
+    )
+    item3.options.second.update_attributes(
+      description: "No", 
+    )
+  end
+
+  def copy_and_create_template old_template:, name:, category:
     new_template = old_template.deep_clone include: { items: :options }
     new_template.name = name
     new_template.category = category

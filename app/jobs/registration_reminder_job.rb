@@ -3,7 +3,7 @@ class RegistrationReminderJob < ApplicationJob
 
   def perform user_id
     user = User.find_by(id: user_id)
-    unless user.confirmed
+    unless user_id.nil? || user.confirmed
       # Notification Message
       registration_engagement_notification_copy = user.account.copies.active.where(category: "Registration Reminder Notification").sample.message
       next_game = Slate.filtered(user.current_team.id).pending.ascending.first
