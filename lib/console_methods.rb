@@ -18,4 +18,8 @@ module ConsoleMethods
   def turner!
     Apartment::Tenant.switch!("turner")
   end
+
+  def taylormade!
+    Apartment::Tenant.switch!("taylormade")
+  end
 end

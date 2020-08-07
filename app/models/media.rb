@@ -8,7 +8,7 @@ class Media < ApplicationRecord
   private
 
   def set_attachment_id
-    conn = Faraday.new(:url => "https://graph.facebook.com/V2.11/me/")
+    conn = Faraday.new(:url => "https://graph.facebook.com/v8.0/me/")
     params = {message: {attachment: {type: 'image', payload: { is_reusable: true, url: self.url}}}}
     response = conn.post("message_attachments?access_token=#{ENV['ACCESS_TOKEN']}", params)
     attachment_id = JSON.parse(response.body)["attachment_id"]
