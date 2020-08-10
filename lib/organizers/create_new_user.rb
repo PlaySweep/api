@@ -87,6 +87,7 @@ class TriggerRegistrationReminder
   expects :user, :params
 
   executed do |context|
-    RegistrationReminderJob.set(wait_until: 90.minutes.from_now).perform_later(context.user.id) if context.params[:onboard]
+    scheduled_job = RegistrationReminderJob.set(wait_until: 90.minutes.from_now).perform_later(context.user.id) if context.params[:onboard]
+    SimpleBackgroundJob.perform_later("RegistrationReminderJob", scheduled_job.job_id, "User", context.user.id)
   end
 end

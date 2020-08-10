@@ -66,6 +66,8 @@ gem 'twilio-ruby'
 gem 'light-service'
 gem 'simple_command'
 
+gem "sentry-raven"
+
 gem 'rails-erd', group: :development
 
 group :development, :test do

@@ -142,7 +142,7 @@ class Slate < ApplicationRecord
   def set_background_job
     if saved_change_to_status?(from: 'inactive', to: 'pending')
       scheduled_job = StartSlateJob.set(wait_until: start_time.to_datetime).perform_later(id)
-      BackgroundJob.create(job_name: "StartSlateJob", job_id: scheduled_job.job_id, resource: "Slate", resource_id: id)
+      SimpleBackgroundJob.perform_later("StartSlateJob", scheduled_job.job_id, "Slate", id)
     end
   end
 
@@ -161,7 +161,7 @@ class Slate < ApplicationRecord
       queued_status.update({ cancelled: true })
 
       scheduled_job = StartSlateJob.set(wait_until: start_time.to_datetime).perform_later(id)
-      BackgroundJob.create(job_name: "StartSlateJob", job_id: scheduled_job.job_id, resource: "Slate", resource_id: id)
+      SimpleBackgroundJob.perform_later("StartSlateJob", scheduled_job.job_id, "Slate", id)
     end
   end
 
