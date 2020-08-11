@@ -157,8 +157,10 @@ class Slate < ApplicationRecord
   def update_background_job
     if pending? && saved_change_to_start_time?
       background_job = BackgroundJob.queued.find_by(resource_id: id)
-      queued_status = ActiveJob::Status.get(background_job.job_id)
-      queued_status.update({ cancelled: true })
+      if background_job
+        queued_status = ActiveJob::Status.get(background_job.job_id)
+        queued_status.update({ cancelled: true })
+      end
 
       scheduled_job = StartSlateJob.set(wait_until: start_time.to_datetime).perform_later(id)
       SimpleBackgroundJob.perform_later("StartSlateJob", scheduled_job.job_id, "Slate", id)
