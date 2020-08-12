@@ -32,18 +32,14 @@ class V2::UsersController < ApplicationController
 
   private
 
-  def data_params
-    return params[:user][:data] if params[:user][:data].nil?
-    JSON.parse(params[:user][:data].to_json)
-  end
-
   def user_params
     params.require(:user)
       .permit(
         :facebook_uuid, :active, :first_name, :last_name, 
         :locale, :profile_pic, :timezone, :email, 
         :dob, :zipcode, :confirmed, 
-        :locked, :gender, :source
-      ).merge(data: data_params)
+        :locked, :gender, :source,
+        :email_reminder, :email_recap, :sms_reminder
+      )
   end
 end

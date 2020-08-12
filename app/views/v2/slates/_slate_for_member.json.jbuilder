@@ -23,6 +23,7 @@ json.prize do
   json.product do 
     json.id slate.prize.product.id
     json.name slate.prize.product.name
+    json.size slate.prize.sku.try(:size)
     json.category slate.prize.product.category
   end
   json.date slate.prize.date

@@ -35,6 +35,12 @@ class User < ApplicationRecord
   has_many :rewards, through: :account
   has_one :location, dependent: :destroy
 
+  typed_store :settings do |s|
+    s.boolean :email_reminder, default: true, null: false
+    s.boolean :email_recap, default: true, null: false
+    s.boolean :sms_reminder, default: false, null: false
+  end
+
   scope :for_account, ->(name) { joins(:account).where("accounts.name = ?", name) }
   scope :for_admin, -> { where(is_admin: true) }
   scope :with_phone_number, ->(phone_number) { joins(:phone_number).where("phone_numbers.number = ?", phone_number) }

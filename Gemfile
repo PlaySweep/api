@@ -65,6 +65,7 @@ gem 'twilio-ruby'
 
 gem 'light-service'
 gem 'simple_command'
+gem 'activerecord-typedstore'
 
 gem "sentry-raven"
 

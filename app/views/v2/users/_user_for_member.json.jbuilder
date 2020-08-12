@@ -84,3 +84,8 @@ json.current_badge user.badges.active.for_referral_milestones.current, partial: 
 json.current_badge_exist user.badges.active.for_referral_milestones.current.present?
 json.badges user.badges, partial: "v2/badges/badge", as: :badge
 json.referrals user.active_referrals.recent, partial: "v2/users/referral", as: :referral
+json.settings do
+  json.email_reminder user.email_reminder
+  json.email_recap user.email_recap
+  json.sms_reminder user.sms_reminder
+end
