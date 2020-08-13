@@ -16,10 +16,10 @@ class V2::Admin::TemplatesController < BasicAuthenticationController
     template = Template.find(params[:template_id])
     owner = Owner.find(template.owner_id)
     slate_name = params[:name]
-    if params[:contest_id]
-      contest = Contest.find(params[:contest_id])
-    else
+    if contest_id_null?
       contest = Contest.find_by(name: "#{owner.abbreviation} Contest")
+    else
+      contest = Contest.find(params[:contest_id])
     end
     slate = Slate.create(name: slate_name, owner_id: template.owner_id, start_time: params[:start_time], contest_id: contest.id)
     product = Product.find_by(default: true)
@@ -33,7 +33,7 @@ class V2::Admin::TemplatesController < BasicAuthenticationController
       slate.participants.create(owner_id: home.id, field: "home")
     else
       owner = Owner.find_by(name: slate_name)
-      slate.participants.create(owner_id: owner.id, field: params[:field])
+      slate.participants.create(owner_id: owner.id, field: params[:field]) unless field_null?
     end
     template.items.ordered.each do |item|
       event = slate.events.create(order: item.order, description: item.description, details: item.details, category: item.category)
@@ -45,6 +45,14 @@ class V2::Admin::TemplatesController < BasicAuthenticationController
   end
 
   private
+
+  def contest_id_null?
+    params[:contest_id] == "null"
+  end
+
+  def field_null?
+    params[:field] == "null"
+  end
 
   def template_params
     params.require(:template).permit(:name, :owner_id, :active)
