@@ -5,7 +5,7 @@ class Contest < ApplicationRecord
   has_many :rewards, as: :rewardable
   has_many :prizes, as: :prizeable, dependent: :destroy
 
-  enum status: [ :inactive, :active ]
+  enum status: [ :default, :inactive, :active ]
 
   def prize
     return prizes.first if prizes.any?
