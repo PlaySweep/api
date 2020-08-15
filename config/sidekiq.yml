@@ -7,7 +7,6 @@
   - [high, 3]
   - default
   - low
-  - sentry
   - mailers
 :limits:
   low: 2
