@@ -36,7 +36,7 @@ class User < ApplicationRecord
   has_one :location, dependent: :destroy
 
   typed_store :settings do |s|
-    s.boolean :email_reminder, default: true, null: false
+    s.boolean :email_reminder, default: false, null: false
     s.boolean :email_recap, default: true, null: false
     s.boolean :sms_reminder, default: false, null: false
   end

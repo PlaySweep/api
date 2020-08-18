@@ -1,5 +1,13 @@
 class DataMigration
 
+  def update_details templates:
+    templates.each do |template|
+      abbreviation = template.owner.abbreviation
+      new_details = "The #{abbreviation} hitters are averaging _ walks per game this season."
+      template.items.second.update_attributes(details: new_details)
+    end
+  end
+
   def run owners:, old_templates:
     owners.each do |new_owner|
       old_templates.each do |old_template| 

@@ -13,3 +13,4 @@ json.prize do
 end if contest.prize?
 json.images contest.images
 json.default_image_url contest.images.find_by(category: "Default").try(:url)
+json.light_image_url contest.images.find_by(category: "Light").try(:url)

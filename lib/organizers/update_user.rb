@@ -4,7 +4,7 @@ class UpdateUser
   def self.call(user, params)
     with(user: user, params: params).reduce(
       TrackRegisteredNewUser,
-      # TODO SendWelcomeRegistrationEmail
+      SendWelcomeRegistrationEmail,
       RemovePreviousOwnerRole,
       AssignNewOwnerRole,
       DeactivateUser
@@ -19,6 +19,17 @@ class TrackRegisteredNewUser
   executed do |context|
     unless context.params[:confirmation].nil?
       IndicativeTrackEventConfirmedAccountJob.perform_later(context.user.id)
+    end
+  end
+end
+
+class SendWelcomeRegistrationEmail
+  extend ::LightService::Action
+  expects :user, :params
+
+  executed do |context|
+    unless context.params[:confirmation].nil?
+      # TODO SendWelcomeRegistrationEmail
     end
   end
 end
