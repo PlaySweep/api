@@ -27,17 +27,6 @@ json.prize do
   end
   json.date slate.prize.date
 end
-json.prizes slate.prizes.each do |prize|
-  json.id prize.id
-  json.sku_id prize.sku_id
-  json.product_id prize.product_id
-  json.name prize.product.name
-  json.description prize.product.description
-  json.quantity prize.quantity
-  json.image prize.product.image
-  json.category prize.product.category
-  json.date prize.date
-end
 json.label "In-game"
 json.owner_image slate.owner.image if slate.owner
 json.participants slate.participants.ordered.each do |participant|

@@ -2,11 +2,9 @@ class V2::SlatesController < ApplicationController
   respond_to :json
 
   def index
-    user = User.find_by(id: params[:user_id])
-    if user
-      @slates = Slate.unfiltered.or(Slate.filtered(user.filtered_ids)).ascending.available
-      @slates = Slate.unfiltered.or(Slate.filtered(user.filtered_ids)).ascending.inactive if params[:inactive]
-      respond_with @slates
+    if current_user
+      @slates = Slate.unfiltered.or(Slate.filtered(current_user.filtered_ids)).ascending.available
+      fresh_when last_modified: @slates.maximum(:updated_at), public: true
     else
       render json: { errors: [] }, status: :unprocessable_entity
     end
@@ -15,7 +13,7 @@ class V2::SlatesController < ApplicationController
   def show
     @slate = Slate.find_by(id: params[:id])
     if @slate
-      respond_with @slate
+      fresh_when last_modified: @slate.updated_at, public: true
     else
       render json: { errors: [] }, status: :unprocessable_entity
     end
