@@ -12,6 +12,6 @@ class WeeklyUserActivityMailer < ApplicationMailer
     @unregistered_count = unregistered_count
     @phone_number_count = phone_number_count
     
-    mail(to: 'nate@endemiclabs.co', subject: "User Feedback Data - #{(DateTime.current).to_date}")
+    mail(to: 'budweisersweep@endemiclabs.co', subject: "User Feedback Data - #{(DateTime.current).to_date}")
   end
 end
