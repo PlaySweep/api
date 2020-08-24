@@ -7,13 +7,13 @@ if Rails.env.development?
 end
 
 if Rails.env.production?
-  scheduler.cron '0 6 * * 1' do
-    Account.active.pluck(:tenant).each do |tenant|
-      Apartment::Tenant.switch(tenant) do
-        fetch_player_activity
-      end
-    end
-  end
+  # scheduler.cron '0 6 * * 1' do
+  #   Account.active.pluck(:tenant).each do |tenant|
+  #     Apartment::Tenant.switch(tenant) do
+  #       fetch_player_activity
+  #     end
+  #   end
+  # end
 
   # scheduler.cron '0 12 * * *' do
   #   Account.active.pluck(:tenant).each do |tenant|
@@ -24,8 +24,8 @@ if Rails.env.production?
   # end
 
   def fetch_player_activity
-      unique_ids_two_weeks_ago = Card.for_quizzes.between_days('quizzes', 14, 8).select(:user_id).distinct.pluck(:user_id)
-      unique_ids_one_week_ago = Card.for_quizzes.between_days('quizzes', 7, 1).select(:user_id).distinct.pluck(:user_id)
+      unique_ids_two_weeks_ago = Card.for_slates.between_days('slates', 14, 8).select(:user_id).distinct.pluck(:user_id)
+      unique_ids_one_week_ago = Card.for_slates.between_days('slates', 7, 1).select(:user_id).distinct.pluck(:user_id)
       returned_user_ids = unique_ids_two_weeks_ago.select { |id| unique_ids_one_week_ago.include?(id) }
       left_user_ids = unique_ids_two_weeks_ago.reject { |id| unique_ids_one_week_ago.include?(id) }
       returned_users = User.where(id: returned_user_ids).sample(25)

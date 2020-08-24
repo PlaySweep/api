@@ -60,15 +60,15 @@ Rails.application.configure do
   # config.action_mailer.default_options = {from: 'ryan@endemiclabs.co'}
 
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    :user_name => "apikey",
-    :password => "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",
-    :domain => "endemiclabs.co",
-    :address => 'smtp.sendgrid.net',
-    :port => 587,
-    :authentication => :plain,
-    :enable_starttls_auto => true
-  }
+  # config.action_mailer.smtp_settings = {
+  #   :user_name => "apikey",
+  #   :password => "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",
+  #   :domain => "endemiclabs.co",
+  #   :address => 'smtp.sendgrid.net',
+  #   :port => 587,
+  #   :authentication => :plain,
+  #   :enable_starttls_auto => true
+  # }
   
 
   # Ignore bad email addresses and do not raise email delivery errors.
