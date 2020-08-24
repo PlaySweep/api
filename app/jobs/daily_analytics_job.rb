@@ -21,7 +21,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [selection.id, selection.description]
       end
     end
-    DataMailer.selections_to(email: "budweisersweep@endemiclabs.co").deliver_now
+    DataMailer.selections_to(email: "nate@endemiclabs.co").deliver_now
   end
 
   def fetch_orders
@@ -31,7 +31,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [order.created_at.strftime("%m/%d/%Y"), order.id, order.user.full_name, order.user.email, order.user.phone_number, order.user.addresses.last.try(:line1), order.user.addresses.last.try(:line2), order.user.addresses.last.try(:city), order.user.addresses.last.try(:state), order.user.addresses.last.try(:postal_code), order.user.addresses.last.try(:country), order.user.addresses.last.try(:formatted_address), order.prize.try(:product).try(:name), order.prize.sku.code, order.prize.sku.size, order.prize.sku.weight, order.prize.sku.unit, "Endemic Labs - #{order.user.account.name}", order.prize.prizeable.name]
       end
     end
-    DataMailer.orders_to(email: "budweisersweep@endemiclabs.co").deliver_now
+    DataMailer.orders_to(email: "nate@endemiclabs.co").deliver_now
   end
 
   def fetch_skus
@@ -42,7 +42,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [sku.id, sku.product.global? ? "Global" : sku.product.team.abbreviation, sku.product.category, sku.product_id, sku.product.name, sku.product.description, sku.code, sku.size]
       end
     end
-    DataMailer.skus(email: "budweisersweep@endemiclabs.co").deliver_now
+    DataMailer.skus(email: "nate@endemiclabs.co").deliver_now
   end
 
   def fetch_teams
@@ -53,7 +53,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [team.id, team.name, team.abbreviation]
       end
     end
-    DataMailer.teams(email: "budweisersweep@endemiclabs.co").deliver_now
+    DataMailer.teams(email: "nate@endemiclabs.co").deliver_now
   end
 
   def fetch_products
@@ -64,7 +64,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [product.id, product.team ? product.team.name : "Global", product.name, product.category]
       end
     end
-    DataMailer.products(email: "ryan@endemiclabs.co").deliver_now
+    DataMailer.products(email: "nate@endemiclabs.co").deliver_now
   end
 
   def fetch_users users:
@@ -74,7 +74,7 @@ class DailyAnalyticsJob < ApplicationJob
         csv << [" #{user.facebook_uuid}", user.full_name, user.email, user.phone_number.nil? ? "" : user.phone_number.number]
       end
     end
-    DataMailer.users(email: "ben@endemiclabs.co").deliver_now
+    DataMailer.users(email: "nate@endemiclabs.co").deliver_now
   end
 
 end
