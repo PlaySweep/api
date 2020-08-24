@@ -2,10 +2,12 @@ class V2::TeamsController < ApplicationController
   respond_to :json
 
   def index
+    if params[:recommended_teams]
+      @teams = recommended_team_ids.collect { |id| Team.find(id) }
+      respond_with @teams
+    end
     @teams = Team.active.ordered
-    @teams = Team.active.ordered.by_division(params[:division]) if params[:division]
-    @teams = recommended_team_ids.collect { |id| Team.find(id) } if params[:recommended_teams]
-    respond_with @teams
+    fresh_when last_modified: @teams.maximum(:updated_at), public: true
   end
 
   private

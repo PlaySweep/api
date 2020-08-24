@@ -4,7 +4,7 @@ class V2::UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    respond_with @user
+    fresh_when last_modified: @user.updated_at, public: true
   end
 
   def create

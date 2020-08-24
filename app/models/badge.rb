@@ -1,6 +1,6 @@
 class Badge < ApplicationRecord
   INACTIVE, CURRENT = 0, 1
-  belongs_to :user
+  belongs_to :user, touch: true
   belongs_to :achievement
 
   enum status: [ :inactive, :current ]
