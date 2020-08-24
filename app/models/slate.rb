@@ -33,6 +33,11 @@ class Slate < ApplicationRecord
   scope :total_entry_count, -> { joins(:cards).count }
   scope :total_entry_count_for_each, -> { left_joins(:cards).group(:id).order('COUNT(cards.id) DESC').count }
   
+  scope :incomplete_events, -> { joins(:events).where('events.status = ?', Event::INCOMPLETE) }
+  scope :ready_events, -> { joins(:events).where('events.status = ?', Event::READY) }
+  scope :complete_events, -> { joins(:events).where('events.status = ?', Event::COMPLETE) }
+  scope :closed_events, -> { joins(:events).where('events.status = ?', Event::CLOSED) }
+
   after_update :set_background_job, :clear_background_job, :update_background_job, 
                :run_results, :start_winner_confirmation_window
 
@@ -149,8 +154,10 @@ class Slate < ApplicationRecord
   def clear_background_job
     if saved_change_to_status?(from: 'pending', to: 'inactive')
       background_job = BackgroundJob.queued.find_by(resource_id: id)
-      queued_status = ActiveJob::Status.get(background_job.job_id)
-      queued_status.update({ cancelled: true })
+      if background_job
+        queued_status = ActiveJob::Status.get(background_job.job_id)
+        queued_status.update({ cancelled: true })
+      end
     end
   end
 

@@ -3,7 +3,7 @@ class Event < ApplicationRecord
 
   INCOMPLETE, READY, COMPLETE, CLOSED = 0, 1, 2, 3
 
-  belongs_to :slate
+  belongs_to :slate, counter_cache: true
   has_many :cards, as: :cardable, through: :slate
   has_many :selections, dependent: :destroy
   has_many :picks, dependent: :destroy
@@ -14,6 +14,13 @@ class Event < ApplicationRecord
   enum status: [ :incomplete, :ready, :complete, :closed ]
 
   after_update :update_picks
+
+  counter_culture :slate, column_name: proc { |model| "#{model.status}_events_count" }, column_names: {
+    Slate.incomplete_events => :incomplete_events_count,
+    Slate.ready_events => :ready_events_count,
+    Slate.complete_events => :complete_events_count,
+    Slate.closed_events => :closed_events_count
+}
 
   scope :for_slate, ->(slate_id) { where(slate_id: slate_id) }
   scope :ordered, -> { order(order: :asc) }

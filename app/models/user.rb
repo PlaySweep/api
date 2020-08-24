@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   SWEEP = :sweep
   include Redis::Objects
+  include Discard::Model
 
   hash_key :stats_hash_key
   list :latest_stats_list, maxlength: 3, marshal: true

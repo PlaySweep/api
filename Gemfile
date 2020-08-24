@@ -66,6 +66,8 @@ gem 'twilio-ruby'
 gem 'light-service'
 gem 'simple_command'
 gem 'activerecord-typedstore'
+gem 'discard', '~> 1.2'
+gem 'counter_culture', '~> 2.0'
 
 gem "sentry-raven"
 
