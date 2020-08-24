@@ -1,4 +1,4 @@
-class V2::Admin::DataAnalyticController < BasicAuthenticationController
+class V2::Admin::DailyAnalyticsController < BasicAuthenticationController
 
   def leaderboard_csv_mailer
     DailyAnalyticsJob.perform_leaderboard_csv

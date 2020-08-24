@@ -18,11 +18,11 @@ namespace :admin, defaults: { format: :json } do
   resources :templates, only: [:index, :show]
   post 'templates/build', to: 'templates#build'
   resources :users, only: [:index, :show, :update, :destroy]
-  get 'leaderboard_csv_mailer', to: 'data_analytic_controller#leaderboard_csv_mailer'
-  get 'fetch_selections_mailer', to: 'data_analytic_controller#fetch_selections_mailer'
-  get 'fetch_orders_mailer', to: 'data_analytic_controller#fetch_orders_mailer'
-  get 'fetch_skus_mailer', to: 'data_analytic_controller#fetch_skus_mailer'
-  get 'fetch_teams_mailer', to: 'data_analytic_controller#fetch_teams_mailer'
-  get 'fetch_products_mailer', to: 'data_analytic_controller#fetch_products_mailer'
-  get 'fetch_users_mailer', to: 'data_analytic_controller#fetch_users_mailer'
+  get 'leaderboard_csv_mailer', to: 'daily_analytics_controller#leaderboard_csv_mailer'
+  get 'fetch_selections_mailer', to: 'daily_analytics_controller#fetch_selections_mailer'
+  get 'fetch_orders_mailer', to: 'daily_analytics_controller#fetch_orders_mailer'
+  get 'fetch_skus_mailer', to: 'daily_analytics_controller#fetch_skus_mailer'
+  get 'fetch_teams_mailer', to: 'daily_analytics_controller#fetch_teams_mailer'
+  get 'fetch_products_mailer', to: 'daily_analytics_controller#fetch_products_mailer'
+  get 'fetch_users_mailer', to: 'daily_analytics_controller#fetch_users_mailer'
 end

@@ -15,13 +15,13 @@ if Rails.env.production?
     end
   end
 
-  scheduler.cron '0 12 * * *' do
-    Account.active.pluck(:tenant).each do |tenant|
-      Apartment::Tenant.switch(tenant) do
-        fetch_daily_analytics
-      end
-    end
-  end
+  # scheduler.cron '0 12 * * *' do
+  #   Account.active.pluck(:tenant).each do |tenant|
+  #     Apartment::Tenant.switch(tenant) do
+  #       fetch_daily_analytics
+  #     end
+  #   end
+  # end
 
   def fetch_player_activity
       unique_ids_two_weeks_ago = Card.for_quizzes.between_days('quizzes', 14, 8).select(:user_id).distinct.pluck(:user_id)
