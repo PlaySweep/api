@@ -11,7 +11,7 @@ class FetchOrdersAnalyticsJob < ApplicationJob
         csv << [order.created_at.strftime("%m/%d/%Y"), order.id, order.user.full_name, order.user.email, order.user.phone_number, order.user.addresses.last.try(:line1), order.user.addresses.last.try(:line2), order.user.addresses.last.try(:city), order.user.addresses.last.try(:state), order.user.addresses.last.try(:postal_code), order.user.addresses.last.try(:country), order.user.addresses.last.try(:formatted_address), order.prize.try(:product).try(:name), order.prize.sku.code, order.prize.sku.size, order.prize.sku.weight, order.prize.sku.unit, "Endemic Labs - #{order.user.account.name}", order.prize.prizeable.name]
       end
     end
-    DataMailer.orders_to(email: "nate@endemiclabs.co").deliver_now
+    DataMailer.orders_to(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
 end
