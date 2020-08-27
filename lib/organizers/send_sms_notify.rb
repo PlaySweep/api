@@ -20,7 +20,7 @@ class CreateSMSBinding
       bind = service.bindings.create(
         identity: "#{identity}_#{context.user.id}",
         binding_type: 'sms',
-        address: "Address=+1#{context.params[:phone_number]}"
+        address: "Address=+#{context.params[:phone_number]}"
       )
       # TODO context.user.bindings.create(sid: bind.sid, type: "sms")
     end
@@ -35,7 +35,7 @@ class TriggerNotification
     unless context.params[:onboard].nil?
       service = context.client.notify.v1.services(ENV["TWILIO_NOTIFY_#{current_account.app_name.upcase.gsub(' ', '_')}_SERVICE_ID"])
       notification = service.notifications.create(
-        to_binding: { binding_type: 'sms', address: "+1#{context.params[:phone_number]}"}.to_json,
+        to_binding: { binding_type: 'sms', address: "+#{context.params[:phone_number]}"}.to_json,
         body: "Welcome to the #{context.user.account.app_name}!"
       )
     end

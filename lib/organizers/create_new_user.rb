@@ -78,7 +78,13 @@ class SendWelcomeMessage
   expects :user, :params
 
   executed do |context|
-    WelcomeJob.perform_later(context.user.id) if context.params[:onboard]
+    if context.params[:onboard]
+      if context.params[:phone_number]
+        # TODO Send a Notify API message
+      else
+        WelcomeJob.perform_later(context.user.id)
+      end
+    end
   end
 end
 
@@ -87,7 +93,13 @@ class TriggerRegistrationReminder
   expects :user, :params
 
   executed do |context|
-    scheduled_job = RegistrationReminderJob.set(wait_until: 90.minutes.from_now).perform_later(context.user.id) if context.params[:onboard]
-    SimpleBackgroundJob.perform_later("RegistrationReminderJob", scheduled_job.job_id, "User", context.user.id)
+    if context.params[:onboard]
+      if context.params[:phone_number]
+        # TODO Send a Notify API reminder message
+      else
+        scheduled_job = RegistrationReminderJob.set(wait_until: 90.minutes.from_now).perform_later(context.user.id)
+        SimpleBackgroundJob.perform_later("RegistrationReminderJob", scheduled_job.job_id, "User", context.user.id)
+      end
+    end
   end
 end
