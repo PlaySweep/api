@@ -4,7 +4,8 @@ class V2::SlatesController < ApplicationController
   def index
     if current_user
       @slates = Slate.unfiltered.or(Slate.filtered(current_user.filtered_ids)).ascending.available
-      fresh_when last_modified: @slates.maximum(:updated_at), public: true
+      # fresh_when last_modified: @slates.maximum(:updated_at), public: true
+      respond_with @slates
     else
       render json: { errors: [] }, status: :unprocessable_entity
     end
