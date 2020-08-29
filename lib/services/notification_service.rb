@@ -39,12 +39,15 @@ class NotificationService
         )
       else
         # TODO Send an SMS verification text for first time play
-        service = context.client.notify.v1.services(ENV["TWILIO_NOTIFY_#{@user.account.app_name.upcase.gsub(' ', '_')}_SERVICE_ID"])
+        client = Twilio::REST::Client.new(ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"])
+        service = client.notify.v1.services(ENV["TWILIO_NOTIFY_#{@user.account.app_name.upcase.gsub(' ', '_')}_SERVICE_ID"])
         copy = @user.account.copies.find_by(category: "SMS Welcome")
-        notification = service.notifications.create(
-          to_binding: { binding_type: 'sms', address: "+#{@user.phone_number.number}"}.to_json,
-          body: copy.message
-        )
+        if copy.present?
+          notification = service.notifications.create(
+            to_binding: { binding_type: 'sms', address: "+#{@user.phone_number.try(:number)}"}.to_json,
+            body: copy.message
+          )
+        end
       end
     end
   end
