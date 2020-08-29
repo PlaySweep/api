@@ -1,8 +1,8 @@
-class SendSmsNotify
+class SendTransactionalSms
   extend LightService::Organizer
 
-  def self.call(user, client, params)
-    with(user: user, client: client, params: params).reduce(
+  def self.call(user, client, params, message_category)
+    with(user: user, client: client, params: params, message_category: message_category).reduce(
       CreateSMSBinding,
       TriggerNotification
     )
@@ -29,14 +29,15 @@ end
 
 class TriggerNotification
   extend ::LightService::Action
-  expects :user, :client, :params
+  expects :user, :client, :params, :message
 
   executed do |context|
     unless context.params[:onboard].nil?
       service = context.client.notify.v1.services(ENV["TWILIO_NOTIFY_#{current_account.app_name.upcase.gsub(' ', '_')}_SERVICE_ID"])
+      copy = context.user.account.copies.find_by(category: message_category)
       notification = service.notifications.create(
         to_binding: { binding_type: 'sms', address: "+#{context.params[:phone_number]}"}.to_json,
-        body: "Welcome to the #{context.user.account.app_name}!"
+        body: copy.message
       )
     end
   end

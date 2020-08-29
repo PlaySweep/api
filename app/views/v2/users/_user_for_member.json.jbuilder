@@ -8,7 +8,6 @@ json.handle user.handle
 json.email user.email
 json.dob user.dob
 json.zipcode user.zipcode
-json.phone_number_exists user.phone_number?
 json.confirmed user.confirmed
 json.locked user.locked
 json.slug user.slug
