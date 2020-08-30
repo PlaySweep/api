@@ -23,6 +23,7 @@ class Sweep < ApplicationRecord
   def run_services
     OwnerService.new(user: user, slate: sweepable).run(type: :sweep)
     ContestService.new(user: user, contest: sweepable.contest).run(type: :sweep)
+    AccountService.new(user: user).run(type: :sweep)
   end
 
 end

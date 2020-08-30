@@ -3,6 +3,7 @@ class Rule < ApplicationRecord
 
   scope :eligible, -> { where(eligible: true) }
 
+  scope :for_accounts, -> { where(type: "AccountRule") }
   scope :for_contests, -> { where(type: "ContestRule") }
   scope :for_referrals, -> { where(type: "ReferralRule") }
   scope :for_owners, -> { where(type: "OwnerRule") }

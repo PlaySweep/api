@@ -28,6 +28,7 @@ class Card < ApplicationRecord
   def run_services
     OwnerService.new(user: user, slate: cardable).run(type: :playing)
     ContestService.new(user: user, contest: cardable.contest).run(type: :playing)
+    AccountService.new(user: user).run(type: :playing)
     NotificationService.new(user).run(type: :playing)
     IndicativeTrackEventPlayedContestJob.perform_later(user_id)
   end
@@ -66,6 +67,7 @@ class Card < ApplicationRecord
       user.update_attributes(referral_completed_at: Time.zone.now)
       OwnerService.new(user: user).run(type: :referral)
       ContestService.new(user: user, contest: cardable.contest).run(type: :referral)
+      AccountService.new(user: user).run(type: :referral)
     end
   end
 
