@@ -7,7 +7,7 @@ class WelcomeJob < ApplicationJob
       welcome_copy = user.account.copies.active.where(category: "Welcome").sample.message
       welcome_interpolated = welcome_copy % { first_name: user.first_name }
       welcome_onboarding_copy = user.account.copies.active.where(category: "Welcome Onboarding").sample.message
-      welcome_onboarding_interpolated = welcome_onboarding_copy % { team_abbreviation: user.current_team_is_default? ? user.account.name : user.current_team.abbreviation }
+      welcome_onboarding_interpolated = welcome_onboarding_copy % { team_abbreviation: user.current_team.abbreviation }
       url = "#{ENV['WEBVIEW_URL']}/messenger/#{user.facebook_uuid}"
       quick_replies = FacebookParser::QuickReplyObject.new([
         {
