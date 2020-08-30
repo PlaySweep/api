@@ -19,7 +19,7 @@ class AccountService
     if reward_active?
       if reward.rules.for_accounts.by_playing.eligible.any?
         leaderboard = Board.fetch(
-          leaderboard: "contest_#{@reward.name}"
+          leaderboard: "contest_#{reward.name}"
         )
         current_score = leaderboard.score_for(@user.id) || 0
         leaderboard.rank_member(@user.id, current_score += playing_rule.level, { username: @user.abbreviated_name }.to_json)
@@ -31,7 +31,7 @@ class AccountService
     if reward_active?
       if reward.rules.for_accounts.by_referring.eligible.any?
         leaderboard = Board.fetch(
-          leaderboard: "contest_#{@reward.name}"
+          leaderboard: "contest_#{reward.name}"
         )
         current_score = leaderboard.score_for(@user.referred_by_id) || 0
         leaderboard.rank_member(@user.referred_by_id, current_score += referral_rule.level, { username: @user.abbreviated_name }.to_json)
@@ -43,7 +43,7 @@ class AccountService
     if reward_active?
       if reward.rules.for_accounts.by_picking.eligible.any?
         leaderboard = Board.fetch(
-          leaderboard: "contest_#{@reward.name}"
+          leaderboard: "contest_#{reward.name}"
         )
         current_score = leaderboard.score_for(@user.id) || 0
         leaderboard.rank_member(@user.id, current_score += pick_rule.level, { username: @user.abbreviated_name }.to_json)
@@ -55,7 +55,7 @@ class AccountService
     if reward_active?
       if reward.rules.for_accounts.by_sweep.eligible.any?
         leaderboard = Board.fetch(
-          leaderboard: "contest_#{@reward.name}"
+          leaderboard: "contest_#{reward.name}"
         )
         current_score = leaderboard.score_for(@user.id) || 0
         leaderboard.rank_member(@user.id, current_score += sweep_rule.level, { username: @user.abbreviated_name }.to_json)
