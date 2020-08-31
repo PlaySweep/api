@@ -31,6 +31,7 @@ class AssignPhoneNumber
 
   executed do |context|
     unless context.params[:phone_number].nil?
+      context.user.save
       phone_number = PhoneNumber.create(number: context.params[:phone_number], user_id: context.user.id)
       context.user.save
     end
