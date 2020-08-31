@@ -54,7 +54,8 @@ class User < ApplicationRecord
   scope :recent, -> { where('created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 30, DateTime.current.end_of_day) }
   scope :completed, -> { where.not(referral_completed_at: nil) }
 
-  validates :slug, :referral_code, :facebook_uuid, uniqueness: true
+  validates :slug, :referral_code, uniqueness: true
+  validates :facebook_uuid, uniqueness: true, allow_blank: true
 
   before_create :set_slug, :set_referral_code
   after_update :create_or_update_location
