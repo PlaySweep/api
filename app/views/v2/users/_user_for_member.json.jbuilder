@@ -20,24 +20,6 @@ json.current_team user.current_team, partial: 'v2/teams/team', as: :team
 json.current_team_is_default user.current_team_is_default?
 json.current_team_leaderboard user.current_team.active_leaderboard.present?
 json.current_account_leaderboard user.account.active_leaderboard.present?
-json.leaderboard do
-  json.account do
-    json.name user.account.rewards.active.find_by(category: "Contest").description
-    json.top_scorers user.account.active_leaderboard.top(10, { with_member_data: true })
-    json.rank user.account.active_leaderboard.rank_for(user.id).to_i || 0
-    json.score user.account.active_leaderboard.score_for(user.id).to_i || 0
-    json.ordinal_position user.account.active_leaderboard.rank_for(user.id).to_i.ordinalize.last(2)
-    json.tied user.account.active_leaderboard.total_members_in_score_range(user.account.active_leaderboard.score_for(user.id).to_i, user.account.active_leaderboard.score_for(user.id).to_i) > 1.0
-  end if user.account.active_leaderboard?
-  json.owner do
-    json.name user.current_team.rewards.active.find_by(category: "Weekly Points").description
-    json.top_scorers user.current_team.active_leaderboard.top(3, { with_member_data: true })
-    json.rank user.current_team.active_leaderboard.rank_for("week_#{user.account.current_week}_user_#{user.id}").to_i || 0
-    json.score user.current_team.active_leaderboard.score_for("week_#{user.account.current_week}_user_#{user.id}").to_i || 0
-    json.ordinal_position user.current_team.active_leaderboard.rank_for("week_#{user.account.current_week}_user_#{user.id}").to_i.ordinalize.last(2)
-    json.tied user.current_team.active_leaderboard.total_members_in_score_range(user.current_team.active_leaderboard.score_for("week_#{user.account.current_week}_user_#{user.id}").to_i, user.current_team.active_leaderboard.score_for("week_#{user.account.current_week}_user_#{user.id}").to_i) > 1.0
-  end if user.current_team.active_leaderboard?
-end
 json.account do
   json.id user.account.id
   json.name user.account.name
