@@ -34,6 +34,16 @@ class DailyAnalyticsJob < ApplicationJob
     DataMailer.orders_to(email: "budweisersweep@endemiclabs.co").deliver_now
   end
 
+  def build_email_contact_list
+    CSV.open("#{Rails.root}/tmp/email_contact_list.csv", "wb") do |csv|
+      csv << %w[email first_name last_name address_line_1 address_line_2 city state_province_region postal_code country]
+      User.confirmed.each do |user|
+        csv << [user.email, user.first_name, user.last_name, user.addresses.any? ? user.addresses.first.line1 : "", user.addresses.any? ? user.addresses.first.line2 : "", user.addresses.any? ? user.addresses.first.city : "", user.addresses.any? ? user.addresses.first.state : "", user.addresses.any? ? user.addresses.first.postal_code : "", user.addresses.any? ? user.addresses.first.country : ""]
+      end
+    end
+    DataMailer.send_contacts_list(email: "ryan@endemiclabs.co").deliver_now
+  end
+
   def fetch_skus
     CSV.open("#{Rails.root}/tmp/#{DateTime.current.to_date}_skus.csv", "wb") do |csv|
       csv << ["Sku ID", "Team", "Category", "Product ID", "Name", "Description", "Code", "Size"]
