@@ -1,4 +1,4 @@
-json.top_scorers leaderboard.top(25, { with_member_data: true })
+json.top_scorers leaderboard.top(20, { with_member_data: true })
 json.rank leaderboard.rank_for(current_user.id).to_i || 0
 json.score leaderboard.score_for(current_user.id).to_i || 0
 json.ordinal_position leaderboard.rank_for(current_user.id).to_i.ordinalize.last(2)
