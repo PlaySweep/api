@@ -35,10 +35,7 @@ class ApplicationController < ActionController::API
   def authenticate_request
     Apartment::Tenant.switch(subdomain) do
       @current_user = AuthorizeApiRequest.call(request.headers).result
-      if @current_user
-        Raven.user_context(id: @current_user.id)
-        Raven.extra_context(params: params.to_unsafe_h, url: request.url)
-      else
+      unless @current_user
         render json: { error: 'Not Authorized' }, status: 401
       end
     end

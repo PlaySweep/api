@@ -208,18 +208,23 @@ def notify_leaderboard_winners user:
   rank = user.account.active_leaderboard.rank_for(user.id).to_i
   ordinal = user.account.active_leaderboard.rank_for(user.id).to_i.ordinalize.last(2)
   score = user.account.active_leaderboard.score_for(user.id).to_i
-  prize_id = 9
+  quick_replies = FacebookParser::QuickReplyObject.new([
+    {
+      content_type: :text,
+      title: "Share and earn!",
+      payload: "SHARE"
+    }
+  ]).objects
   FacebookMessaging::Standard.deliver(
     user: user,
-    message: "#{user.first_name}, you finished in #{rank}#{ordinal} place with #{score} points and won a Michelob ULTRA hat!",
+    message: "You're in the hunt, #{user.first_name}! Refer your friends to keep climbing the Race to the World Series ⚾️",
     notification_type: "REGULAR"
   )
-  FacebookMessaging::Button.deliver(
+  FacebookMessaging::Standard.deliver(
     user: user,
-    title: "Confirm Now",
-    message: "Click here to submit your address, so we can ship that hat out to you.",
-    url: "#{ENV["WEBVIEW_URL"]}/prize_confirmation/#{prize_id}/#{user.slug}",
-    notification_type: "NO_PUSH"
+    message: "You're currently in #{rank}#{ordinal} place with #{score} points!\n\nShare below and earn 3+ points when your referral plays their first contest!",
+    notification_type: "NO_PUSH",
+    quick_replies: quick_replies
   )
 end
 

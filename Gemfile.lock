@@ -234,8 +234,6 @@ GEM
       fugit (~> 1.1, >= 1.1.6)
     sendgrid-ruby (6.3.2)
       ruby_http_client (~> 3.4)
-    sentry-raven (2.13.0)
-      faraday (>= 0.7.6, < 1.0)
     sidekiq (5.2.8)
       connection_pool (~> 2.2, >= 2.2.2)
       rack (< 2.1.0)
@@ -321,7 +319,6 @@ DEPENDENCIES
   rolify
   rufus-scheduler
   sendgrid-ruby
-  sentry-raven
   sidekiq
   simple_command
   simple_service_object
