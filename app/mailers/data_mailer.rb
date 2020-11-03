@@ -208,6 +208,17 @@ class DataMailer < ApplicationMailer
       subject: "#{account.friendly_name} #{account.name} Orders CSV #{DateTime.current.to_date}",
       body: "Attached below."
     )
+  end  
+  
+  def data email:
+    account = Account.first
+    ab_data = File.read("#{Rails.root}/tmp/ab_data.csv")
+    attachments["#{Rails.root}/tmp/ab_data.csv"] = { mime_type: 'text/csv', content: ab_data }
+    mail(
+      to: email,
+      subject: "AB Data",
+      body: "Attached below."
+    )
   end
 
   def send_contacts_list email:

@@ -205,6 +205,10 @@ def re_engagement_notification user:, message:
 end
 
 def notify_leaderboard_winners user:
+  # 1 - 50 - Monday, Wednesday, Friday, Sunday, Tuesday
+  # 51 - 100 - Tuesday, Thursday, Saturday, Monday, Wednesday
+  # Notification: You're in the hunt, Zac! Refer your friends to keep climbing the Race to the World Series  Leaderboard to win 2021 World Series or Postseason tix️
+  # Body message: You're currently in 3rd place with 118 points! Share below and earn 3+ points when your referral plays their first contest
   rank = user.account.active_leaderboard.rank_for(user.id).to_i
   ordinal = user.account.active_leaderboard.rank_for(user.id).to_i.ordinalize.last(2)
   score = user.account.active_leaderboard.score_for(user.id).to_i
@@ -217,7 +221,7 @@ def notify_leaderboard_winners user:
   ]).objects
   FacebookMessaging::Standard.deliver(
     user: user,
-    message: "You're in the hunt, #{user.first_name}! Refer your friends to keep climbing the Race to the World Series ⚾️",
+    message: "You're in the hunt, #{user.first_name}! Refer your friends to keep climbing the Race to the World Series Leaderboard to win 2021 World Series or Postseason tix️ ⚾️",
     notification_type: "REGULAR"
   )
   FacebookMessaging::Standard.deliver(

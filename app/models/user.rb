@@ -53,6 +53,7 @@ class User < ApplicationRecord
   scope :most, ->(association) { left_joins(association.to_sym).group(:id).order("COUNT(#{association.to_s}.id) DESC") }
   scope :recent, -> { where('created_at BETWEEN ? AND ?', DateTime.current.beginning_of_day - 30, DateTime.current.end_of_day) }
   scope :completed, -> { where.not(referral_completed_at: nil) }
+  scope :incomplete, -> { where(uploaded: false) }
 
   validates :slug, :referral_code, uniqueness: true
   validates :facebook_uuid, uniqueness: true, allow_blank: true
